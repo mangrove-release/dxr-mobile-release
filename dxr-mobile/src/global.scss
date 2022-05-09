@@ -1,0 +1,480 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import "~@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+.app-header {
+  padding: 10px;
+}
+
+.menu-header {
+  margin-top: 65px;
+}
+
+.form {
+  padding: 10px;
+}
+
+.form div {
+  padding-top: 5px;
+}
+
+ion-input {
+  height: 30px;
+  border: 1px solid gray;
+}
+
+.form label {
+  margin-right: 10px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.common-list-item:hover {
+  background-color: rgb(208, 244, 247);
+}
+
+.common-list-item {
+  background-color: none;
+}
+
+.simple-list {
+  padding: 10px;
+  padding-left: 25px;
+  /* margin-bottom: 5px; */
+  font-size: 16px;
+  border-bottom: 1px solid rgb(226, 225, 225);
+}
+
+.simple-button {
+  border: 1px solid rgb(166, 166, 168) !important;
+  font-weight: normal;
+  color: rgb(57, 57, 59);
+  box-shadow: none !important;
+}
+
+.list-button {
+  width: 140px !important;
+  min-width: unset !important;
+  border: 1px solid rgb(95, 95, 128) !important;
+  font-weight: normal;
+  background-color: rgb(174, 192, 199);
+  box-shadow: none !important;
+}
+
+.list-button-light {
+  min-width: unset !important;
+  border: 1px solid rgb(95, 95, 128) !important;
+  font-weight: normal;
+  background-color: rgb(195, 221, 213);
+  box-shadow: none !important;
+}
+
+input {
+  width: 100%;
+  height: 25px;
+}
+
+.form-padding {
+  padding: 10px 300px 0px 300px;
+}
+
+.form-padding-popup {
+  padding: 10px 20px 10px 20px;
+}
+
+.form-padding-popup-mobile {
+  padding: 5px 10px 5px 10px;
+}
+
+.input-small {
+  width: 250px;
+}
+
+.input-medium {
+  width: 400px;
+}
+
+.input-large {
+  width: 100%;
+}
+
+.workspace-header {
+  background-color: rgb(207, 207, 231);
+}
+
+/* new list styles */
+
+.list-item-without-hover {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin: 5px;
+  background-color: none;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin: 5px;
+  background-color: none;
+}
+
+.list-item:hover {
+  background-color: rgb(208, 244, 247);
+}
+
+.show-in-mobile {
+  visibility: visible;
+}
+
+.hide-in-mobile {
+  visibility: hidden;
+}
+
+@media (min-width: 900px) {
+  .three-section-list-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .two-section-list-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* .two-section-list-row .list-value-section-two {
+    margin-left: -0.57%;
+  } */
+
+  .show-in-mobile {
+    visibility: hidden;
+  }
+
+  .hide-in-mobile {
+    visibility: visible;
+  }
+
+  /* .list-action-section-separator{
+    justify-content: center;
+    align-self: center;
+} */
+}
+
+.three-section-list-row .list-value-section {
+  display: flex;
+  flex: 2;
+  padding: 5px;
+}
+
+.three-section-list-row .list-section-label {
+  display: flex;
+  // flex: 120px;
+  justify-content: flex-end;
+  align-self: center;
+}
+
+.three-section-list-row .list-section-separator {
+  display: flex;
+  flex: 20px;
+  justify-content: center;
+  align-self: center;
+}
+
+.three-section-list-row .list-section-value {
+  display: flex;
+  flex: 100;
+  justify-content: flex-start;
+  align-self: center;
+}
+
+.three-section-list-row .list-action-section {
+  display: flex;
+  flex: 1;
+  padding: 5px;
+}
+
+.three-section-list-row .list-action-sectlabel {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-self: center;
+}
+
+.three-section-list-row .list-action-section-separator {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-self: center;
+}
+
+.three-section-list-row .list-action-section-value {
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-self: center;
+}
+
+/* two-section-row */
+
+.two-section-list-row .list-value-section-one {
+  display: flex;
+  flex: 2;
+  /* margin-left: 100px; */
+}
+
+.two-section-list-row .list-value-section-two {
+  display: flex;
+  flex: 3;
+  margin-left: -0.37%;
+}
+
+.two-section-list-row .list-section-label {
+  display: flex;
+  // flex: 150px;
+  justify-content: flex-end;
+  align-self: center;
+}
+
+.two-section-list-row .list-section-separator {
+  display: flex;
+  flex: 20px;
+  justify-content: center;
+  align-self: center;
+}
+
+.two-section-list-row .list-section-value {
+  display: flex;
+  flex: 100;
+  justify-content: flex-start;
+  align-self: center;
+}
+
+.two-section-list-row .list-action-section {
+  display: flex;
+  flex: 3;
+}
+
+.two-section-list-row .list-action-sectlabel {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-self: center;
+}
+
+.two-section-list-row .list-action-section-separator {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-self: center;
+}
+
+.two-section-list-row .list-action-section-value {
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-self: center;
+}
+
+$f1: 1;
+$f2: 2;
+$f3: 3;
+$f4: 4;
+$f5: 5;
+
+$spacer: 5px;
+$s0: $spacer * 0;
+$s1: $spacer * 1;
+$s2: $spacer * 2;
+$s3: $spacer * 3;
+$s4: $spacer * 4;
+$s5: $spacer * 5;
+$s6: $spacer * 6;
+$s7: $spacer * 7;
+$s8: $spacer * 8;
+$s9: $spacer * 9;
+$s10: $spacer * 10;
+$s11: $spacer * 11;
+$s12: $spacer * 12;
+$s13: $spacer * 13;
+$s14: $spacer * 14;
+$s15: $spacer * 15;
+$s16: $spacer * 16;
+$s17: $spacer * 17;
+$s18: $spacer * 18;
+$s19: $spacer * 19;
+$s20: $spacer * 20;
+$s21: $spacer * 21;
+$s22: $spacer * 22;
+$s23: $spacer * 23;
+$s24: $spacer * 24;
+$s25: $spacer * 25;
+$s26: $spacer * 26;
+$s27: $spacer * 27;
+$s28: $spacer * 28;
+$s29: $spacer * 29;
+$s30: $spacer * 30;
+$s31: $spacer * 31;
+$s32: $spacer * 32;
+$s33: $spacer * 33;
+$s34: $spacer * 34;
+$s35: $spacer * 35;
+
+$spacer-sizes: 
+"0" $s0, 
+"1" $s1, 
+"2" $s2, 
+"3" $s3, 
+"4" $s4, 
+"5" $s5, 
+"6" $s6,
+"7" $s7, 
+"8" $s8, 
+"9" $s9, 
+"10" $s10, 
+"11" $s11, 
+"12" $s12, 
+"13" $s13,
+"14" $s14, 
+"15" $s15, 
+"16" $s16, 
+"17" $s17, 
+"18" $s18, 
+"19" $s19, 
+"20" $s20,
+"21" $s21, 
+"22" $s22, 
+"23" $s23, 
+"24" $s24, 
+"25" $s25, 
+"26" $s26, 
+"27" $s27,
+"28" $s28, 
+"29" $s29, 
+"30" $s30, 
+"31" $s31, 
+"32" $s32, 
+"33" $s33, 
+"34" $s34,
+"35" $s35;
+
+$flex-sizes: 
+"1" $f1,
+"2" $f2,
+"3" $f3,
+"4" $f4,
+"5" $f5;
+
+@each $name, $size in $spacer-sizes {
+  .p-#{$name} {
+    padding: $size;
+  }
+}
+
+@each $name, $size in $spacer-sizes {
+  .m-#{$name} {
+    margin: $size;
+  }
+}
+
+@each $name, $size in $spacer-sizes {
+  .flex-#{$name} {
+    flex: $size;
+  }
+}
+
+@each $name,
+$size in $flex-sizes {
+    .fx-#{$name} {
+        flex: $size;
+    }
+}
+
+@each $name, $size in $spacer-sizes {
+  .width-#{$name} {
+    width: $size;
+  }
+}
+
+@each $name, $size in $spacer-sizes {
+  .height-#{$name} {
+    height: $size;
+  }
+}
+
+.header {
+  margin: 7px 0px 7px 0px;
+  padding: 15px 0px 15px 0px;
+}
+
+ion-card{
+    color: black;
+}
+
+mat-expansion-panel-header{
+    height: 100%;
+}
+
+.qr-scan{
+    height: 80vh;
+    width: 80wh;
+}

@@ -1,0 +1,100 @@
+<div>
+    <ion-header>
+        <ion-title>
+
+            {{title}}
+        </ion-title>
+    </ion-header>
+    <ion-card>
+        <div class="three-section-list-row" style="margin-bottom: 10px;">
+
+            <div class="list-value-section">
+                <div class="list-section-label">
+                    Key
+                </div>
+
+                <div class="list-section-separator">
+                    :
+                </div>
+                <div class="list-section-value">
+                    <input [ngClass]="!(isHandset$ | async) ? 'input-medium' : 'input-large'" id='name' [(ngModel)]="language.key">
+                </div>
+            </div>
+            <div class="list-value-section">
+                <div class="list-section-label">
+
+                </div>
+
+                <div class="list-section-separator">
+
+                </div>
+                <div class="list-section-value">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="three-section-list-row" style="margin-bottom: 10px;">
+
+            <div class="list-value-section">
+                <div class="list-section-label">
+                    English
+                </div>
+
+                <div class="list-section-separator">
+                    :
+                </div>
+                <div class="list-section-value">
+                    <input [ngClass]="!(isHandset$ | async) ? 'input-medium' : 'input-large'" id='name' [(ngModel)]="language.eng">
+                </div>
+            </div>
+            <div class="list-value-section">
+                <div class="list-section-label">
+
+                </div>
+
+                <div class="list-section-separator">
+
+                </div>
+                <div class="list-section-value">
+
+                </div>
+            </div>
+        </div>
+        <div class="three-section-list-row" style="margin-bottom: 10px;">
+
+            <div class="list-value-section">
+                <div class="list-section-label">
+                    Japanese
+                </div>
+
+                <div class="list-section-separator">
+                    :
+                </div>
+                <div class="list-section-value">
+                    <input [ngClass]="!(isHandset$ | async) ? 'input-medium' : 'input-large'" id='name' [(ngModel)]="language.jpn">
+                </div>
+            </div>
+            <div class="list-value-section">
+                <div class="list-section-label">
+
+                </div>
+
+                <div class="list-section-separator">
+
+                </div>
+                <div class="list-section-value">
+
+                </div>
+            </div>
+        </div>
+    </ion-card>
+</div>
+<div class="row">
+    <button mat-raised-button color="accent">
+        Close
+    </button>
+    <button mat-raised-button color="primary">
+        Add
+    </button>
+</div>

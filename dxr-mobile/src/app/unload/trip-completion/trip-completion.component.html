@@ -1,0 +1,341 @@
+<ion-content>
+    <ion-content style="margin-bottom: 65px;">
+        <app-company-name-header></app-company-name-header>
+        <ion-header class="row header">
+            <ion-title><span style="margin-right:10px;">
+                    <app-lang-def-button [componentCode]="componentCode">
+                    </app-lang-def-button>{{uiLabels.pageHeader}}
+                </span></ion-title>
+            <ion-button style="margin-right: 15px;" (click)="scanTripCompletionQrCoe()">{{uiLabels.scanTripCompletionQrCoe}}</ion-button>
+        </ion-header>
+
+        <div class="col" *ngIf="driverTripPlan && driverTripPlan.tripInfoId">
+
+            <!-- <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.vehicleName}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.vehicleInfo.manufacturerName}}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.vehicleRegNo}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.vehicleInfo.vehicleRegNo}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.driverName}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.driverName}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.driverLicenseNo}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.driverLicenseNo}}
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.tripDate}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.pickUpDateView.substring(0,driverTripPlan.pickUpDateView.indexOf(" "))}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.dropLocation}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.pickList[0].disposalInfo.dropLocation}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.companyName}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{processorCompanyInfo.companyName}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.contactNo}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{processorCompanyInfo.personInChargeContact}}
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <ion-header class="header row">
+                    <ion-title>{{uiLabels.receivedWasteList}}</ion-title>
+                    <ion-button style="margin-right: 15px;" (click)="confirmUnload()">{{uiLabels.comfirmUnloadButton}}</ion-button>
+                </ion-header>
+
+                <mat-accordion *ngIf="handoverPackageView" multi>
+                    <mat-expansion-panel *ngFor="let dispose of loadPackageView.wasteWisePickPackageList" style="margin-bottom: 10px;" [expanded]="true">
+                        <mat-expansion-panel-header style="height: 100%;padding: 10px 0px;background-color: rgb(234, 234, 234);">
+                            <div class="three-section-list-row wrap">
+                                <div class="list-value-section">
+                                    <div class="list-section-label" style="width:210px;">
+                                        {{uiLabels.wasteItemTitle}}
+                                    </div>
+                                    <div class="list-section-separator">
+                                        :
+                                    </div>
+
+                                    <div class="list-section-value" style="flex:100%">
+                                        {{dispose.wasteTitle}}
+                                    </div>
+                                </div>
+
+                                <div class="list-value-section">
+                                    <div class="list-section-label" style="width:210px;">
+                                        {{uiLabels.wasteQuantity}}
+                                    </div>
+                                    <div class="list-section-separator">
+                                        :
+                                    </div>
+
+                                    <div class="list-section-value" style="flex:100%">
+                                        {{dispose.totalQunatity}}
+                                    </div>
+                                </div>
+
+                                <div class="three-section-list-row">
+                                    <div class="list-value-section">
+                                        <div class="list-section-label" style="width:210px;">
+                                            {{uiLabels.declaredQuantity}}
+                                        </div>
+                                        <div class="list-section-separator">
+                                            :
+                                        </div>
+
+                                        <div class="list-section-value" style="flex:100%">
+                                            {{dispose.totalDeclaredQunatity}}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </mat-expansion-panel-header>
+                        <div *ngFor="let pick of dispose.pickList, index as i">
+                            <div class="three-section-list-row" style="border-top: 1px solid gainsboro;border-bottom: 1px solid gainsboro;">
+
+                                <div class="list-value-section">
+                                    <div class="list-section-label" style="width:120px;">
+                                        {{uiLabels.pick}}
+                                    </div>
+                                    <div class="list-section-separator">
+                                        -
+                                    </div>
+
+                                    <div class="list-section-value" style="flex:100%">
+                                        {{i+1}}
+                                    </div>
+                                </div>
+
+                                <div class="list-value-section">
+                                    <div class="list-section-label" style="width:120px;">
+                                        {{uiLabels.projectTitle}}
+                                    </div>
+                                    <div class="list-section-separator">
+                                        :
+                                    </div>
+
+                                    <div class="list-section-value" style="flex:100%">
+                                        {{pick.pick.projectTitle}}
+                                    </div>
+                                </div>
+
+                                <div class="list-value-section">
+                                    <div class="list-section-label" style="width:120px;">
+                                        {{uiLabels.pickQuantity}}
+                                    </div>
+                                    <div class="list-section-separator">
+                                        :
+                                    </div>
+
+                                    <div class="list-section-value" style="flex:100%">
+                                        {{pick.pick.quantity}}
+                                    </div>
+                                </div>
+
+                                <div class="list-value-section">
+                                    <div class="list-section-label" style="width:210px;">
+                                        {{uiLabels.calculatedWasteQuantity}}
+                                    </div>
+                                    <div class="list-section-separator">
+                                        :
+                                    </div>
+
+                                    <div class="list-section-value" style="flex:100%">
+                                        <label>{{pick.pick.declaredQunatity}}</label>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="list-value-section" *ngIf="pick.pick.loadStatus=='1'">
+                                            <div class="list-section-label" style="width:120px;">
+                                                <ion-chip>{{uiLabels.pickStatusLoaded}}</ion-chip>
+                                            </div>
+                                        </div> -->
+
+                            </div>
+                            <div style="font-size: 15px;font-weight: 450;margin: 5px 0px 5px 15px;">
+                                <label>{{uiLabels.packageList}}</label>
+                            </div>
+                            <!-- let package of pick.packageList -->
+                            <div *ngFor="let package of pick.packageList">
+                                <ion-card class="p-2" *ngIf="package.pickId==pick.pick.pickId">
+                                    <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='0'">
+
+                                        <div class="list-value-section">
+                                            <div class="list-section-label" style="width:150px;">
+                                                {{uiLabels.packageSize}}
+                                            </div>
+                                            <div class="list-section-separator">
+                                                :
+                                            </div>
+
+                                            <div class="list-section-value" style="flex:100%">
+                                                {{package.size}}
+                                            </div>
+                                        </div>
+
+                                        <div class="list-value-section">
+                                            <div class="list-section-label" style="width:150px;">
+                                                {{uiLabels.NumOfPackage}}
+                                            </div>
+                                            <div class="list-section-separator">
+                                                :
+                                            </div>
+
+                                            <div class="list-section-value" style="flex:100%">
+                                                {{package.numberOfPackage}}
+                                            </div>
+                                        </div>
+
+                                        <div class="list-value-section">
+                                            <div class="list-section-label" style="width:150px;">
+                                                <span>{{uiLabels.packageQuantity}}</span>
+                                            </div>
+                                            <div class="list-section-separator">
+                                                :
+                                            </div>
+
+                                            <div class="list-section-value" style="flex:100%">
+                                                {{package.quantity}}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='1'">
+
+                                        <div class="list-value-section">
+                                            <div class="list-section-label" style="width:150px;">
+                                                <span>{{uiLabels.lumpsumQunatity}}</span>
+                                            </div>
+                                            <div class="list-section-separator">
+                                                :
+                                            </div>
+
+                                            <div class="list-section-value" style="flex:100%">
+                                                {{package.quantity}}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </ion-card>
+                            </div>
+
+
+                        </div>
+
+                    </mat-expansion-panel>
+                </mat-accordion>
+
+            </div>
+
+
+        </div>
+        <div *ngIf="!driverTripPlan || !driverTripPlan.tripInfoId">
+            No Trip Found
+        </div>
+
+    </ion-content>
+</ion-content>

@@ -1,0 +1,6 @@
+<ion-header class="p-1" *ngIf="viewContent">
+    <span>
+        <app-lang-def-button [componentCode]="componentCode"></app-lang-def-button>
+    </span>
+    <label style="font-size: 18px; font-weight: 450;">{{uiLabels.companyName}} : {{currentCompanyInfo?.companyName}}</label>
+</ion-header>

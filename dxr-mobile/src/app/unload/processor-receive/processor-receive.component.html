@@ -1,0 +1,202 @@
+<ion-content *ngIf="viewContent">
+    <ion-content style="margin-bottom: 65px;">
+        <ion-header class="row header">
+            <ion-title><span style="margin-right:10px;">
+                    <app-lang-def-button [componentCode]="componentCode">
+                    </app-lang-def-button>{{uiLabels.pageHeader}}
+                </span></ion-title>
+            <ion-button *ngIf="driverTripPlan && driverTripPlan.tripInfoId" style="margin-right: 15px;" (click)="generateTripCompletionQrCoe()">{{uiLabels.generateTripCompleteQrCode}}</ion-button>
+            <ion-button *ngIf="driverTripPlan && driverTripPlan.tripInfoId" style="margin-right: 15px;">{{uiLabels.generateWeightDeclareCertificate}}</ion-button>
+        </ion-header>
+
+        <div class="col" *ngIf="driverTripPlan && driverTripPlan.tripInfoId">
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.vehicleName}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.vehicleInfo.manufacturerName}}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.vehicleRegNo}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.vehicleInfo.vehicleRegNo}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.driverName}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.driverName}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.driverLicenseNo}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.driverLicenseNo}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.tripDate}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.pickUpDateView.substring(0,driverTripPlan.pickUpDateView.indexOf(" "))}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.dropLocation}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{driverTripPlan.pickList[0].disposalInfo.dropLocation}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.companyName}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{transporterCompanyInfo.companyName}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.contactNo}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{transporterCompanyInfo.personInChargeContact}}
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <ion-header class="header">
+                    <ion-title>{{uiLabels.receivedWasteList}}</ion-title>
+                </ion-header>
+                <ion-card style="height: 100%;padding: 10px 15px;" *ngFor="let dispose of loadPackageView.wasteWisePickPackageList">
+                    <div class="three-section-list-row">
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:210px;">
+                                {{uiLabels.wasteItemTitle}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                {{dispose.wasteTitle}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="three-section-list-row">
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:210px;">
+                                {{uiLabels.wasteQuantity}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                {{dispose.totalQunatity}} {{dispose.pickList[0].pick.disposalInfo.unit}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="three-section-list-row">
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:210px;">
+                                {{uiLabels.declaredQuantity}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                {{dispose.totalDeclaredQunatity}} {{dispose.pickList[0].pick.disposalInfo.unit}}
+                            </div>
+                        </div>
+                    </div>
+                </ion-card>
+            </div>
+
+
+        </div>
+        <div *ngIf="!driverTripPlan || !driverTripPlan.tripInfoId">
+            No Trip Found
+        </div>
+
+    </ion-content>
+</ion-content>

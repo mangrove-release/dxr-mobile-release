@@ -1,0 +1,5 @@
+<div class="col">
+    <input type="text" [ngClass]="!(isHandset$ | async) ? 'input-small' : 'input-large'" id="dateTimeDirective" matInput placeholder={{uiLabels.placeholder}} mask={{mask}} [(ngModel)]="modelObject[modelDateAttributeName]" (focusout)="checkDateValidity()">
+
+    <label *ngIf="validDate=='0'" style="color: red;padding-top: 5px;">{{uiLabels.invalidDateMessage}}</label>
+</div>

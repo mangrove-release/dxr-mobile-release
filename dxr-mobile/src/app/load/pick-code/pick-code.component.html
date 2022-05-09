@@ -1,0 +1,15 @@
+<div class="col">
+    <ion-header class="row header">
+        <ion-title><span style="margin-right:10px;">
+                <app-lang-def-button [componentCode]="componentCode">
+                </app-lang-def-button>{{uiLabels.pageHeader}}
+            </span></ion-title>
+        <ion-button style="margin-right: 25px;" (click)="closeModal()">{{uiLabels.closeButton}}</ion-button>
+    </ion-header>
+    <div style="margin-bottom: 20px;">
+        <app-company-name-header></app-company-name-header>
+    </div>
+    <div class="row center">
+        <ngx-qrcode [value]="createdCode"></ngx-qrcode>
+    </div>
+</div>

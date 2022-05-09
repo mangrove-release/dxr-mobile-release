@@ -1,0 +1,33 @@
+<div *ngIf="viewContent">
+    <ion-header translucent>
+        <div class="row left">
+            <ion-title class="row left p-3">{{uiLabels.currentCompanyLabel}}:<span style="font-weight: 500;">&nbsp;{{currentCompany.companyName}}</span></ion-title>
+        </div>
+    </ion-header>
+    <ion-header translucent>
+        <div class="row left">
+            <ion-title class="row left p-3">{{uiLabels.switchToCompanyLabel}}:<span style="font-weight: 500;">&nbsp;{{selectedItem.companyName}}</span></ion-title>
+        </div>
+    </ion-header>
+    <div style="display: flex;flex-direction: column;flex: auto;">
+        <ion-card id="" class="row" *ngFor="let eachCompany of companyContextList" class=" simple-list" [ngStyle]="{'background-color': selectedItem.companyId==eachCompany.companyId ? 'rgb(224, 224, 241)' : ''}" (click)="selectListItem(eachCompany)">
+            <div class="row flex-1 left">
+
+                <ion-icon *ngIf="eachCompany.companyId==selectedItem.companyId" color="primary">check_box</ion-icon>
+                <ion-icon *ngIf="eachCompany.companyId!=selectedItem.companyId" style="color: rgb(56, 56, 56);">check_box_outline_blank</ion-icon>
+                <label style="margin-left: 5px;color: black;">{{eachCompany.companyName}}</label>
+
+            </div>
+
+        </ion-card>
+        <div class="row right" style="margin-top: 100px;">
+            <ion-button id="{{selectedItem?.companyId + 'close'}}" color="danger" style="width: 100px;" (click)="closeModal()">{{uiLabels.closeButton}}</ion-button>
+            <ion-button id="{{selectedItem?.companyId + 'switch'}}" color="primary" style="margin:0px 20px 0px 20px;width: 140px;" (click)="switchContext()">{{uiLabels.switchButton}}</ion-button>
+        </div>
+
+
+    </div>
+
+
+
+</div>

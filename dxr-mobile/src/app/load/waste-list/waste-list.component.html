@@ -1,0 +1,226 @@
+<div *ngIf="selectedTrip && selectedTrip.tripInfoId">
+    <app-company-name-header></app-company-name-header>
+    <ion-header class="header">
+        <ion-title><span style="margin-right:10px;">
+                <app-lang-def-button [componentCode]="componentCode">
+                </app-lang-def-button>{{uiLabels.pageHeader}}
+            </span></ion-title>
+    </ion-header>
+
+    <div class="col" *ngIf="selectedTrip && selectedTrip.tripInfoId">
+
+        <div class="three-section-list-row wrap">
+
+            <div class="list-value-section">
+                <div class="list-section-label" style="width:150px;">
+                    {{uiLabels.vehicleName}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value" style="width:100%">
+                    {{selectedTrip.vehicleInfo.manufacturerName}}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="three-section-list-row wrap">
+
+            <div class="list-value-section">
+                <div class="list-section-label" style="width:150px;">
+                    {{uiLabels.vehicleRegNo}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value" style="width:100%">
+                    {{selectedTrip.vehicleInfo.vehicleRegNo}}
+                </div>
+            </div>
+        </div>
+
+        <div class="three-section-list-row wrap">
+
+            <div class="list-value-section">
+                <div class="list-section-label" style="width:150px;">
+                    {{uiLabels.driverName}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value" style="width:100%">
+                    {{selectedTrip.driverName}}
+                </div>
+            </div>
+        </div>
+
+        <div class="three-section-list-row wrap">
+
+            <div class="list-value-section">
+                <div class="list-section-label" style="width:150px;">
+                    {{uiLabels.driverLicenseNo}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value" style="width:100%">
+                    {{selectedTrip.driverLicenseNo}}
+                </div>
+            </div>
+        </div>
+
+        <div class="three-section-list-row wrap">
+
+            <div class="list-value-section">
+                <div class="list-section-label" style="width:150px;">
+                    {{uiLabels.tripDate}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value" style="width:100%">
+                    {{selectedTrip.pickUpDateView}}
+                </div>
+            </div>
+        </div>
+
+        <div class="three-section-list-row wrap">
+
+            <div class="list-value-section">
+                <div class="list-section-label" style="width:150px;">
+                    {{uiLabels.pickLocation}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value" style="width:100%">
+                    {{scannedTripInfo.pickLocation}}
+                </div>
+            </div>
+        </div>
+
+        <div class="three-section-list-row wrap">
+
+            <div class="list-value-section">
+                <div class="list-section-label" style="width:150px;">
+                    {{uiLabels.companyName}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value" style="width:100%">
+                    {{transporterCompanyInfo.companyName}}
+                </div>
+            </div>
+        </div>
+
+        <div class="three-section-list-row wrap">
+
+            <div class="list-value-section">
+                <div class="list-section-label" style="width:150px;">
+                    {{uiLabels.personInChargeName}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value" style="width:100%">
+                    {{transporterCompanyInfo.personInChargeName}}
+                </div>
+            </div>
+        </div>
+
+        <div class="three-section-list-row wrap">
+
+            <div class="list-value-section">
+                <div class="list-section-label" style="width:150px;">
+                    {{uiLabels.contactNo}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value" style="width:100%">
+                    {{transporterCompanyInfo.personInChargeContact}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngFor="let item of pickGroup | keyvalue">
+
+        <div *ngFor="let pick of item.value">
+            <ion-card style="color: black;" *ngIf="pick.disposalInfo.pickLocation==scannedTripInfo.pickLocation">
+
+                <div class="three-section-list-row">
+                    <div class="list-value-section">
+                        <div class="list-section-label" style="width:120px;">
+                            {{uiLabels.wasteItemTitle}}
+                        </div>
+                        <div class="list-section-separator">
+                            :
+                        </div>
+
+                        <div class="list-section-value">
+                            {{pick.disposalInfo.wasteItemName}}
+                        </div>
+                    </div>
+
+                    <div class="list-value-section">
+                        <div class="list-section-label" style="width:120px;">
+                            <ion-button (click)="packageDef(pick)">{{uiLabels.packageDefButton}}</ion-button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="three-section-list-row">
+
+                    <div class="list-value-section">
+                        <div class="list-section-label" style="width:120px;">
+                            {{uiLabels.projectTitle}}
+                        </div>
+                        <div class="list-section-separator">
+                            :
+                        </div>
+
+                        <div class="list-section-value">
+                            {{pick.projectTitle}}
+                        </div>
+                    </div>
+
+                    <div class="list-value-section">
+                        <div class="list-section-label" style="width:120px;">
+                            {{uiLabels.quantity}}
+                        </div>
+                        <div class="list-section-separator">
+                            :
+                        </div>
+
+                        <div class="list-section-value">
+                            {{pick.quantity}} {{pick.disposalInfo.unit}}
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="three-section-list-row">
+
+                </div>
+
+            </ion-card>
+        </div>
+    </div>
+
+</div>
+<div *ngIf="!selectedTrip || !selectedTrip.tripInfoId">
+    No Trip Found
+</div>

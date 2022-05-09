@@ -1,0 +1,25 @@
+<ion-app>
+
+    <ion-tabs style="margin-top: 60px;">
+        <ion-tab-bar slot="top">
+            <ion-tab-button [routerLink]="['/dumper',{outlets: { dumperOutlet: ['trip-scan']}}]">
+                <ion-icon :icon="paper-plane"></ion-icon>
+                <label>{{uiLabels.tripScanTab}}</label>
+            </ion-tab-button>
+            <ion-tab-button [routerLink]="['/dumper',{outlets: { dumperOutlet: ['trip-verify']}}]">
+                <ion-icon :icon="checkmark-circle-outline"></ion-icon>
+                <label>{{uiLabels.tripVerifyTab}}</label>
+            </ion-tab-button>
+            <ion-tab-button [routerLink]="['/dumper',{outlets: { dumperOutlet: ['package-def']}}]">
+                <ion-icon :icon="cube"></ion-icon>
+                <label>{{uiLabels.packageDefTab}}</label>
+            </ion-tab-button>
+            <ion-tab-button [routerLink]="['/dumper',{outlets: { dumperOutlet: ['handover']}}]">
+                <ion-icon :icon="settings"></ion-icon>
+                <label>{{uiLabels.handoverTab}}</label>
+            </ion-tab-button>
+        </ion-tab-bar>
+        <ion-router-outlet style="margin-top: 60px;" name="dumperOutlet"></ion-router-outlet>
+    </ion-tabs>
+
+</ion-app>

@@ -1,0 +1,46 @@
+[
+    {
+        "componentCode": "faq-visitor",
+        "route": "/faq",
+        "labels": [
+            {
+                "key": "pageHeader",
+                "en": "FAQ",
+                "jpn": "よくある質問"
+            },
+            {
+                "key": "faqTypeMenu",
+                "en": "FAQ Type",
+                "jpn": "よくある問 タイ"
+            },
+            {
+                "key": "adminButton",
+                "en": "Admin",
+                "jpn": "よある問 リト"
+            },
+            {
+                "key": "wasteTypeLabel",
+                "en": "Type",
+                "jpn": "よ質問 リスト"
+            },
+            {
+                "key": "faqCatTabHeader",
+                "en": "FAQ Category",
+                "jpn": "よくある スト"
+            },
+            {
+                "key": "faqQnATabHeader",
+                "en": "Question & Answer",
+                "jpn": "よくある質問 リスト"
+            }
+        ],
+        "messages": [
+            {
+                "key": "welcome message",
+                "en": "Welcome",
+                "jpn": "いらっしゃいませ"
+            }
+        ],
+        "notifications": []
+    }
+]

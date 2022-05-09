@@ -1,0 +1,57 @@
+<div *ngIf="viewContent">
+    <app-company-name-header></app-company-name-header>
+    <ion-header class="header">
+        <ion-title><span style="margin-right:10px;">
+                <app-lang-def-button [componentCode]="componentCode">
+                </app-lang-def-button>{{uiLabels.pageHeader}}
+            </span></ion-title>
+    </ion-header>
+    <div class="col form">
+        <div class="three-section-list-row">
+
+            <div class="list-value-section">
+                <div class="list-section-label flex-15">
+                    {{uiLabels.dateLabel}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value">
+                    <app-date-time-input [modelObject]="tripDate" [modelDateAttributeName]="'date'"></app-date-time-input>
+                </div>
+
+                <div class="list-section-value">
+                    <ion-button style="margin-left: 10px;" (click)="getDriverTripPlan(driverUserId,tripDate.date)">{{uiLabels.loadTripList}}</ion-button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <ion-header class="header">
+        <ion-title>{{uiLabels.tripList}}</ion-title>
+    </ion-header>
+    <ion-card class="column" *ngFor="let item of driverTripPlan">
+        <ion-card-header class="three-section-list-row" style="color: black;">
+
+            <div class="list-value-section">
+                <div class="list-section-label flex-15">
+                    {{uiLabels.tripTime}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value">
+                    {{item.startTime.substring(0,2)}}:{{item.startTime.substring(2)}} - {{item.endTime.substring(0,2)}}:{{item.endTime.substring(2)}}
+                </div>
+
+                <div class="list-section-value">
+                    <ion-button (click)="selectedTrip(item)" [routerLink]="['/unload',{outlets: { unloadOutlet: ['driver-handover']}}]">{{uiLabels.pickListButton}}</ion-button>
+                </div>
+            </div>
+
+
+        </ion-card-header>
+    </ion-card>
+</div>

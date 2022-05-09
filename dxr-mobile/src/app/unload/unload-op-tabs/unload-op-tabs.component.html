@@ -1,0 +1,15 @@
+<ion-app>
+
+    <ion-tabs style="margin-top: 60px;">
+        <ion-tab-bar slot="top">
+            <div *ngFor="let item of menuList">
+                <ion-tab-button [routerLink]="[item.parentSegment,{outlets: { unloadOutlet: [item.menuUrl]}}]">
+                    <label style="font-size: 15px;" [ngStyle]="{'color': (router.url.includes(item.menuUrl)) ? 'blue' : ''}">{{item.menuTitle}}</label>
+                </ion-tab-button>
+            </div>
+        </ion-tab-bar>
+
+        <ion-router-outlet style="margin-top: 60px;" name="unloadOutlet"></ion-router-outlet>
+    </ion-tabs>
+
+</ion-app>

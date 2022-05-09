@@ -1,0 +1,128 @@
+<div>
+    <app-company-name-header></app-company-name-header>
+    <ion-header class="row header">
+        <ion-title>
+            <span style="margin-right:10px;">
+                <app-lang-def-button [componentCode]="componentCode">
+                </app-lang-def-button>{{uiLabels.pageHeader}}
+            </span>
+        </ion-title>
+        <ion-button style="margin-right: 25px;" (click)="generateHandoverQrCode()">{{uiLabels.generateQrCode}}</ion-button>
+    </ion-header>
+
+    <mat-accordion multi>
+        <!-- <div *ngFor="let item of pickGroup | keyvalue">
+            <div *ngFor="let pick of item.value"> -->
+        <!-- *ngIf="pick.disposalInfo.pickLocation==scannedTripInfo.pickLocation" -->
+
+        <mat-expansion-panel *ngFor="let item of pickWisePackageList" style="margin-bottom: 10px;" [expanded]="true">
+
+            <mat-expansion-panel-header style="height: 100%;background-color: rgb(233, 249, 255);">
+
+                <div class="three-section-list-row p-2" style="color: black;">
+
+                    <div class="list-value-section">
+                        <div class="list-section-label" style="width:200px;">
+                            {{uiLabels.wasteItemTitle}}
+                        </div>
+                        <div class="list-section-separator">
+                            :
+                        </div>
+
+                        <div class="list-section-value" style="flex:100%">
+                            {{item.pick.disposalInfo.wasteItemName}}
+                        </div>
+                    </div>
+
+                    <div class="list-value-section">
+                        <div class="list-section-label" style="width:120px;">
+                            {{uiLabels.quantity}}
+                        </div>
+                        <div class="list-section-separator">
+                            :
+                        </div>
+
+                        <div class="list-section-value">
+                            {{item.pick.quantity}} {{item.pick.disposalInfo.unit}}
+                        </div>
+                    </div>
+
+                </div>
+
+            </mat-expansion-panel-header>
+
+            <!-- <div *ngIf="allPackageDef && allPackageDef.length>0"> -->
+            <div *ngFor="let package of item.packageList">
+                <ion-card class="p-2" *ngIf="package.pickId==item.pick.pickId">
+                    <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='0'">
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:150px;">
+                                {{uiLabels.packageSize}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="width:100%">
+                                {{package.size}}
+                            </div>
+                        </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:150px;">
+                                {{uiLabels.NumOfPackage}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="width:100%">
+                                {{package.numberOfPackage}}
+                            </div>
+                        </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:150px;">
+                                <span>{{uiLabels.packageQuantity}}</span>
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="width:100%">
+                                {{package.quantity}} {{item.pick.disposalInfo.unit}}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='1'">
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:150px;">
+                                <span>{{uiLabels.lumpsumQunatity}}</span>
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="width:100%">
+                                {{package.quantity}} {{item.pick.disposalInfo.unit}}
+                            </div>
+                        </div>
+
+                    </div>
+                </ion-card>
+            </div>
+
+
+            <!-- </div> -->
+
+
+        </mat-expansion-panel>
+        <!-- </div>
+
+        </div> -->
+    </mat-accordion>
+
+</div>

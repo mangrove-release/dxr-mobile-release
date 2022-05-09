@@ -1,0 +1,56 @@
+<ion-header class="menu-header">
+    <div class="col center">
+        <ion-title class="row center p-3">{{uiLabels.headerLabel}}</ion-title>
+    </div>
+</ion-header>
+<ion-content>
+    <div class="col form">
+        <div class="three-section-list-row">
+
+            <div class="list-value-section">
+                <div class="list-section-label flex-22">
+                    {{uiLabels.userId}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value">
+                    <ion-input [(ngModel)]="userIdentification.userId"></ion-input>
+                </div>
+            </div>
+        </div>
+
+        <div class="three-section-list-row">
+
+            <div class="list-value-section">
+                <div class="list-section-label flex-22">
+                    {{uiLabels.password}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value">
+                    <ion-input type="password" [(ngModel)]="userIdentification.userAuth"></ion-input>
+                </div>
+            </div>
+        </div>
+
+        <div class="three-section-list-row">
+
+            <div class="list-value-section">
+                <div class="right" style="flex:2">
+                    <a (click)="forgetPassOp()">{{uiLabels.forgetPassButton}}</a>
+                </div>
+
+
+                <div class="right" style="flex:1">
+                    <ion-button (click)="login()">{{uiLabels.loginButton}}</ion-button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</ion-content>

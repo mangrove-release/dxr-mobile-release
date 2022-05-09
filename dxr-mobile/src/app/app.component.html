@@ -1,0 +1,46 @@
+<ion-app>
+    <ion-header class="app-header">
+        <div class="row right">
+            <!-- <ion-title>
+                DX-R
+            </ion-title> -->
+            <ion-button *ngIf="!isLogedIn" style="height: 35px;" routerLink="login">Login</ion-button>
+            <ion-button *ngIf="isLogedIn" style="height: 35px;" (click)="logOut()">Logout</ion-button>
+            <!-- <ion-select *ngIf="!isLogedIn" [(ngModel)]="selectedProfileItem" placeholder={{selectedProfileItem}} interface="popover" (ionChange)="profileItemClick()">
+                <ion-select-option *ngFor="let item of profileArray; index as i" [value]="item.title" id={{item.title}}>
+                    {{item.title}}
+                </ion-select-option>
+
+            </ion-select> -->
+
+            <ion-button *ngIf="isLogedIn" (click)="presentActionSheet()">{{uiLabels.switchCompany}}</ion-button>
+
+            <!-- <ion-select *ngIf="isLogedIn" [(ngModel)]="selectedProfileItem" style="width: 200px;height: 30px;border: none;background-color: inherit;margin-left: 25px;" interface="popover" (ionChange)="profileItemClick()">
+                <ion-select-option *ngFor="let item of profileArray; index as i" [value]="item.title" id={{item.title}} style="background-color: white;height: 35px;">
+                    {{item.title}}
+                </ion-select-option>
+            </ion-select> -->
+
+            <ion-select [(ngModel)]="selectedLanguage" placeholder={{selectedLanguage}} interface="popover" (ionChange)="changeLanguage()">
+                <ion-select-option *ngFor="let item of languageArray; index as i" [value]="item" id={{item}}>
+                    {{item}}
+                </ion-select-option>
+
+            </ion-select>
+
+        </div>
+    </ion-header>
+    <ion-router-outlet></ion-router-outlet>
+    <ion-tabs>
+        <ion-tab-bar slot="bottom" class="row">
+            <span *ngFor="let item of menuList">
+                <ion-tab-button tab={{item.menuUrl}} (click)="setSelectedMenu(item)">
+                    <label style="font-size: 15px;" [ngStyle]="{'color': (selectedMenuId==item.menuId) ? 'blue' : ''}">{{item.menuTitle}}</label>
+                </ion-tab-button>
+            </span>
+        </ion-tab-bar>
+    </ion-tabs>
+
+    <link rel="manifest" href="manifest.webmanifest">
+
+</ion-app>

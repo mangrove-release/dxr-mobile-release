@@ -1,0 +1,231 @@
+<div>
+    <app-company-name-header></app-company-name-header>
+    <div>
+        <ion-card class="col p-2">
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.wasteItemTitle}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{selectedPickForPackageDef.disposalInfo.wasteItemName}}
+                    </div>
+                </div>
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.pickQuantity}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{selectedPickForPackageDef.quantity}}
+                    </div>
+                </div>
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.projectTitle}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        {{selectedPickForPackageDef.projectTitle}}
+                    </div>
+                </div>
+
+            </div>
+        </ion-card>
+
+        <ion-header class="row p-2">
+            <ion-title>{{uiLabels.pageHeader}}</ion-title>
+            <ion-button (click)="handOverButton()" style="margin-right: 25px;">{{uiLabels.handOverButton}}</ion-button>
+        </ion-header>
+
+        <ion-card style="margin-bottom: 25px;">
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-separator">
+
+                    </div>
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.packageSize}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        <ion-input [disabled]="quantityRadioGroupModel=='lumpsumQuantity'" [(ngModel)]="newPackage.size"></ion-input>
+                    </div>
+                </div>
+
+                <div class="list-value-section">
+                    <div class="list-section-separator">
+
+                    </div>
+                    <div class="list-section-label" style="width:150px;">
+                        {{uiLabels.NumOfPackage}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        <ion-input [disabled]="quantityRadioGroupModel=='lumpsumQuantity'" [(ngModel)]="newPackage.numberOfPackage"></ion-input>
+                    </div>
+                </div>
+
+            </div>
+
+            <ion-radio-group [(ngModel)]="quantityRadioGroupModel">
+
+                <div class=" three-section-list-row wrap">
+
+                    <div class="list-value-section ">
+                        <div class="list-section-separator" style="width:40px;">
+                            <ion-radio value="packageQuantity" class="col center">
+
+                            </ion-radio>
+                        </div>
+                        <div class="list-section-label" style="width:150px;">
+
+                            <span style="margin-left: 10px;">{{uiLabels.packageQuantity}}</span>
+                        </div>
+                        <div class="list-section-separator">
+                            :
+                        </div>
+
+                        <div class="list-section-value" style="width:100%">
+                            {{newPackage.size * newPackage.numberOfPackage}}
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="three-section-list-row wrap">
+
+                    <div class="list-value-section">
+                        <div class="list-section-separator" style="width:40px;">
+                            <ion-radio value="lumpsumQuantity" class="col center">
+
+                            </ion-radio>
+                        </div>
+                        <div class="list-section-label" style="width:150px;">
+                            <span style="margin-left: 10px;">{{uiLabels.lumpsumQunatity}}</span>
+
+                        </div>
+                        <div class="list-section-separator">
+                            :
+                        </div>
+
+                        <div class="list-section-value" style="width:100%">
+                            <ion-input [disabled]="quantityRadioGroupModel=='packageQuantity'" [(ngModel)]="newPackage.quantity"></ion-input>
+                        </div>
+                    </div>
+
+                </div>
+            </ion-radio-group>
+
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:150px;">
+
+                    </div>
+                    <div class="list-section-separator">
+
+                    </div>
+
+                    <div class="list-section-value" style="width:100%">
+                        <ion-button (click)="addPacakgeDef()">{{uiLabels.addPackage}}</ion-button>
+                    </div>
+                </div>
+
+            </div>
+        </ion-card>
+
+        <ion-header class="row p-2">
+            <ion-title>{{uiLabels.packageList}}</ion-title>
+        </ion-header>
+
+        <div *ngIf="allPackageDef && allPackageDef.length>0">
+            <div *ngFor="let package of allPackageDef">
+                <ion-card class="p-2" *ngIf="package.pickId==selectedPickForPackageDef.pickId">
+                    <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='0'">
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:150px;">
+                                {{uiLabels.packageSize}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="width:100%">
+                                {{package.size}}
+                            </div>
+                        </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:150px;">
+                                {{uiLabels.NumOfPackage}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="width:100%">
+                                {{package.numberOfPackage}}
+                            </div>
+                        </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:150px;">
+                                <span>{{uiLabels.packageQuantity}}</span>
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="width:100%">
+                                {{package.quantity}}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='1'">
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:150px;">
+                                <span>{{uiLabels.lumpsumQunatity}}</span>
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="width:100%">
+                                {{package.quantity}}
+                            </div>
+                        </div>
+
+                    </div>
+                </ion-card>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>

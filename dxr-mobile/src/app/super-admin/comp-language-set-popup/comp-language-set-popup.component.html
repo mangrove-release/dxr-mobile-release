@@ -1,0 +1,152 @@
+<div *ngIf="viewContent">
+    <div *ngFor="let item of componentList">
+        <ion-header class="header" *ngIf="item.componentCode==componentCode">
+            <ion-title>
+                {{item.componentName}}
+            </ion-title>
+        </ion-header>
+
+        <div *ngIf="item.componentCode==componentCode">
+
+            <div>
+                <ion-header class="header row">
+                    <ion-title>
+                        {{item.componentName}} Label
+                    </ion-title>
+                    <!-- <ion-button (click)="popupOpenForAddLabel(item.labels)" style="margin-right: 25px;">Add Label</ion-button> -->
+                </ion-header>
+
+                <div class="col" *ngFor="let label  of item.labels" style="margin-bottom: 10px;">
+
+                    <div class="three-section-list-row">
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:130px;">
+                                English
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                <ion-input [(ngModel)]="label.eng"></ion-input>
+                            </div>
+                        </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:130px;">
+                                Japanese
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                <ion-input [(ngModel)]="label.jpn"></ion-input>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div>
+                <ion-header class="header row">
+                    <ion-title>
+                        {{item.componentName}} Message
+                    </ion-title>
+                    <!-- <ion-button (click)="popupOpenForAddMessage(item.messages)" style="margin-right: 25px;">Add Message</ion-button> -->
+                </ion-header>
+
+
+
+                <div class="col" *ngFor="let label  of item.messages" style="margin-bottom: 10px;">
+
+                    <div class="three-section-list-row">
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:130px;">
+                                English
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                <ion-input [(ngModel)]="label.eng"></ion-input>
+                            </div>
+                        </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:130px;">
+                                Japanese
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                <ion-input [(ngModel)]="label.jpn"></ion-input>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div>
+                <ion-header class="header row">
+                    <ion-title>
+                        {{item.componentName}} Notification
+                    </ion-title>
+                    <!-- <ion-button (click)="popupOpenForAddNotification(item.notifications)" style="margin-right: 25px;">Add Notification</ion-button> -->
+                </ion-header>
+
+                <div class="col" *ngFor="let label  of item.notifications" style="margin-bottom: 10px;">
+
+                    <div class="three-section-list-row">
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:130px;">
+                                English
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                <ion-input [(ngModel)]="label.eng"></ion-input>
+                            </div>
+                        </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:130px;">
+                                Japanese
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                <ion-input [(ngModel)]="label.jpn"></ion-input>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+<div>
+    <div class="row right p-2">
+        <ion-button color="danger" (click)="closeModal()" style="margin-right: 10px;">Close</ion-button>
+        <ion-button color="primary" (click)="saveIntoDatabase()" style="margin-right: 10px;">Save</ion-button>
+    </div>
+</div>
