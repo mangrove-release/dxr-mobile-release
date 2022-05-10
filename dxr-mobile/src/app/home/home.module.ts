@@ -8,6 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+import { AppleInstallPopupComponent } from './apple-install-popup/apple-install-popup.component';
 
 @NgModule({
     imports: [
@@ -17,8 +18,14 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
         HomePageRoutingModule,
         ExploreContainerComponentModule
     ],
-    declarations: [HomePage],
-    exports: [HomePage],
+    declarations: [
+        HomePage,
+        AppleInstallPopupComponent
+    ],
+    exports: [
+        HomePage,
+        AppleInstallPopupComponent
+    ],
     entryComponents: [HomePage]
 })
 export class HomePageModule { }
