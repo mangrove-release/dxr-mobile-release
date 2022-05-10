@@ -1,5 +1,7 @@
 export class AppConstant {
 
+    public static APP_VERSION = '1.4.2022.05.10';
+
     public static PICK_LOAD_STATUS = "1";
     public static PICK_UNLOAD_STATUS = "2";
 

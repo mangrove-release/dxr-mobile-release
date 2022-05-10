@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { AppConstant } from '../config/app-constant';
 import { LanguageService } from '../services/visitor-services/language.service';
 import { UtilService } from '../services/visitor-services/util.service';
 import { AppleInstallPopupComponent } from './apple-install-popup/apple-install-popup.component';
@@ -13,13 +14,15 @@ export class HomePage implements OnInit {
 
     constructor(private utilService: UtilService, public modalController: ModalController, private languageService: LanguageService) { }
 
+    appVersion = AppConstant.APP_VERSION;
+
     ngOnInit() {
         debugger
         const isIos = this.utilService.isIos();
         const isInStandaloneMode = this.utilService.isInStandaloneMode();
-        // if (isIos && !isInStandaloneMode) {
-        this.showInstallPopup();
-        // }
+        if (isIos && !isInStandaloneMode) {
+            this.showInstallPopup();
+        }
     }
 
     async showInstallPopup() {
