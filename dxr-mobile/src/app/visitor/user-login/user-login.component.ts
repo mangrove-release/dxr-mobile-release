@@ -17,7 +17,7 @@ import { ChangePasswordComponent } from '../change-password/change-password.comp
 })
 export class UserLoginComponent implements OnInit {
 
-    constructor(public modalController: ModalController, private userLoginService: UserLoginService, private appComponent: AppComponent, private router: Router, private utilService: UtilService) { }
+    constructor(public modalController: ModalController, private userLoginService: UserLoginService, private appComponent: AppComponent, private router: Router, private utilService: UtilService, private languageService: LanguageService) { }
 
     uiLabels: any = {
         headerLabel: "Login",
@@ -34,7 +34,17 @@ export class UserLoginComponent implements OnInit {
     }
     userIdOrPasswordMatchFlag: string = '';
 
-    ngOnInit() { }
+    componentCode: string = AppConstant.COMP.USER_LOGIN;
+    isSystemAdmin: boolean = this.utilService.languageEditMode();
+
+    ngOnInit() {
+        debugger
+
+        // this.utilService.printLangDef(this.uiLabels, this.componentCode);
+
+        this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
+
+    }
 
 
 
@@ -48,7 +58,7 @@ export class UserLoginComponent implements OnInit {
                 userIdentification.userAuth = encryptedPass;
 
                 this.userLoginService.login(userIdentification).subscribe(data => {
-
+                    debugger
                     if (data) {
                         if (data == AppConstant.ONE_TIME_ACCESS_FLAG_TRUE) {
                             this.redirectToFirstLogin();

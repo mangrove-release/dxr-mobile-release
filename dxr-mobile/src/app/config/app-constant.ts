@@ -1,6 +1,6 @@
 export class AppConstant {
 
-    public static APP_VERSION = '1.4.2022.05.10';
+    public static APP_VERSION = '1.6.2022.05.12';
 
     public static PICK_LOAD_STATUS = "1";
     public static PICK_UNLOAD_STATUS = "2";
@@ -373,7 +373,7 @@ export class AppConstant {
         UNLOAD_VERIFICATION: "unload_verification",
         UNLOAD_WEIGHT_DECLARE: "UNLOAD_WEIGHT_DECLARE",
 
-        COMPANY_NAME_HEADER_COMP: "company_name_header_comp"
+        COMPANY_NAME_HEADER_COMP: "company_name_header_comp",
 
     };
     public static Tabs = [

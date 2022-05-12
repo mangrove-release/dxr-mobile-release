@@ -62,7 +62,7 @@ export class WasteListComponent implements OnInit {
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
     ngOnInit() {
-
+        debugger
         this.utilService.printLangDef(this.uiLabels, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
@@ -74,6 +74,11 @@ export class WasteListComponent implements OnInit {
 
         if (this.selectedTrip && this.selectedTrip.pickList) {
             this.pickGroup = this.driverDashboardService.groupBy(this.selectedTrip.pickList, 'pickLocation');
+
+            if (this.pickGroup && Object.keys(this.pickGroup) && Object.keys(this.pickGroup).length > 0) {
+                this.selectedPick = this.pickGroup[Object.keys(this.pickGroup)[0]][0];
+                this.driverTabsDataService.setSelectedPickForPackageDef(this.selectedPick);
+            }
         }
 
         this.viewContent = true;

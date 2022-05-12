@@ -157,61 +157,6 @@ export class PackageScanComponent implements OnInit {
 
     }
 
-    // preparePackageInfo(handoverWastePickAndPackage?: HandoverWastePickAndPackage) {
-
-    //     this.handoverConfirmed = true;
-    //     var loadPackage: LoadPackageView = {
-    //         dumperInfo: this.dumperCompanyInfo,
-    //         transporterInfo: this.transporterCompanyInfo,
-    //         wasteWisePickPackageList: []
-    //     };
-
-    //     this.selectedTrip.pickList.forEach(eachPick => {
-    //         var pickWisePackage: PickWisePackage = {
-    //             packageList: [],
-    //             pick: eachPick,
-    //             calculatedQunatity: eachPick.quantity
-    //         };
-    //         var wasteWisePickPackageInfo: WasteWisePickPackageInfo = {
-    //             wasteId: eachPick.disposalInfo.wasteItemId,
-    //             wasteTitle: eachPick.disposalInfo.wasteItemName,
-    //             pickList: [],
-    //             totalQunatity: 0
-    //         }
-    //         this.scannedPackgeInfo.forEach(eachPackage => {
-
-    //             if (eachPackage.pickId == eachPick.pickId) {
-    //                 pickWisePackage.packageList.push(eachPackage);
-
-    //             }
-
-    //         });
-
-    //         if (pickWisePackage.packageList.length > 0) {
-    //             var index = loadPackage.wasteWisePickPackageList.findIndex(item => item.wasteId == eachPick.disposalInfo.wasteItemId);
-
-    //             if (index >= 0) {
-
-    //                 loadPackage.wasteWisePickPackageList[index].pickList.push(pickWisePackage);
-
-    //             } else {
-
-    //                 wasteWisePickPackageInfo.pickList.push(pickWisePackage);
-
-    //                 loadPackage.wasteWisePickPackageList.push(wasteWisePickPackageInfo);
-    //             }
-
-    //             if (eachPick.loadStatus != AppConstant.TRUE_STATEMENT) {
-    //                 this.handoverConfirmed = false;
-    //             }
-    //         }
-
-    //     })
-
-    //     return loadPackage;
-    // }
-
-
     confirmReceive() {
         var handoverPickIds: string[] = [];
         this.loadPackageView.wasteWisePickPackageList.forEach(element => {
@@ -235,4 +180,14 @@ export class PackageScanComponent implements OnInit {
 
     }
 
+    // generateMenifesto() {
+    //     this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
+
+    //         this.driverDashboardService.groupByProjectId(eachWaste.pickList[0]);
+    //     })
+    // }
+
+    // getPickListFromWastewisePick(wastewisePickPackage: WasteWisePickPackageInfo[]) {
+
+    // }
 }

@@ -1,4 +1,4 @@
-<div *ngIf="viewContent">
+<ion-content *ngIf="viewContent">
     <app-company-name-header></app-company-name-header>
     <ion-header class="header">
         <ion-title><span style="margin-right:10px;">
@@ -31,27 +31,29 @@
     <ion-header class="header">
         <ion-title>{{uiLabels.tripList}}</ion-title>
     </ion-header>
-    <ion-card class="column" *ngFor="let item of driverTripPlan">
-        <ion-card-header class="three-section-list-row" style="color: black;">
+    <div style="margin-bottom: 65px;">
+        <ion-card class="column" *ngFor="let item of driverTripPlan">
+            <ion-card-header class="three-section-list-row" style="color: black;">
 
-            <div class="list-value-section">
-                <div class="list-section-label flex-15">
-                    {{uiLabels.tripTime}}
+                <div class="list-value-section">
+                    <div class="list-section-label flex-15">
+                        {{uiLabels.tripTime}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value">
+                        {{item.startTime.substring(0,2)}}:{{item.startTime.substring(2)}} - {{item.endTime.substring(0,2)}}:{{item.endTime.substring(2)}}
+                    </div>
+
+                    <div class="list-section-value">
+                        <ion-button (click)="selectedTrip(item)" [routerLink]="['/unload',{outlets: { unloadOutlet: ['driver-handover']}}]">{{uiLabels.pickListButton}}</ion-button>
+                    </div>
                 </div>
-                <div class="list-section-separator">
-                    :
-                </div>
-
-                <div class="list-section-value">
-                    {{item.startTime.substring(0,2)}}:{{item.startTime.substring(2)}} - {{item.endTime.substring(0,2)}}:{{item.endTime.substring(2)}}
-                </div>
-
-                <div class="list-section-value">
-                    <ion-button (click)="selectedTrip(item)" [routerLink]="['/unload',{outlets: { unloadOutlet: ['driver-handover']}}]">{{uiLabels.pickListButton}}</ion-button>
-                </div>
-            </div>
 
 
-        </ion-card-header>
-    </ion-card>
-</div>
+            </ion-card-header>
+        </ion-card>
+    </div>
+</ion-content>

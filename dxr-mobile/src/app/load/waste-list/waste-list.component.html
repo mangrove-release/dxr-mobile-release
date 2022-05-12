@@ -1,4 +1,4 @@
-<div *ngIf="selectedTrip && selectedTrip.tripInfoId">
+<ion-content *ngIf="selectedTrip && selectedTrip.tripInfoId">
     <app-company-name-header></app-company-name-header>
     <ion-header class="header">
         <ion-title><span style="margin-right:10px;">
@@ -7,7 +7,7 @@
             </span></ion-title>
     </ion-header>
 
-    <div class="col" *ngIf="selectedTrip && selectedTrip.tripInfoId">
+    <!-- <div class="col" *ngIf="selectedTrip && selectedTrip.tripInfoId">
 
         <div class="three-section-list-row wrap">
 
@@ -153,74 +153,80 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
-    <div *ngFor="let item of pickGroup | keyvalue">
+    <div style="margin-bottom: 65px;">
+        <div *ngFor="let item of pickGroup | keyvalue">
 
-        <div *ngFor="let pick of item.value">
-            <ion-card style="color: black;" *ngIf="pick.disposalInfo.pickLocation==scannedTripInfo.pickLocation">
+            <div *ngFor="let pick of item.value">
+                <ion-card style="color: black;" *ngIf="pick.disposalInfo.pickLocation==scannedTripInfo.pickLocation">
 
-                <div class="three-section-list-row">
-                    <div class="list-value-section">
-                        <div class="list-section-label" style="width:120px;">
-                            {{uiLabels.wasteItemTitle}}
+                    <div class="three-section-list-row">
+
+                        <div class="list-value-section fx-1 right">
+                            <div class="list-section-label" style="width:120px;">
+                                <ion-button (click)="packageDef(pick)">{{uiLabels.packageDefButton}}</ion-button>
+                            </div>
                         </div>
-                        <div class="list-section-separator">
-                            :
-                        </div>
 
-                        <div class="list-section-value">
-                            {{pick.disposalInfo.wasteItemName}}
+                    </div>
+
+                    <div class="three-section-list-row">
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:120px;">
+                                {{uiLabels.wasteItemTitle}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value">
+                                {{pick.disposalInfo.wasteItemName}}
+                            </div>
                         </div>
                     </div>
 
-                    <div class="list-value-section">
-                        <div class="list-section-label" style="width:120px;">
-                            <ion-button (click)="packageDef(pick)">{{uiLabels.packageDefButton}}</ion-button>
+                    <div class="three-section-list-row">
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:120px;">
+                                {{uiLabels.projectTitle}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value">
+                                {{pick.projectTitle}}
+                            </div>
                         </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:120px;">
+                                {{uiLabels.quantity}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value">
+                                {{pick.quantity}} {{pick.disposalInfo.unit}}
+                            </div>
+                        </div>
+
                     </div>
 
-                </div>
+                    <div class="three-section-list-row">
 
-                <div class="three-section-list-row">
-
-                    <div class="list-value-section">
-                        <div class="list-section-label" style="width:120px;">
-                            {{uiLabels.projectTitle}}
-                        </div>
-                        <div class="list-section-separator">
-                            :
-                        </div>
-
-                        <div class="list-section-value">
-                            {{pick.projectTitle}}
-                        </div>
                     </div>
 
-                    <div class="list-value-section">
-                        <div class="list-section-label" style="width:120px;">
-                            {{uiLabels.quantity}}
-                        </div>
-                        <div class="list-section-separator">
-                            :
-                        </div>
-
-                        <div class="list-section-value">
-                            {{pick.quantity}} {{pick.disposalInfo.unit}}
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="three-section-list-row">
-
-                </div>
-
-            </ion-card>
+                </ion-card>
+            </div>
         </div>
     </div>
 
-</div>
+
+</ion-content>
 <div *ngIf="!selectedTrip || !selectedTrip.tripInfoId">
     No Trip Found
 </div>

@@ -174,6 +174,14 @@ export class DriverDashboardService {
         }, {});
     }
 
+    groupByProjectId(xs: PickInfo[]): any {
+
+        return xs.reduce(function (rv, x) {
+            (rv[x.projetId] = rv[x.projetId] || []).push(x);
+            return rv;
+        }, {});
+    }
+
     getTripInfo(tripInfoId: string): Observable<DriverTripPlan> {
         console.log(JSON.stringify(tripInfoId));
         var url = '/mob/load/scanned-trip-plan';

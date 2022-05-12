@@ -1,9 +1,13 @@
-<ion-header class="menu-header">
-    <div class="col center">
-        <ion-title class="row center p-3">{{uiLabels.headerLabel}}</ion-title>
-    </div>
-</ion-header>
 <ion-content>
+    <ion-header class="header">
+        <ion-title>
+            <span style="margin-right:10px;">
+                <app-lang-def-button [componentCode]="componentCode">
+                </app-lang-def-button>
+                {{uiLabels.pageHeader}}
+            </span>
+        </ion-title>
+    </ion-header>
     <div class="col form">
         <div class="three-section-list-row">
 
@@ -37,16 +41,32 @@
             </div>
         </div>
 
+        <div class="three-section-list-row" *ngIf="userIdOrPasswordMatchFlag=='0'">
+
+            <div class="list-value-section">
+                <div class="list-section-label flex-22">
+
+                </div>
+                <div class="list-section-separator">
+
+                </div>
+
+                <div class="list-section-value">
+                    <ion-label style="color: red;">* User Id and/or Password Incorrect</ion-label>
+                </div>
+            </div>
+        </div>
+
         <div class="three-section-list-row">
 
             <div class="list-value-section">
                 <div class="right" style="flex:2">
-                    <a (click)="forgetPassOp()">{{uiLabels.forgetPassButton}}</a>
+                    <a (click)="forgetPassOp()">{{uiLabels.forgetPassBtn}}</a>
                 </div>
 
 
                 <div class="right" style="flex:1">
-                    <ion-button (click)="login()">{{uiLabels.loginButton}}</ion-button>
+                    <ion-button (click)="login()">{{uiLabels.loginBtn}}</ion-button>
                 </div>
             </div>
         </div>

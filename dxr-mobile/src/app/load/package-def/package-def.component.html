@@ -1,6 +1,7 @@
-<div>
+<ion-content>
     <app-company-name-header></app-company-name-header>
     <div>
+        <app-lang-def-button class="p-2" [componentCode]="componentCode"></app-lang-def-button>
         <ion-card class="col p-2">
             <div class="three-section-list-row wrap">
 
@@ -160,7 +161,7 @@
             <ion-title>{{uiLabels.packageList}}</ion-title>
         </ion-header>
 
-        <div *ngIf="allPackageDef && allPackageDef.length>0">
+        <div *ngIf="allPackageDef && allPackageDef.length>0" style="margin-bottom: 65px;">
             <div *ngFor="let package of allPackageDef">
                 <ion-card class="p-2" *ngIf="package.pickId==selectedPickForPackageDef.pickId">
                     <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='0'">
@@ -228,4 +229,4 @@
     </div>
 
 
-</div>
+</ion-content>
