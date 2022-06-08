@@ -1,0 +1,147 @@
+<ion-content *ngIf="viewContent">
+    <app-company-name-header></app-company-name-header>
+
+    <ion-header class="header">
+        <ion-title><span style="margin-right:10px;">
+                <app-lang-def-button [componentCode]="componentCode">
+                </app-lang-def-button>
+                {{uiLabels.pageHeader}}
+            </span></ion-title>
+    </ion-header>
+    <div class="col form">
+        <div class="three-section-list-row">
+            <div class="list-value-section">
+                <div class="list-section-label flex-15">
+                    {{uiLabels.dateLabel}}
+                </div>
+                <div class="list-section-separator">
+                    :
+                </div>
+
+                <div class="list-section-value">
+                    <app-date-time-input [modelObject]="tripDate" [modelDateAttributeName]="'date'"></app-date-time-input>
+                </div>
+
+                <div class="list-section-value">
+                    <ion-button style="margin-left: 10px;" (click)="getDriverTripPlan(driverUserId,tripDate.date)">{{uiLabels.loadTripList}}</ion-button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <ion-header class="header">
+        <ion-title>{{uiLabels.tripList}}</ion-title>
+    </ion-header>
+    <div style="margin-bottom: 65px;">
+        <mat-accordion multi>
+            <mat-expansion-panel *ngFor="let item of driverTripPlan" [expanded]="true" style="color: black;">
+                <mat-expansion-panel-header style="height: 100%;">
+                    <div class="column fx-1">
+                        <div class="three-section-list-row">
+
+                            <div class="list-value-section">
+                                <div class="list-section-label">
+                                    {{uiLabels.driverName}}
+                                </div>
+                                <div class="list-section-separator">
+                                    :
+                                </div>
+
+                                <div class="list-section-value">
+                                    {{item.driverName}}
+                                </div>
+                            </div>
+                            <div class="list-value-section">
+
+                                <div class="list-section-value">
+                                    <ion-button>{{uiLabels.pickListButton}}</ion-button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="three-section-list-row">
+
+                            <div class="list-value-section">
+                                <div class="list-section-label">
+                                    {{uiLabels.tripTime}}
+                                </div>
+                                <div class="list-section-separator">
+                                    :
+                                </div>
+
+                                <div class="list-section-value">
+                                    {{item.startTime.substring(0,2)}}:{{item.startTime.substring(2)}} - {{item.endTime.substring(0,2)}}:{{item.endTime.substring(2)}}
+                                </div>
+                            </div>
+                            <div class="list-value-section">
+
+
+                                <div class="list-section-value">
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </mat-expansion-panel-header>
+
+                <div *ngFor="let pick of item.pickList, index as i" class="column fx-1">
+                    <div class="three-section-list-row" style="border-bottom: 1px solid gainsboro;padding: 10px 0px 10px 0px;">
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:90px;">
+                                {{uiLabels.pick}}
+                            </div>
+                            <div class="list-section-separator">
+                                -
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                {{i+1}}
+                            </div>
+                        </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:90px;">
+                                {{uiLabels.projectTitle}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                {{pick.projectTitle}}
+                            </div>
+                        </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:90px;">
+                                {{uiLabels.pickQuantity}}
+                            </div>
+                            <div class="list-section-separator">
+                                :
+                            </div>
+
+                            <div class="list-section-value" style="flex:100%">
+                                {{pick.quantity}} {{pick.disposalInfo.unit}}
+                            </div>
+                        </div>
+
+                        <div class="list-value-section">
+                            <div class="list-section-label" style="width:90px;" *ngIf="pick.loadStatus=='1'">
+                                <ion-chip>{{uiLabels.pickStatusLoaded}}</ion-chip>
+                            </div>
+                            <div class="list-section-label" style="width:90px;" *ngIf="pick.loadStatus!='1'">
+                                <ion-button (click)="loadPick(item,i)">{{uiLabels.loadButton}}</ion-button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+
+    </div>
+</ion-content>

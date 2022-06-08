@@ -1,8 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { AppConstant } from 'src/app/config/app-constant';
-import { CompanyInfo, DriverTripFetch, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, TripQrData, WasteWisePickPackageInfo } from 'src/app/models/backend-fetch/driver-op';
+import { AgreementInfo } from 'src/app/models/backend-fetch/business-agreement';
+import { CompanyInfo, CompanyTripFetch, DriverTripFetch, DriverTripPlan, DumpingEmissionInfo, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, ProcessorEmissionInfo, TripQrData, WasteWisePickPackageInfo } from 'src/app/models/backend-fetch/driver-op';
 import { UriService } from '../visitor-services/uri.service';
 
 @Injectable({
@@ -11,7 +13,7 @@ import { UriService } from '../visitor-services/uri.service';
 export class DriverDashboardService {
 
 
-    constructor(private uriService: UriService, public toastController: ToastController) { }
+    constructor(private uriService: UriService, public toastController: ToastController, private http: HttpClient) { }
 
     driverTripPlan: DriverTripPlan[] = [
         {
@@ -160,6 +162,12 @@ export class DriverDashboardService {
         }
     ]
 
+    getCompanyTrip(driverTripFetch: CompanyTripFetch): Observable<DriverTripPlan[]> {
+        console.log(JSON.stringify(driverTripFetch));
+        var url = '/mob/load/company-trip-plan';
+        return this.uriService.callBackend(url, AppConstant.HTTP_POST, driverTripFetch);
+    }
+
     getDriverTrip(driverTripFetch: DriverTripFetch): Observable<DriverTripPlan[]> {
         console.log(JSON.stringify(driverTripFetch));
         var url = '/mob/load/trip-plan';
@@ -174,13 +182,27 @@ export class DriverDashboardService {
         }, {});
     }
 
+    getPickListFromWastewisePick(wastewisePickPackage: PickWisePackage[]) {
+        var pickList: PickInfo[] = [];
+
+
+        wastewisePickPackage.forEach(eachPick => {
+            pickList.push(eachPick.pick);
+        });
+
+
+        return pickList;
+    }
+
     groupByProjectId(xs: PickInfo[]): any {
 
         return xs.reduce(function (rv, x) {
-            (rv[x.projetId] = rv[x.projetId] || []).push(x);
+            (rv[x.projetId + '|' + x.projectTitle] = rv[x.projetId] || []).push(x);
             return rv;
         }, {});
     }
+
+
 
     getTripInfo(tripInfoId: string): Observable<DriverTripPlan> {
         console.log(JSON.stringify(tripInfoId));
@@ -239,6 +261,27 @@ export class DriverDashboardService {
     confirmUnload(handoverPickIds: string[]): Observable<PickInfo[]> {
         console.log(JSON.stringify(handoverPickIds));
         var url = '/mob/load/confirm-unload-picks';
+        return this.uriService.callBackend(url, AppConstant.HTTP_POST, handoverPickIds);
+    }
+
+    saveDumpingEmissionInfo(dumpingEmissionInfo: DumpingEmissionInfo[]): Observable<any> {
+        var url = '/carbon/load-items';
+        // var options: any = this.uriService.getHttpOptions();
+        // return this.http.post<string>(url, dumpingEmissionInfo, options);
+        return this.uriService.callBackend(url, AppConstant.HTTP_POST, dumpingEmissionInfo);
+    }
+
+    saveProcessorEmissionInfo(processorEmissionInfo: ProcessorEmissionInfo[]): Observable<any> {
+        var url = '/carbon/unload-items';
+        // var options: any = this.uriService.getHttpOptions();
+        // return this.http.post<string>(url, processorEmissionInfo, options);
+        return this.uriService.callBackend(url, AppConstant.HTTP_POST, processorEmissionInfo);
+    }
+
+    saveMenifestoUnloadStatus(handoverPickIds: string[]): Observable<any> {
+        var url = '/mob/menifesto/menifesto-unload';
+        // var options: any = this.uriService.getHttpOptions();
+        // return this.http.post<string>(url, handoverPickIds, options);
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, handoverPickIds);
     }
 

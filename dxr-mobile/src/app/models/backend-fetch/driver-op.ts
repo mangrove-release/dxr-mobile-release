@@ -93,3 +93,30 @@ export interface DriverTripFetch {
     date: string;
     driverId: string;
 }
+
+export interface DumpingEmissionInfo {
+    dumpingEmissionId: string;
+    companyId: string;
+    quantity: number;
+    dateTime: string;
+    wasteItemId: string;
+    wasteTitle: string;
+    unit: string;
+    pickId: string[];
+}
+
+export interface ProcessorEmissionInfo {
+    processingEmissionId: string;
+    companyId: string;
+    quantity: number;
+    dateTime: string;
+    wasteItemId: string;
+    wasteTitle: string;
+    unit: string;
+    pickId: string[];
+}
+
+export interface CompanyTripFetch {
+    date: string;
+    companyId: string;
+}

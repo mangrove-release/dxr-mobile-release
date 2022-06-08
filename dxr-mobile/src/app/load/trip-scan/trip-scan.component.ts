@@ -8,6 +8,7 @@ import { DriverDashboardService } from 'src/app/services/operation-services/driv
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
 import { UtilService } from 'src/app/services/visitor-services/util.service';
+import { CompanyTripDashboardComponent } from '../company-trip-dashboard/company-trip-dashboard.component';
 
 @Component({
     selector: 'app-trip-scan',
@@ -38,7 +39,8 @@ export class TripScanComponent implements OnInit {
         pick: "Pick",
         projectTitle: "Project",
         pickQuantity: "Quantity",
-        wasteList: "Waste List"
+        wasteList: "Waste List",
+        tripListButton: "Trip List"
     }
 
     driverTripPlan: DriverTripPlan;
@@ -56,6 +58,27 @@ export class TripScanComponent implements OnInit {
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
 
+    }
+
+    async showCompanyTripList() {
+        const modal = await this.modalController.create({
+            component: CompanyTripDashboardComponent,
+            componentProps: {
+
+            },
+            swipeToClose: true,
+            animated: true,
+            presentingElement: this.routerOutlet.nativeEl
+        });
+
+        await modal.present();
+
+        modal.onDidDismiss().then((data: any) => {
+            if (data.data) {
+
+                this.prepareScannedTripInfo(data.data);
+            }
+        });
     }
 
     async openScanner() {
@@ -77,7 +100,7 @@ export class TripScanComponent implements OnInit {
 
                 this.prepareScannedTripInfo(data.data);
             }
-        })
+        });
     }
 
 

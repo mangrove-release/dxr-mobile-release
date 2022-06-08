@@ -20,6 +20,7 @@ import { WasteListComponent } from './waste-list/waste-list.component';
 import { HandoverCodeComponent } from './handover-code/handover-code.component';
 import { LoadPage } from './load.page';
 import { LoadPageRoutingModule } from './load-routing.module';
+import { CompanyTripDashboardComponent } from './company-trip-dashboard/company-trip-dashboard.component';
 
 @NgModule({
     imports: [
@@ -43,7 +44,8 @@ import { LoadPageRoutingModule } from './load-routing.module';
         HandoverComponent,
         WasteListComponent,
         HandoverCodeComponent,
-        LoadPage
+        LoadPage,
+        CompanyTripDashboardComponent
     ],
     exports: [
         DriverDashboradComponent,
@@ -56,7 +58,8 @@ import { LoadPageRoutingModule } from './load-routing.module';
         HandoverComponent,
         WasteListComponent,
         HandoverCodeComponent,
-        LoadPage
+        LoadPage,
+        CompanyTripDashboardComponent
     ],
     entryComponents: [DriverLoadOpTabsComponent]
 })

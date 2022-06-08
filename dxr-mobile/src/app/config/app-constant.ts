@@ -1,6 +1,7 @@
 export class AppConstant {
 
-    public static APP_VERSION = '1.6.2022.05.12';
+    public static MENIFESTO_STATUS_LOADED = "1";
+    public static APP_VERSION = '1.7.22.06.08';
 
     public static PICK_LOAD_STATUS = "1";
     public static PICK_UNLOAD_STATUS = "2";
@@ -374,6 +375,7 @@ export class AppConstant {
         UNLOAD_WEIGHT_DECLARE: "UNLOAD_WEIGHT_DECLARE",
 
         COMPANY_NAME_HEADER_COMP: "company_name_header_comp",
+        COMPANY_TRIP_LIST_DASHBOARD: 'company_trip_list_dashboard',
 
     };
     public static Tabs = [

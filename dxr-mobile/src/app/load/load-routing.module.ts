@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { CompanyTripDashboardComponent } from './company-trip-dashboard/company-trip-dashboard.component';
 import { DriverDashboradComponent } from './driver-dashborad/driver-dashborad.component';
 import { DriverLoadOpTabsComponent } from './driver-load-op-tabs/driver-load-op-tabs.component';
 
@@ -49,7 +50,12 @@ const routes: Routes = [
                 path: 'dumper-handover',
                 component: HandoverComponent,
                 outlet: 'driverOutlet'
-            }
+            },
+            {
+                path: 'company-trip-dashboard',
+                component: CompanyTripDashboardComponent,
+                outlet: 'driverOutlet'
+            },
         ]
     },
 

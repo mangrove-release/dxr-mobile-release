@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { QrScannerComponent } from 'src/app/common-directives/qr-scanner/qr-scanner.component';
 import { AppConstant } from 'src/app/config/app-constant';
-import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, TripCompletionData, TripQrData } from 'src/app/models/backend-fetch/driver-op';
+import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, ProcessorEmissionInfo, TripCompletionData, TripQrData } from 'src/app/models/backend-fetch/driver-op';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
@@ -151,7 +151,43 @@ export class TripCompletionComponent implements OnInit {
             if (response) {
                 this.driverDashboardService.presentToast(this.uiLabels.pickUnloadConfirmToast, 3000);
                 this.preparePickList(response);
+
+                this.saveProcessorEmissionInfo(this.handoverWastePickAndPackage.pickIdList);
+
+                this.updateMenifestoStatus(this.handoverWastePickAndPackage.pickIdList);
             }
+
+        });
+    }
+
+    updateMenifestoStatus(handoverPickIds: string[]) {
+        debugger
+        this.driverDashboardService.saveMenifestoUnloadStatus(handoverPickIds).subscribe(response => {
+
+        });
+    }
+
+    saveProcessorEmissionInfo(handoverPickIds: string[]) {
+        var processingEmissionInfoList: ProcessorEmissionInfo[] = [];
+        this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
+            var id: string = this.utilService.generateUniqueId();
+
+            var processingEmissionInfo: ProcessorEmissionInfo = {
+                processingEmissionId: id,
+                companyId: this.processorCompanyInfo.companyId,
+                quantity: eachWaste.totalQunatity,
+                dateTime: this.driverTripPlan.pickUpDate,
+                wasteItemId: eachWaste.wasteId,
+                wasteTitle: eachWaste.wasteTitle,
+                unit: eachWaste.pickList[0].pick.disposalInfo.unit,
+                pickId: handoverPickIds
+            }
+
+            processingEmissionInfoList.push(processingEmissionInfo);
+        });
+
+        this.driverDashboardService.saveProcessorEmissionInfo(processingEmissionInfoList).subscribe(response => {
+
         })
     }
 

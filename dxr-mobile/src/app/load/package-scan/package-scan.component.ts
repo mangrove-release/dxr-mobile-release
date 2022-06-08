@@ -3,9 +3,13 @@ import { ModalController } from '@ionic/angular';
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { QrScannerComponent } from 'src/app/common-directives/qr-scanner/qr-scanner.component';
 import { AppConstant } from 'src/app/config/app-constant';
-import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, WasteWisePickPackageInfo } from 'src/app/models/backend-fetch/driver-op';
+import { AgreementInfo } from 'src/app/models/backend-fetch/business-agreement';
+import { WasteItemDef } from 'src/app/models/backend-fetch/company-settings-fetch';
+import { CompanyInfo, DriverTripPlan, DumpingEmissionInfo, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, WasteWisePickPackageInfo } from 'src/app/models/backend-fetch/driver-op';
+import { MenifestoInfo, MenifestoProjectWasteDef, MenifestoTripDef } from 'src/app/models/backend-fetch/menifest';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
+import { MenifestoService } from 'src/app/services/operation-services/menifesto.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
 import { UtilService } from 'src/app/services/visitor-services/util.service';
 
@@ -16,7 +20,7 @@ import { UtilService } from 'src/app/services/visitor-services/util.service';
 })
 export class PackageScanComponent implements OnInit {
 
-    constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, public modalController: ModalController, private languageService: LanguageService) { }
+    constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, public modalController: ModalController, private languageService: LanguageService, private menifestoService: MenifestoService) { }
 
     uiLabels: any = {
         pageHeader: "Package Scan",
@@ -175,19 +179,111 @@ export class PackageScanComponent implements OnInit {
                 this.handoverConfirmed = true;
 
                 this.driverDashboardService.presentToast(this.uiLabels.confirmLoadToast, 3000);
+
+                this.generateMenifesto();
+
+                this.saveDumpingEmissionInfo(handoverPickIds);
             }
         })
 
     }
 
-    // generateMenifesto() {
-    //     this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
+    saveDumpingEmissionInfo(handoverPickIds: string[]) {
+        var dumpingEmissionInfoList: DumpingEmissionInfo[] = [];
+        this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
+            var id: string = this.utilService.generateUniqueId();
 
-    //         this.driverDashboardService.groupByProjectId(eachWaste.pickList[0]);
-    //     })
-    // }
+            var dumpingEmissionInfo: DumpingEmissionInfo = {
+                dumpingEmissionId: id,
+                companyId: this.dumperCompanyInfo.companyId,
+                quantity: eachWaste.totalQunatity,
+                dateTime: this.selectedTrip.pickUpDate,
+                wasteItemId: eachWaste.wasteId,
+                wasteTitle: eachWaste.wasteTitle,
+                unit: eachWaste.pickList[0].pick.disposalInfo.unit,
+                pickId: handoverPickIds
+            }
 
-    // getPickListFromWastewisePick(wastewisePickPackage: WasteWisePickPackageInfo[]) {
+            dumpingEmissionInfoList.push(dumpingEmissionInfo);
+        });
 
-    // }
+        this.driverDashboardService.saveDumpingEmissionInfo(dumpingEmissionInfoList).subscribe(response => {
+
+        })
+    }
+
+
+
+    generateMenifesto() {
+        debugger
+        this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
+            var pickList: PickInfo[] = this.driverDashboardService.getPickListFromWastewisePick(eachWaste.pickList);
+            var projectWisePick: any = this.driverDashboardService.groupByProjectId(pickList);
+
+            var projects: string[] = Object.keys(projectWisePick);
+            projects.forEach(eachProject => {
+                var projectAndProjectId: string[] = eachProject.split('|');
+                var projectId: string = projectAndProjectId[0];
+                var projectTitle: string = projectAndProjectId[1];
+                var agreementInfo: AgreementInfo = {} as AgreementInfo;
+
+                this.menifestoService.getAgreement(projectId).subscribe(response => {
+                    if (response) {
+                        agreementInfo = response;
+                        var projectPickList: PickInfo[] = projectWisePick[eachProject];
+                        var id = this.utilService.generateUniqueId();
+                        var menifestoUniqueId: string = this.utilService.generateUniqueId() + this.utilService.generateUniqueId();
+
+                        var menifesto: MenifestoInfo = {
+                            menifestoInfoId: id,
+                            menifestoUniqueId: menifestoUniqueId,
+                            date: this.selectedTrip.pickUpDate,
+                            projectId: projectAndProjectId[0],
+                            tripIds: [this.selectedTrip.tripInfoId],
+                            tripIdDef: [],
+                            pickIdDef: projectPickList,
+                            wasteId: eachWaste.wasteId,
+                            projectName: projectAndProjectId[1],
+                            creator: agreementInfo.dumperPartnerInfo.companyId + '|' + agreementInfo.dumperPartnerInfo.assignedRoles,
+                            firstParty: agreementInfo.transporterPartnerInfo.companyId + '|' + agreementInfo.transporterPartnerInfo.assignedRoles,
+                            secondparty: agreementInfo.processorPartnerInfo.companyId + '|' + agreementInfo.processorPartnerInfo.assignedRoles,
+                            aggrementInfo: agreementInfo,
+                            menifestoStatus: AppConstant.MENIFESTO_STATUS_LOADED
+                        }
+
+                        // menifesto.tripIds.push(this.selectedTrip.tripInfoId);
+                        var menifestoTripDef: MenifestoTripDef = {
+                            tripId: this.selectedTrip.tripInfoId,
+                            date: this.selectedTrip.pickUpDate,
+                            projectList: []
+                        }
+
+                        this.menifestoService.getWasteItemDef(eachWaste.wasteId, (wasteItemDef: WasteItemDef) => {
+                            if (wasteItemDef) {
+                                var menifestoProjectWasteDef: MenifestoProjectWasteDef = {
+                                    projectId: projectId,
+                                    wasteIdList: [wasteItemDef]
+                                }
+
+                                menifestoTripDef.projectList.push(menifestoProjectWasteDef);
+
+                                menifesto.tripIdDef.push(menifestoTripDef);
+
+                                this.menifestoService.saveMenifesto(menifesto).subscribe(menifesto => {
+
+                                });
+                            }
+                        })
+
+
+                    }
+                });
+
+
+            });
+        });
+    }
+
+
+
 }
