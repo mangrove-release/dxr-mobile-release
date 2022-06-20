@@ -94,7 +94,9 @@ export interface DisposalInfoFetch {
     dropZipCode: string;
     isParent: boolean;
     unit: string;
-    price: number
+    price: number;
+    wasteShape: string;
+    wastePackage: string;
 }
 export interface wasteProcessInfoFetch {
     wasteProcessId: string;

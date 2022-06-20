@@ -106,6 +106,7 @@ export class TripScanComponent implements OnInit {
 
 
     prepareScannedTripInfo(data: TripQrData) {
+        debugger
         this.scannedTripInfo = data;
         var tripInfoId = data.tripInfoId;
         var pickLocation = data.pickLocation;

@@ -1,6 +1,8 @@
-import { AgreementInfo, AgreementPartnerInfo } from "./business-agreement";
+import { AgreementInfo, AgreementInfoUpdate, AgreementPartnerInfo } from "./business-agreement";
 import { WasteItemDef } from "./company-settings-fetch";
 import { PickInfo } from "./driver-op";
+
+
 
 export interface MenifestoInfo {
     menifestoInfoId: string;
@@ -15,8 +17,10 @@ export interface MenifestoInfo {
     creator: string;
     firstParty: string;
     secondparty: string;
-    aggrementInfo: AgreementInfo;
+    aggrementInfo: AgreementInfoUpdate;
     menifestoStatus: string;
+    manualManifesto: ManualManifesto;
+    manifestoType: string;
 }
 
 export interface MenifestoTripDef {
@@ -27,9 +31,22 @@ export interface MenifestoTripDef {
 
 export interface MenifestoProjectWasteDef {
     projectId: string;
-    wasteIdList: WasteItemDef[];
+    wasteIdList: ManifestoWasteItemDef[];
 }
 
+export interface ManifestoWasteItemDef {
+    wasteTypeId: string;
+    wasteId: string;
+    wasteTitle: string;
+    unitDef: string;
+    wasteShape: string;
+    wastePackage: string;
+    processingPrice: number;
+    dxrWasteItemId: string;
+    totalQunatity: number;
+    totalDeclaredQunatity: number;
+    collectionId: string;
+}
 
 export interface Invoice {
     invoiceId: string;
@@ -48,4 +65,111 @@ export interface Invoice {
 export interface Status {
     statusId: string;
     statusTitle: string;
+}
+
+export interface ManualManifesto {
+    date: string;
+    deliveryNo: string;
+    manifestoNo: string
+    refNo: string;
+    dumperInfo: DumperInfo;
+    manifestoDisposeWasteInfo: ManifestoDisposeWasteInfo[];
+    manifestoProcessWasteInfo: ManifestoProcessWasteInfo[];
+    transhipmentInfo: TranshipmentInfo;
+    transportInfo: TransportInfo;
+    totalQuantity: number;
+    processorInfo: ProcessorInfo
+    additionalInfo: string;
+}
+
+export interface DumperInfo {
+    companyId: string;
+    personInChargerId: string;
+    personInchargeEmail: string;
+    personName: string;
+    businessName: string;
+    zipCode: string;
+    address: string;
+    contactNo: string;
+    workPlace: string;
+    workZip: string;
+    workAddress: string;
+    workContactNo: string;
+}
+
+export interface ManifestoDisposeWasteInfo {
+    collectionId: string;
+    wasteId: string;
+    wasteName: string;
+    unit: string;
+    shape: string;
+    wastePackage: string;
+    quantity: number;
+    transportPrice: number;
+
+}
+
+export interface ManifestoProcessWasteInfo {
+    collectionId: string;
+    wasteId: string;
+    wasteName: string;
+    unit: string;
+    shape: string;
+    wastePackage: string;
+    quantity: number;
+    establishedQuantity: number;
+    processPrice: number;
+}
+
+export interface TranshipmentInfo {
+    storageName: string;
+    inCharge: string;
+    zipCode: string;
+    address: string;
+
+}
+export interface TransportInfo {
+    companyId: string;
+    personInChargerId: string;
+    personInchargeEmail: string;
+    personName: string;
+    businessName: string;
+    zipCode: string;
+    address: string;
+    contactNo: string;
+    vehicleNo: string;
+    vehicleType: string;
+    transportMethod: string;
+    TransportComplateDate: string;
+    driverName: string;
+}
+
+export interface ProcessorInfo {
+    companyId: string;
+    personInChargerId: string;
+    personInchargeEmail: string;
+    personName: string;
+    businessName: string;
+    zipCode: string;
+    address: string;
+    contactNo: string;
+    processingComplateDate: string;
+    disposeComplateDate: string;
+
+}
+
+
+export interface NotificationSetInfo {
+    contextId: string;
+    companyId: string;
+    baseTableId: string;
+    trigerUserInfoId: string;
+    status: StatusInfo;
+
+
+}
+export interface StatusInfo {
+    id: string;
+    titleEng: string;
+    titleJpn: string;
 }

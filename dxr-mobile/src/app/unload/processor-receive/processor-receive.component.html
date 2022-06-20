@@ -6,7 +6,7 @@
                     </app-lang-def-button>{{uiLabels.pageHeader}}
                 </span></ion-title>
             <ion-button *ngIf="driverTripPlan && driverTripPlan.tripInfoId" style="margin-right: 15px;" (click)="generateTripCompletionQrCoe()">{{uiLabels.generateTripCompleteQrCode}}</ion-button>
-            <ion-button *ngIf="driverTripPlan && driverTripPlan.tripInfoId" style="margin-right: 15px;">{{uiLabels.generateWeightDeclareCertificate}}</ion-button>
+            <ion-button *ngIf="driverTripPlan && driverTripPlan.tripInfoId" style="margin-right: 15px;" (click)="generateWeightCertificate()">{{uiLabels.generateWeightDeclareCertificate}}</ion-button>
         </ion-header>
 
         <div class="col" *ngIf="driverTripPlan && driverTripPlan.tripInfoId" style="margin-bottom: 65px;">

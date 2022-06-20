@@ -64,6 +64,59 @@
             </div>
         </ion-card>
 
+        <ion-card class="col left p-2" *ngIf="handoverPackageView">
+            <div class="three-section-list-row wrap">
+
+                <div class="list-value-section">
+                    <div class="list-section-label" style="width:120px;">
+                        {{uiLabels.selectScale}}
+                    </div>
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="flex:100%">
+                        <ion-select [(ngModel)]="weightCertificateInfo.scaleInfo" placeholder={{weightCertificateInfo.scaleInfo.nameOfScale}} interface="popover">
+                            <ion-select-option *ngFor="let item of scaleList, index as i" [value]="item" id="scale{{i}}">
+                                {{item.nameOfScale}}
+                            </ion-select-option>
+
+                        </ion-select>
+                    </div>
+                </div>
+
+                <div class="list-value-section">
+
+                    <div class="list-section-label" style="width:120px;">
+                        {{uiLabels.grossWeight}}
+                    </div>
+
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="flex:100%">
+                        <ion-input type="number" [(ngModel)]="weightCertificateInfo.wasteGrossWeight"></ion-input>
+                    </div>
+                </div>
+
+                <div class="list-value-section">
+
+                    <div class="list-section-label" style="width:120px;">
+                        {{uiLabels.vehicleWeight}}
+                    </div>
+
+                    <div class="list-section-separator">
+                        :
+                    </div>
+
+                    <div class="list-section-value" style="flex:100%">
+                        <ion-input type="number" [(ngModel)]="weightCertificateInfo.vehicleWeight"></ion-input>
+                    </div>
+                </div>
+            </div>
+        </ion-card>
+
         <div style="margin-bottom: 65px;">
             <mat-accordion *ngIf="handoverPackageView" multi>
                 <mat-expansion-panel *ngFor="let dispose of loadPackageView.wasteWisePickPackageList" [expanded]="true">

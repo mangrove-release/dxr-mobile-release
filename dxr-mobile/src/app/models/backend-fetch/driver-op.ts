@@ -1,6 +1,5 @@
-import { VehicleInfoFetch } from "./company-settings-fetch";
+import { ScaleSettingInfo, VehicleInfoFetch } from "./company-settings-fetch";
 import { DisposalInfoFetch } from "./initiate-project-fetch";
-
 
 export interface DriverTripPlan {
     tripInfoId: string;
@@ -40,9 +39,16 @@ export interface TripQrData {
 export interface CompanyInfo {
     companyId: string;
     companyName: string;
+    companyZipCode: string;
+    companyAddress: string;
+    companyContact: string;
+    companyEmail: string;
     personInChargeId: string;
     personInChargeName: string;
     personInChargeContact: string;
+    personInChargeSeal: string;
+    companySeal: string;
+
 }
 
 export interface PackageInfo {
@@ -119,4 +125,77 @@ export interface ProcessorEmissionInfo {
 export interface CompanyTripFetch {
     date: string;
     companyId: string;
+}
+
+export interface WeightCertificateInfo {
+    weightCertificateInfoId: string;
+    date: string;
+    dateView: string;
+    tripId: string;
+    pickList: string;
+    wasteGrossWeight: number;
+    vehicleWeight: number;
+    wasteNetWeight: number;
+    processorCompanyInfo: CompanyInfo;
+    transporterCompanyInfo: CompanyInfo;
+    driverInfo: DriverTripPlan;
+    scaleInfo: ScaleSettingInfo;
+    wasteList: WasteWisePickPackageInfo[];
+
+}
+
+export interface WeightCertificateReportData {
+    designFile: string;
+    outputName: string;
+    format: string;
+    parameters: WeightCertificateReportParameter;
+    wrapError: true
+}
+
+export interface WeightCertificateReportParameter {
+    weightCertificateLabel: string;
+    date: string;
+    licenseLabel: string;
+    transporterName: string;
+    transporterNameLabel: string;
+    vehicleNameNumber: string;
+    vehicleNameNumberLabel: string;
+    gorssWeightlabel: string;
+    wasteTruckWeight: string;
+    wasteTrackLabel: string;
+    onlyTruckWeight: string;
+    truckWeightLabel: string;
+    weightCertificateData: string,
+    totalLabel: string;
+    remarksLabel: string;
+    signLabel: string;
+    nameLabel: string;
+    performanceLabel: string;
+    equipmentLabel: string;
+    quintityLabel: string;
+    nameValue: string;
+    performanceValue: string;
+    equipmentValue: string;
+    quantityValue: string;
+    processorName: string;
+    fullAddress: string;
+    reciptionistName: string;
+    telLabel: string;
+    telvalue: string;
+    faxLabel: string;
+    faxValue: string;
+    compNameLabel: string;
+    compAddressLabel: string;
+    reciepsonistNameLabel: string;
+    companySealsLabel: string;
+    receipsonistSealLabel: string;
+    companySealphoto: string;
+    recipsonistSealPhoto: string;
+}
+
+export interface WeightCertificateWaste {
+    productName: string;
+    adjustment: string;
+    container: string;
+    netWeight: string;
 }

@@ -3,7 +3,7 @@ import { AgreementInfo } from 'src/app/models/backend-fetch/business-agreement';
 import { Observable, of } from 'rxjs';
 import { AppConstant } from 'src/app/config/app-constant';
 import { UriService } from '../visitor-services/uri.service';
-import { MenifestoInfo } from 'src/app/models/backend-fetch/menifest';
+import { MenifestoInfo, NotificationSetInfo } from 'src/app/models/backend-fetch/menifest';
 import { WasteItemDef } from 'src/app/models/backend-fetch/company-settings-fetch';
 
 @Injectable({
@@ -28,5 +28,11 @@ export class MenifestoService {
         this.uriService.callBackend(url, AppConstant.HTTP_POST, wasteItemId).subscribe(response => {
             callBack(response);
         });
+    }
+
+    generateNotiForManifestoCreate(notificationSetInfo: NotificationSetInfo): Observable<any> {
+        var url = '/menifesto/manifesto-notification';
+
+        return this.uriService.callBackend(url, AppConstant.HTTP_POST, notificationSetInfo);
     }
 }

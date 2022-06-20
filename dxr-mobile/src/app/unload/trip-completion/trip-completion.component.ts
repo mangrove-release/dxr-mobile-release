@@ -4,8 +4,10 @@ import { ModalController } from '@ionic/angular';
 import { QrScannerComponent } from 'src/app/common-directives/qr-scanner/qr-scanner.component';
 import { AppConstant } from 'src/app/config/app-constant';
 import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, ProcessorEmissionInfo, TripCompletionData, TripQrData } from 'src/app/models/backend-fetch/driver-op';
+import { NotificationSetInfo } from 'src/app/models/backend-fetch/menifest';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
+import { MenifestoService } from 'src/app/services/operation-services/menifesto.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
 import { UtilService } from 'src/app/services/visitor-services/util.service';
 import { TripCompletionCodePopupComponent } from '../trip-completion-code-popup/trip-completion-code-popup.component';
@@ -17,7 +19,7 @@ import { TripCompletionCodePopupComponent } from '../trip-completion-code-popup/
 })
 export class TripCompletionComponent implements OnInit {
 
-    constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private languageService: LanguageService, private router: Router, public modalController: ModalController) { }
+    constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private languageService: LanguageService, private router: Router, public modalController: ModalController, private menifestoService: MenifestoService) { }
 
     uiLabels: any = {
         pageHeader: "Trip Completion",
@@ -155,15 +157,34 @@ export class TripCompletionComponent implements OnInit {
                 this.saveProcessorEmissionInfo(this.handoverWastePickAndPackage.pickIdList);
 
                 this.updateMenifestoStatus(this.handoverWastePickAndPackage.pickIdList);
+
+
             }
 
         });
     }
 
+
+
     updateMenifestoStatus(handoverPickIds: string[]) {
         debugger
         this.driverDashboardService.saveMenifestoUnloadStatus(handoverPickIds).subscribe(response => {
+            if (response) {
+                response.forEach(element => {
+                    var notificationSetInfo: NotificationSetInfo = {
+                        contextId: AppConstant.MANIFESTO_NOTIFICAIONT_ID,
+                        companyId: this.transporterCompanyInfo.companyId,
+                        baseTableId: element,
+                        trigerUserInfoId: this.utilService.getUserIdCookie(),
+                        status: AppConstant.MANIFESTO_UNLOAD_STATUS
+                    }
 
+                    this.menifestoService.generateNotiForManifestoCreate(notificationSetInfo).subscribe(notification => {
+
+                    });
+                });
+
+            }
         });
     }
 

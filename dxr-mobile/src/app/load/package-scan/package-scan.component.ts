@@ -3,10 +3,10 @@ import { ModalController } from '@ionic/angular';
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { QrScannerComponent } from 'src/app/common-directives/qr-scanner/qr-scanner.component';
 import { AppConstant } from 'src/app/config/app-constant';
-import { AgreementInfo } from 'src/app/models/backend-fetch/business-agreement';
+import { AgreementInfo, AgreementPartnerInfo } from 'src/app/models/backend-fetch/business-agreement';
 import { WasteItemDef } from 'src/app/models/backend-fetch/company-settings-fetch';
 import { CompanyInfo, DriverTripPlan, DumpingEmissionInfo, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, WasteWisePickPackageInfo } from 'src/app/models/backend-fetch/driver-op';
-import { MenifestoInfo, MenifestoProjectWasteDef, MenifestoTripDef } from 'src/app/models/backend-fetch/menifest';
+import { DumperInfo, ManifestoDisposeWasteInfo, ManifestoProcessWasteInfo, ManifestoWasteItemDef, ManualManifesto, MenifestoInfo, MenifestoProjectWasteDef, MenifestoTripDef, NotificationSetInfo, ProcessorInfo, TranshipmentInfo, TransportInfo } from 'src/app/models/backend-fetch/menifest';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
 import { MenifestoService } from 'src/app/services/operation-services/menifesto.service';
@@ -162,6 +162,7 @@ export class PackageScanComponent implements OnInit {
     }
 
     confirmReceive() {
+        debugger
         var handoverPickIds: string[] = [];
         this.loadPackageView.wasteWisePickPackageList.forEach(element => {
             element.pickList.forEach(eachPick => {
@@ -212,6 +213,127 @@ export class PackageScanComponent implements OnInit {
         })
     }
 
+    prepareManualManifesto(menifesto: MenifestoInfo): MenifestoInfo {
+        var manualManifesto: ManualManifesto = {} as ManualManifesto;
+
+        var dumper: AgreementPartnerInfo = (menifesto.aggrementInfo.dumperPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_DUMPER) ? menifesto.aggrementInfo.dumperPartnerInfo : ((menifesto.aggrementInfo.transporterPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_DUMPER) ? menifesto.aggrementInfo.transporterPartnerInfo : menifesto.aggrementInfo.processorPartnerInfo);
+
+        var transporter: AgreementPartnerInfo = (menifesto.aggrementInfo.dumperPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_TRANSPORTER) ? menifesto.aggrementInfo.dumperPartnerInfo : ((menifesto.aggrementInfo.transporterPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_TRANSPORTER) ? menifesto.aggrementInfo.transporterPartnerInfo : menifesto.aggrementInfo.processorPartnerInfo);
+
+        var processor: AgreementPartnerInfo = (menifesto.aggrementInfo.dumperPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_PROCESSOR) ? menifesto.aggrementInfo.dumperPartnerInfo : ((menifesto.aggrementInfo.transporterPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_PROCESSOR) ? menifesto.aggrementInfo.transporterPartnerInfo : menifesto.aggrementInfo.processorPartnerInfo);
+
+        var dumperInfo: DumperInfo = {
+            companyId: dumper.companyId,
+            personInChargerId: dumper.personInChargeId,
+            personInchargeEmail: dumper.personInchargeEmail,
+            personName: dumper.personInChargeName,
+            businessName: dumper.companyName,
+            zipCode: dumper.companyZipCode,
+            address: dumper.companyAddress,
+            contactNo: dumper.contactNo,
+            workPlace: dumper.companyName,
+            workZip: dumper.companyZipCode,
+            workAddress: dumper.companyAddress,
+            workContactNo: dumper.contactNo,
+        }
+
+        var manifestoDisposeWasteInfoList: ManifestoDisposeWasteInfo[] = [];
+        menifesto.pickIdDef.forEach(eachPick => {
+            var manifestoDisposeWasteInfo: ManifestoDisposeWasteInfo = {
+                collectionId: eachPick.disposalInfo.collectionId,
+                wasteId: eachPick.disposalInfo.wasteItemId,
+                wasteName: eachPick.disposalInfo.wasteItemName,
+                unit: eachPick.disposalInfo.unit,
+                shape: eachPick.disposalInfo.wasteShape,
+                wastePackage: eachPick.disposalInfo.wastePackage,
+                quantity: eachPick.quantity,
+                transportPrice: eachPick.disposalInfo.price
+            }
+
+            manifestoDisposeWasteInfoList.push(manifestoDisposeWasteInfo);
+
+        });
+
+        var totalQuantity = 0;
+
+        var manifestoProcessWasteInfoList: ManifestoProcessWasteInfo[] = [];
+
+        menifesto.tripIdDef.forEach(tripDef => {
+            tripDef.projectList.forEach(eachProject => {
+                eachProject.wasteIdList.forEach(eachWaste => {
+                    var manifestoProcessWasteInfo: ManifestoProcessWasteInfo = {
+                        collectionId: eachWaste.collectionId,
+                        wasteId: eachWaste.wasteId,
+                        wasteName: eachWaste.wasteTitle,
+                        unit: eachWaste.unitDef,
+                        shape: eachWaste.wasteShape,
+                        wastePackage: eachWaste.wastePackage,
+                        quantity: eachWaste.totalQunatity,
+                        establishedQuantity: eachWaste.totalDeclaredQunatity,
+                        processPrice: eachWaste.processingPrice,
+                    }
+
+                    totalQuantity += eachWaste.totalQunatity;
+
+                    manifestoProcessWasteInfoList.push(manifestoProcessWasteInfo);
+                });
+            });
+        });
+
+        var transhipmentInfo: TranshipmentInfo = {
+            storageName: '',
+            inCharge: '',
+            zipCode: '',
+            address: '',
+        }
+
+        var transportInfo: TransportInfo = {
+            companyId: transporter.companyId,
+            personInChargerId: transporter.personInChargeId,
+            personInchargeEmail: transporter.personInchargeEmail,
+            personName: transporter.personInChargeName,
+            businessName: transporter.companyName,
+            zipCode: transporter.companyZipCode,
+            address: transporter.companyAddress,
+            contactNo: transporter.contactNo,
+            vehicleNo: "",
+            vehicleType: "",
+            transportMethod: "",
+            TransportComplateDate: "",
+            driverName: "",
+        }
+
+        var processorInfo: ProcessorInfo = {
+            companyId: processor.companyId,
+            personInChargerId: processor.personInChargeId,
+            personInchargeEmail: processor.personInchargeEmail,
+            personName: processor.personInChargeName,
+            businessName: processor.companyName,
+            zipCode: processor.companyZipCode,
+            address: processor.companyAddress,
+            contactNo: processor.contactNo,
+            processingComplateDate: menifesto.date,
+            disposeComplateDate: menifesto.date,
+
+        }
+
+        manualManifesto.date = menifesto.date;
+        manualManifesto.deliveryNo = "";
+        manualManifesto.manifestoNo = menifesto.menifestoUniqueId;
+        manualManifesto.refNo = "";
+        manualManifesto.dumperInfo = dumperInfo;
+        manualManifesto.manifestoDisposeWasteInfo = manifestoDisposeWasteInfoList;
+        manualManifesto.manifestoProcessWasteInfo = manifestoProcessWasteInfoList;
+        manualManifesto.transhipmentInfo = transhipmentInfo;
+        manualManifesto.transportInfo = transportInfo;
+        manualManifesto.totalQuantity = totalQuantity;
+        manualManifesto.processorInfo = processorInfo;
+        manualManifesto.additionalInfo = "";
+
+        menifesto.manualManifesto = manualManifesto;
+
+        return menifesto;
+    }
 
 
     generateMenifesto() {
@@ -248,7 +370,9 @@ export class PackageScanComponent implements OnInit {
                             firstParty: agreementInfo.transporterPartnerInfo.companyId + '|' + agreementInfo.transporterPartnerInfo.assignedRoles,
                             secondparty: agreementInfo.processorPartnerInfo.companyId + '|' + agreementInfo.processorPartnerInfo.assignedRoles,
                             aggrementInfo: agreementInfo,
-                            menifestoStatus: AppConstant.MENIFESTO_STATUS_LOADED
+                            menifestoStatus: AppConstant.MENIFESTO_STATUS_LOADED,
+                            manualManifesto: {} as ManualManifesto,
+                            manifestoType: AppConstant.MANIFESTO_TYPE_GENERATED
                         }
 
                         // menifesto.tripIds.push(this.selectedTrip.tripInfoId);
@@ -258,8 +382,11 @@ export class PackageScanComponent implements OnInit {
                             projectList: []
                         }
 
-                        this.menifestoService.getWasteItemDef(eachWaste.wasteId, (wasteItemDef: WasteItemDef) => {
+                        this.menifestoService.getWasteItemDef(eachWaste.wasteId, (wasteItemDef: ManifestoWasteItemDef) => {
                             if (wasteItemDef) {
+                                wasteItemDef.totalQunatity = eachWaste.totalQunatity;
+                                wasteItemDef.totalDeclaredQunatity = eachWaste.totalDeclaredQunatity;
+                                wasteItemDef.collectionId = eachWaste.pickList[0].pick.disposalInfo.collectionId;
                                 var menifestoProjectWasteDef: MenifestoProjectWasteDef = {
                                     projectId: projectId,
                                     wasteIdList: [wasteItemDef]
@@ -269,7 +396,23 @@ export class PackageScanComponent implements OnInit {
 
                                 menifesto.tripIdDef.push(menifestoTripDef);
 
+                                menifesto = this.prepareManualManifesto(menifesto);
+
                                 this.menifestoService.saveMenifesto(menifesto).subscribe(menifesto => {
+                                    debugger
+                                    if (menifesto) {
+                                        var notificationSetInfo: NotificationSetInfo = {
+                                            contextId: AppConstant.MANIFESTO_NOTIFICAIONT_ID,
+                                            companyId: this.transporterCompanyInfo.companyId,
+                                            baseTableId: menifesto.aggrementInfo.agreementId,
+                                            trigerUserInfoId: this.utilService.getUserIdCookie(),
+                                            status: AppConstant.MANIFESTO_LOAD_STATUS
+                                        }
+
+                                        this.menifestoService.generateNotiForManifestoCreate(notificationSetInfo).subscribe(response => {
+
+                                        });
+                                    }
 
                                 });
                             }

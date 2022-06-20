@@ -159,7 +159,7 @@
         <div *ngFor="let item of pickGroup | keyvalue">
 
             <div *ngFor="let pick of item.value">
-                <ion-card style="color: black;" *ngIf="pick.disposalInfo.pickLocation==scannedTripInfo.pickLocation">
+                <ion-card style="color: black;" *ngIf="scannedTripInfo.pickLocation.includes(pick.disposalInfo.pickLocation)">
 
                     <div class="three-section-list-row">
 

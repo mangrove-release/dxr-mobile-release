@@ -1,7 +1,48 @@
 export class AppConstant {
 
+    public static BASE64_STRING_PREFIX = "data:image/";
+    public static COMPANY_SEAL_FILE_NAME_SUFFIX = "-company-seal.";
+    public static USER_SEAL_FILE_NAME_SUFFIX = "-user-seal.";
+
+    public static MANIFESTO_LOAD_STATUS = {
+        id: "1",
+        titleEng: "Loaded",
+        titleJpn: "Loaded"
+    };
+
+    public static MANIFESTO_UNLOAD_STATUS = {
+        id: "2",
+        titleEng: "Unloaded",
+        titleJpn: "Unloaded"
+    };
+
+    public static SUBSCRIPTION_NOTIFICAIONT_ID = "notificationType001";
+
+    public static INQUIRY_NOTIFICAIONT_ID = "notificationType002";
+
+    public static WASTE_REQUEST_NOTIFICAIONT_ID = "notificationType003";
+
+    public static AGREEMENT_NOTIFICAIONT_ID = "notificationType004";
+
+    public static PROJECT_NOTIFICAIONT_ID = "notificationType005";
+
+    public static PROJECT_SCHEDULE_NOTIFICAIONT_ID = "notificationType006";
+
+    public static INVOICE_NOTIFICAIONT_ID = "notificationType007";
+
+    public static MANIFESTO_NOTIFICAIONT_ID = "notificationType008";
+
+    public static WEIGHT_CERTIFICATE_DESIGN_FILE = "weight_certificate_report.rptdesign";
+    public static WEIGHT_CERTIFICATE_OUTPUT_NAME = "weight_certificate_report";
+    public static WEIGHT_CERTIFICATE_FORMAT_PDF = "pdf";
+    public static WEIGHT_CERTIFICATE_FORMAT_HTML = "html";
+
+    public static MANIFESTO_TYPE_GENERATED = 'menifestoType0001';
+    public static MANIFESTO_TYPE_MANUAL = 'menifestoType0002';
+
     public static MENIFESTO_STATUS_LOADED = "1";
-    public static APP_VERSION = '1.7.22.06.08';
+    public static MENIFESTO_STATUS_UNLOADED = "2";
+    public static APP_VERSION = '1.7.22.06.16';
 
     public static PICK_LOAD_STATUS = "1";
     public static PICK_UNLOAD_STATUS = "2";

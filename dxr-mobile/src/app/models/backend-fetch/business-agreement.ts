@@ -34,17 +34,12 @@ export interface AgreementInfo {
     dumperPartnerInfo: AgreementPartnerInfo;
     transporterPartnerInfo: AgreementPartnerInfo;
     processorPartnerInfo: AgreementPartnerInfo;
-
     agreementWasteTransportInfo: AgreementWasteTransportInfo[];
     agreementWasteProcessInfo: AgreementWasteProcessInfo[];
-
     partnerList: AgreementPartnerInfo[];
     agreementRemark: string | '';
-
     agreementProcessId: string | '';
-
     agreementActionId: string | '';
-
     processsList: any[];
     isApproveRequiredState: boolean;
 }
@@ -59,14 +54,11 @@ export interface AgreementInfoUpdate {
     validDateView: string;
     agreementType: string;
     agreementStatus: AgreementStatus;
-
     dumperPartnerInfo: AgreementPartnerInfo;
     transporterPartnerInfo: AgreementPartnerInfo;
     processorPartnerInfo: AgreementPartnerInfo;
-
     agreementWasteTransportInfo: AgreementWasteTransportInfo[];
     agreementWasteProcessInfo: AgreementWasteProcessInfo[];
-
     agreementRemark: string;
 }
 
@@ -86,6 +78,7 @@ export interface AgreementPartnerInfo {
     contactNoFormated: string;
     personInChargeId: string;
     personInChargeName: string;
+    personInchargeEmail: string;
     accountantInfo: AccountantInfo;
     accountInfo: BankAccountInfo;
     otherBankAccountInfo: BankAccountInfo;

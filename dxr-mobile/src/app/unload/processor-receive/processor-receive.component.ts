@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { QrScannerComponent } from 'src/app/common-directives/qr-scanner/qr-scanner.component';
 import { AppConstant } from 'src/app/config/app-constant';
-import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, TripCompletionData, TripQrData } from 'src/app/models/backend-fetch/driver-op';
+import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, TripCompletionData, TripQrData, WeightCertificateInfo, WeightCertificateReportData } from 'src/app/models/backend-fetch/driver-op';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
@@ -43,7 +43,23 @@ export class ProcessorReceiveComponent implements OnInit {
         generateWeightDeclareCertificate: "Generate Weight Certificate",
         scaleInfoHeader: "Scale Info",
         viewScaleInfoButton: "View",
-        receivedWasteList: "Recevied Waste List"
+        receivedWasteList: "Recevied Waste List",
+        "weightCertificateLabel": "Weight Certificate",
+        "licenseLabel": "LC-4353353Mk",
+        "transporterNameLabel": "Transporter Name",
+        "vehicleNameNumberLabel": "Vehicle Name & Number",
+        "gorssWeightlabel": "Gorss Weight",
+        "wasteTrackLabel": "Waste+Track Weight",
+        "truckWeightLabel": "Only Truck Weight",
+        "totalLabel": "Total",
+        "remarksLabel": "Remark",
+        "signLabel": "Sign",
+        "nameLabel": "Name",
+        "performanceLabel": "Performance",
+        "equipmentLabel": "Equipment",
+        "quintityLabel": "Quintity",
+        "telLabel": "TEL",
+        "faxLabel": "FAX",
     }
 
     companyId: string = this.utilService.getCompanyIdCookie();
@@ -133,5 +149,14 @@ export class ProcessorReceiveComponent implements OnInit {
         });
 
         return await modal.present();
+    }
+
+    generateWeightCertificate() {
+        debugger
+        var weightCertificateInfo: WeightCertificateInfo = this.driverTabsDataService.getWeightCertificateInfo();
+
+        var weightCertificateData: WeightCertificateReportData = this.driverDashboardService.prepareWeightCertificateData(weightCertificateInfo, this.uiLabels);
+
+        this.driverDashboardService.generateReport(weightCertificateData);
     }
 }

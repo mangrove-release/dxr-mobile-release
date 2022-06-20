@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HandoverCodeComponent } from 'src/app/load/handover-code/handover-code.component';
-import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, PackageInfo, PickInfo, TripQrData } from 'src/app/models/backend-fetch/driver-op';
+import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, PackageInfo, PickInfo, TripQrData, WeightCertificateInfo } from 'src/app/models/backend-fetch/driver-op';
 
 @Injectable({
     providedIn: 'root'
@@ -23,6 +23,8 @@ export class DriverTabsDataService {
     selectedPickForPackageDef: PickInfo;
 
     allPackageDef: PackageInfo[] = [];
+
+    weightCertificateInfo: WeightCertificateInfo;
 
     constructor() { }
 
@@ -123,6 +125,19 @@ export class DriverTabsDataService {
             this.allPackageDef.unshift(packageDef);
         }
 
+    }
+
+    setWeightCertificateInfo(weightCertificateInfo: any): void {
+        this.weightCertificateInfo = weightCertificateInfo;
+        this.weightCertificateInfo.processorCompanyInfo = JSON.parse(weightCertificateInfo.processorCompanyInfo);
+        this.weightCertificateInfo.transporterCompanyInfo = JSON.parse(weightCertificateInfo.transporterCompanyInfo);
+        this.weightCertificateInfo.driverInfo = JSON.parse(weightCertificateInfo.driverInfo);
+        this.weightCertificateInfo.scaleInfo = JSON.parse(weightCertificateInfo.scaleInfo);
+        this.weightCertificateInfo.wasteList = JSON.parse(weightCertificateInfo.wasteList);
+    }
+
+    getWeightCertificateInfo(): WeightCertificateInfo {
+        return this.weightCertificateInfo
     }
 
 }

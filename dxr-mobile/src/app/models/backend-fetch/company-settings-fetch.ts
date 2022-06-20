@@ -115,19 +115,23 @@ export interface VehicleInfoFetch {
 }
 
 export interface ScaleSettingInfo {
-    companyId: string,
-    scaleId: string,
-    nameOfScale: string,
-    capacity: number,
-    scaleNumber: string,
-    quantity: number,
-    registrationNo: string
-
+    companyId: string;
+    scaleId: string;
+    nameOfScale: string;
+    capacity: number;
+    scaleNumber: string;
+    quantity: number;
+    registrationNo: string;
+    responsiblePersonId: string;
+    personName: string;
+    personEmail: string;
+    personContact: string;
+    personSeal: string;
 }
 
 export interface CompanyWasteUpdate {
-    companyId: string,
-    companyWasteList: CompWasteInfoFetch[],
+    companyId: string;
+    companyWasteList: CompWasteInfoFetch[];
 }
 
 export interface CompWasteInfoFetch {
