@@ -6,13 +6,14 @@ import { CookieService } from 'ngx-cookie-service';
 import { UriService } from './uri.service';
 import { Observable } from 'rxjs';
 import { LanguageService } from './language.service';
+import { ToastController } from '@ionic/angular';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UtilService {
 
-    constructor(private cookieService: CookieService) { }
+    constructor(private cookieService: CookieService, public toastController: ToastController) { }
 
     langIndex = this.getSelectedLanguageIndex();
 
@@ -43,6 +44,15 @@ export class UtilService {
         });
         langDef = langDef.concat('],\n\"messages\":[],\n\"notifications\":[]\n}\n');
         // console.log(langDef);
+    }
+
+    async showSnackbar(message: string, duration: number) {
+        const toast = await this.toastController.create({
+            message: message,
+            duration: duration,
+            position: 'top'
+        });
+        toast.present();
     }
 
     getCurrentDate() {

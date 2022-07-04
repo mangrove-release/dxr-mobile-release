@@ -76,6 +76,8 @@ export class TripCompletionComponent implements OnInit {
     componentCode: string = AppConstant.COMP.UNLOAD_TRIP_COMPLETION;
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
+    hidePackageDefInfo = AppConstant.HIDE_PACKAGE_DEF_INFO;
+
     ngOnInit() {
 
         this.utilService.printLangDef(this.uiLabels, this.componentCode);

@@ -11,14 +11,14 @@
     </ion-header>
 
     <div style="margin-bottom: 65px;">
-        <mat-accordion multi>
+        <div>
             <!-- <div *ngFor="let item of pickGroup | keyvalue">
                     <div *ngFor="let pick of item.value"> -->
             <!-- *ngIf="pick.disposalInfo.pickLocation==scannedTripInfo.pickLocation" -->
 
-            <mat-expansion-panel *ngFor="let item of pickWisePackageList" style="margin-bottom: 10px;" [expanded]="true">
+            <div *ngFor="let item of pickWisePackageList" style="margin-bottom: 10px;">
 
-                <mat-expansion-panel-header style="height: 100%;background-color: rgb(233, 249, 255);">
+                <ion-card class="list-item">
 
                     <div class="three-section-list-row p-2" style="color: black;">
 
@@ -50,10 +50,10 @@
 
                     </div>
 
-                </mat-expansion-panel-header>
+                </ion-card>
 
                 <!-- <div *ngIf="allPackageDef && allPackageDef.length>0"> -->
-                <div *ngFor="let package of item.packageList">
+                <div [hidden]="hidePackageDefInfo" *ngFor="let package of item.packageList">
                     <ion-card class="p-2" *ngIf="package.pickId==item.pick.pickId">
                         <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='0'">
 
@@ -120,11 +120,11 @@
                 <!-- </div> -->
 
 
-            </mat-expansion-panel>
+            </div>
             <!-- </div>
         
                 </div> -->
-        </mat-accordion>
+        </div>
     </div>
 
 </ion-content>

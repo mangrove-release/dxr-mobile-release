@@ -88,8 +88,11 @@ export class WeightDeclareComponent implements OnInit {
 
     viewContent: boolean = false;
     handoverPackageView: boolean = false;
+
     componentCode: string = AppConstant.COMP.UNLOAD_WEIGHT_DECLARE;
     isSystemAdmin: boolean = this.utilService.languageEditMode();
+
+    hidePackageDefInfo = AppConstant.HIDE_PACKAGE_DEF_INFO;
 
     ngOnInit() {
 

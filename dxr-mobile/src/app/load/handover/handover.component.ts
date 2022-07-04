@@ -66,6 +66,8 @@ export class HandoverComponent implements OnInit {
     componentCode: string = AppConstant.COMP.LOAD_HANDOVER;
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
+    hidePackageDefInfo = AppConstant.HIDE_PACKAGE_DEF_INFO;
+
     ngOnInit() {
 
         this.utilService.printLangDef(this.uiLabels, this.componentCode);
@@ -79,6 +81,12 @@ export class HandoverComponent implements OnInit {
 
         if (this.selectedTrip && this.selectedTrip.pickList) {
             this.pickGroup = this.driverDashboardService.groupBy(this.selectedTrip.pickList, 'pickLocation');
+
+            // if (this.pickGroup && Object.keys(this.pickGroup) && Object.keys(this.pickGroup).length > 0) {
+
+            //     this.selectedPick = this.pickGroup[this.scannedTripInfo.pickLocation.split(", ")[1]];
+            //     this.driverTabsDataService.setSelectedPickForPackageDef(this.selectedPick);
+            // }
         }
 
         // this.allPackageDef = this.driverTabsDataService.getAllPackageDef();
@@ -98,7 +106,7 @@ export class HandoverComponent implements OnInit {
         var pickWisePackageList: PickWisePackage[] = [];
 
         pickList.forEach(eachPick => {
-            var pickPackages: PackageInfo[] = packageList.filter(item => item.pickId == eachPick.pickId);
+            var pickPackages: PackageInfo[] = packageList.filter(item => item.pickId == eachPick.pickId && pickLocation.includes(eachPick.disposalInfo.pickZipCode) && pickLocation.includes(eachPick.disposalInfo.pickLocation));
 
             if (pickPackages && pickPackages.length > 0) {
                 var pickWisePackage: PickWisePackage = {

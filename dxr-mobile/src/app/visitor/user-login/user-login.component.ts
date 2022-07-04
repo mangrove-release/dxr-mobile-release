@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { CookieService } from 'ngx-cookie-service';
 import { AppComponent } from 'src/app/app.component';
 import { AppConstant } from 'src/app/config/app-constant';
 import { UserIdentification } from 'src/app/models/backend-update/user-login';
+import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
 import { UserLoginService } from 'src/app/services/visitor-services/user-login.service';
 import { UtilService } from 'src/app/services/visitor-services/util.service';
@@ -17,7 +18,7 @@ import { ChangePasswordComponent } from '../change-password/change-password.comp
 })
 export class UserLoginComponent implements OnInit {
 
-    constructor(public modalController: ModalController, private userLoginService: UserLoginService, private appComponent: AppComponent, private router: Router, private utilService: UtilService, private languageService: LanguageService) { }
+    constructor(public modalController: ModalController, private userLoginService: UserLoginService, private appComponent: AppComponent, private router: Router, private utilService: UtilService, private languageService: LanguageService, private activatedroute: ActivatedRoute, private driverTabsDataService: DriverTabsDataService) { }
 
     uiLabels: any = {
         headerLabel: "Login",
@@ -39,6 +40,24 @@ export class UserLoginComponent implements OnInit {
 
     ngOnInit() {
         debugger
+
+        this.activatedroute.paramMap.subscribe(params => {
+            var redirectUserInfoId = params.get('redirectSessionId') ? params.get('redirectSessionId') : null;
+
+            if (redirectUserInfoId) {
+                this.userLoginService.getMobileAppRedirectInfo(redirectUserInfoId).subscribe(response => {
+                    if (response) {
+                        this.appComponent.prepareUserAccessAndMenu(JSON.parse(response.userMenuAccess));
+                        this.userLoginService.setUserLoginCookie(response.userId, response.userAuth, response.companyId);
+                        this.driverTabsDataService.setScannedTripInfo(response.tripQrData);
+                        console.log(response.userId, response.userAuth, response.companyId);
+                        this.router.navigate([response.redirectMenuUrlParentSegment, { outlets: { [response.redirectMenuOutlet]: [response.redirectMenuUrl] } }]);
+                    }
+                });
+            }
+
+
+        });
 
         // this.utilService.printLangDef(this.uiLabels, this.componentCode);
 

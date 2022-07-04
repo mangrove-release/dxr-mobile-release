@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { IonRouterOutlet, ModalController } from '@ionic/angular';
 import { QrScannerComponent } from 'src/app/common-directives/qr-scanner/qr-scanner.component';
 import { AppConstant } from 'src/app/config/app-constant';
-import { CompanyInfo, DriverTripPlan, TripQrData } from 'src/app/models/backend-fetch/driver-op';
+import { CompanyInfo, DriverTripPlan, PackageInfo, TripQrData } from 'src/app/models/backend-fetch/driver-op';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
@@ -17,7 +17,7 @@ import { CompanyTripDashboardComponent } from '../company-trip-dashboard/company
 })
 export class TripScanComponent implements OnInit {
 
-    constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private languageService: LanguageService, private router: Router, public modalController: ModalController, private routerOutlet: IonRouterOutlet) { }
+    constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private languageService: LanguageService, private router: Router, public modalController: ModalController, private routerOutlet: IonRouterOutlet, private activatedroute: ActivatedRoute) { }
 
     uiLabels: any = {
         pageHeader: "Trip Scan",
@@ -40,12 +40,13 @@ export class TripScanComponent implements OnInit {
         projectTitle: "Project",
         pickQuantity: "Quantity",
         wasteList: "Waste List",
-        tripListButton: "Trip List"
+        tripListButton: "Trip List",
+        handOverButton: "Handover",
     }
 
     driverTripPlan: DriverTripPlan;
     transporterCompanyInfo: CompanyInfo;
-    scannedTripInfo: TripQrData;
+    scannedTripInfo: TripQrData = {} as TripQrData;
 
     viewContent = false;
 
@@ -53,10 +54,81 @@ export class TripScanComponent implements OnInit {
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
     ngOnInit() {
+        debugger
+
+        var redirectTripInfo: TripQrData = this.driverTabsDataService.getScannedTripInfo();
+
+        if (redirectTripInfo) {
+            console.log(redirectTripInfo.tripInfoId);
+
+            this.driverDashboardService.getTripInfo(redirectTripInfo.tripInfoId).subscribe(response => {
+                if (response) {
+                    console.log('tripInfo');
+                    this.driverTripPlan = response;
+                    this.driverTabsDataService.setScannedTripPlan(response);
+                }
+
+                this.driverDashboardService.getPartnerCompanyInfo(redirectTripInfo.driverCompanyId).subscribe(response => {
+                    if (response) {
+                        console.log('transporterInfo');
+                        this.transporterCompanyInfo = response;
+                        this.driverTabsDataService.setTransporterCompanyInfo(response);
+                    }
+                });
+
+            });
+
+            // this.prepareScannedTripInfo(redirectTripInfo);
+        }
+
+        // this.activatedroute.paramMap.subscribe(params => {
+        //     var tripInfoId = params.get('tripId') ? params.get('tripId') : null;
+
+        //     if (tripInfoId) {
+        //         this.scannedTripInfo = {
+        //             tripInfoId: tripInfoId,
+        //             pickLocation: '',
+        //             driverCompanyId: '',
+        //             driverId: '',
+        //         }
+        //     }
+        // });
 
         this.utilService.printLangDef(this.uiLabels, this.componentCode);
 
-        this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
+        // this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
+
+    }
+
+    handOverButton() {
+        this.router.navigate([AppConstant.LOAD_MENU_PARENT_SEGMENT, { outlets: { driverOutlet: [AppConstant.DUMPER_HANDOVER_MENU_URL] } }]);
+    }
+
+    addPacakgeDef() {
+
+        if (this.driverTripPlan && this.driverTripPlan.tripInfoId && this.driverTripPlan.pickList) {
+            this.driverTripPlan.pickList.forEach(eachPick => {
+                var newPackage: PackageInfo = {} as PackageInfo;
+                var newId = this.utilService.generateUniqueId();
+                newPackage.packageId = newId;
+
+                newPackage.pickId = eachPick.pickId;
+                newPackage.disposeId = eachPick.disposalInfo.disposalInfoId;
+                newPackage.tripId = eachPick.tripId;
+
+                newPackage.size = 0;
+                newPackage.numberOfPackage = 0;
+                newPackage.isLumpsum = AppConstant.TRUE_STATEMENT;
+                newPackage.quantity = eachPick.quantity;
+
+                this.driverDashboardService.savePackageDef(newPackage).subscribe(response => {
+                    if (response) {
+                        // this.addPackageDef(Object.assign({}, response));
+                        // this.resetForm();
+                    }
+                });
+            });
+        }
 
     }
 
@@ -116,8 +188,6 @@ export class TripScanComponent implements OnInit {
 
         this.getTransporterCompanyInfo(data);
 
-
-
     }
 
     getTripInfo(data: TripQrData) {
@@ -126,9 +196,11 @@ export class TripScanComponent implements OnInit {
             if (response) {
                 this.driverTripPlan = response;
                 this.driverTabsDataService.setScannedTripPlan(response);
-                console.log(JSON.stringify(data));
+                // console.log(JSON.stringify(data));
             }
-            this.prepareScannedTripInfoViewData();
+            this.viewContent = true;
+
+            this.addPacakgeDef();
 
         });
     }
@@ -143,10 +215,6 @@ export class TripScanComponent implements OnInit {
             this.getTripInfo(data);
 
         });
-    }
-
-    prepareScannedTripInfoViewData() {
-
     }
 
     showWastePickList() {

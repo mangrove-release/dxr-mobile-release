@@ -8,10 +8,10 @@
                 </span></ion-title>
         </ion-header>
 
-        <ion-card class="col left p-2">
-            <div class="three-section-list-row wrap">
+        <ion-card class="col p-2">
+            <div class="three-section-list-row">
                 <div class="list-value-section">
-                    <div class="list-section-label" style="width:230px;">
+                    <div class="list-section-label" style="flex:100%">
                         {{uiLabels.processorCompanyName}}
                     </div>
                     <div class="list-section-separator">
@@ -31,11 +31,11 @@
             <ion-button style="margin-right: 15px;" (click)="receivedWasteWeightConfirmation()">{{uiLabels.confirmPackageWeightButton}}</ion-button>
         </ion-header>
 
-        <ion-card class="col left p-2" *ngIf="handoverPackageView">
-            <div class="three-section-list-row wrap">
+        <ion-card class="col p-2" *ngIf="handoverPackageView">
 
+            <div class="three-section-list-row">
                 <div class="list-value-section">
-                    <div class="list-section-label" style="width:120px;">
+                    <div class="list-section-label" style="flex:100%">
                         {{uiLabels.transporterCompanyName}}
                     </div>
                     <div class="list-section-separator">
@@ -46,10 +46,12 @@
                         {{transporterCompanyInfo.companyName}}
                     </div>
                 </div>
+            </div>
 
+            <div class="three-section-list-row">
                 <div class="list-value-section">
 
-                    <div class="list-section-label" style="width:120px;">
+                    <div class="list-section-label" style="flex:100%">
                         {{uiLabels.driverName}}
                     </div>
 
@@ -64,11 +66,11 @@
             </div>
         </ion-card>
 
-        <ion-card class="col left p-2" *ngIf="handoverPackageView">
+        <ion-card class="col p-2" *ngIf="handoverPackageView">
             <div class="three-section-list-row wrap">
 
                 <div class="list-value-section">
-                    <div class="list-section-label" style="width:120px;">
+                    <div class="list-section-label" style="flex:100%">
                         {{uiLabels.selectScale}}
                     </div>
                     <div class="list-section-separator">
@@ -87,7 +89,7 @@
 
                 <div class="list-value-section">
 
-                    <div class="list-section-label" style="width:120px;">
+                    <div class="list-section-label" style="flex:100%">
                         {{uiLabels.grossWeight}}
                     </div>
 
@@ -102,7 +104,7 @@
 
                 <div class="list-value-section">
 
-                    <div class="list-section-label" style="width:120px;">
+                    <div class="list-section-label" style="flex:100%">
                         {{uiLabels.vehicleWeight}}
                     </div>
 
@@ -119,8 +121,8 @@
 
         <div style="margin-bottom: 65px;">
             <mat-accordion *ngIf="handoverPackageView" multi>
-                <mat-expansion-panel *ngFor="let dispose of loadPackageView.wasteWisePickPackageList" [expanded]="true">
-                    <mat-expansion-panel-header style="height: 100%;padding: 10px 15px;background-color: rgb(234, 234, 234); font-weight: 450;">
+                <mat-expansion-panel *ngFor="let dispose of loadPackageView.wasteWisePickPackageList" [expanded]="true" style="margin:10px;">
+                    <mat-expansion-panel-header style="height: 100%;padding: 10px 15px;background-color: rgb(231, 231, 231); font-weight: 450;">
                         <div class="three-section-list-row wrap">
                             <div class="list-value-section">
                                 <div class="list-section-label" style="width:210px;">
@@ -152,7 +154,7 @@
 
                     </mat-expansion-panel-header>
                     <div *ngFor="let pick of dispose.pickList, index as i">
-                        <div class="three-section-list-row" style="border-top: 1px solid gainsboro;border-bottom: 1px solid gainsboro;">
+                        <div class="three-section-list-row" style="border-bottom: 1px solid gainsboro;background-color: rgb(248, 248, 248);margin:5px 0px;">
 
                             <div class="list-value-section">
                                 <div class="list-section-label" style="width:120px;">
@@ -213,72 +215,76 @@
                                     </div> -->
 
                         </div>
-                        <div style="font-size: 15px;font-weight: 450;margin: 5px 0px 5px 15px;">
-                            <label>{{uiLabels.packageList}}</label>
+
+                        <div [hidden]="hidePackageDefInfo">
+                            <div style="font-size: 15px;font-weight: 450;margin: 5px 0px 5px 15px;">
+                                <label>{{uiLabels.packageList}}</label>
+                            </div>
+                            <!-- let package of pick.packageList -->
+                            <div *ngFor="let package of pick.packageList">
+                                <ion-card class="p-2" *ngIf="package.pickId==pick.pick.pickId">
+                                    <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='0'">
+
+                                        <div class="list-value-section">
+                                            <div class="list-section-label" style="width:150px;">
+                                                {{uiLabels.packageSize}}
+                                            </div>
+                                            <div class="list-section-separator">
+                                                :
+                                            </div>
+
+                                            <div class="list-section-value" style="flex:100%">
+                                                {{package.size}}
+                                            </div>
+                                        </div>
+
+                                        <div class="list-value-section">
+                                            <div class="list-section-label" style="width:150px;">
+                                                {{uiLabels.NumOfPackage}}
+                                            </div>
+                                            <div class="list-section-separator">
+                                                :
+                                            </div>
+
+                                            <div class="list-section-value" style="flex:100%">
+                                                {{package.numberOfPackage}}
+                                            </div>
+                                        </div>
+
+                                        <div class="list-value-section">
+                                            <div class="list-section-label" style="width:150px;">
+                                                <span>{{uiLabels.packageQuantity}}</span>
+                                            </div>
+                                            <div class="list-section-separator">
+                                                :
+                                            </div>
+
+                                            <div class="list-section-value" style="flex:100%">
+                                                {{package.quantity}} {{pick.pick.disposalInfo.unit}}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='1'">
+
+                                        <div class="list-value-section">
+                                            <div class="list-section-label" style="width:150px;">
+                                                <span>{{uiLabels.lumpsumQunatity}}</span>
+                                            </div>
+                                            <div class="list-section-separator">
+                                                :
+                                            </div>
+
+                                            <div class="list-section-value" style="flex:100%">
+                                                {{package.quantity}} {{pick.pick.disposalInfo.unit}}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </ion-card>
+                            </div>
                         </div>
-                        <!-- let package of pick.packageList -->
-                        <div *ngFor="let package of pick.packageList">
-                            <ion-card class="p-2" *ngIf="package.pickId==pick.pick.pickId">
-                                <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='0'">
 
-                                    <div class="list-value-section">
-                                        <div class="list-section-label" style="width:150px;">
-                                            {{uiLabels.packageSize}}
-                                        </div>
-                                        <div class="list-section-separator">
-                                            :
-                                        </div>
-
-                                        <div class="list-section-value" style="flex:100%">
-                                            {{package.size}}
-                                        </div>
-                                    </div>
-
-                                    <div class="list-value-section">
-                                        <div class="list-section-label" style="width:150px;">
-                                            {{uiLabels.NumOfPackage}}
-                                        </div>
-                                        <div class="list-section-separator">
-                                            :
-                                        </div>
-
-                                        <div class="list-section-value" style="flex:100%">
-                                            {{package.numberOfPackage}}
-                                        </div>
-                                    </div>
-
-                                    <div class="list-value-section">
-                                        <div class="list-section-label" style="width:150px;">
-                                            <span>{{uiLabels.packageQuantity}}</span>
-                                        </div>
-                                        <div class="list-section-separator">
-                                            :
-                                        </div>
-
-                                        <div class="list-section-value" style="flex:100%">
-                                            {{package.quantity}} {{pick.pick.disposalInfo.unit}}
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='1'">
-
-                                    <div class="list-value-section">
-                                        <div class="list-section-label" style="width:150px;">
-                                            <span>{{uiLabels.lumpsumQunatity}}</span>
-                                        </div>
-                                        <div class="list-section-separator">
-                                            :
-                                        </div>
-
-                                        <div class="list-section-value" style="flex:100%">
-                                            {{package.quantity}} {{pick.pick.disposalInfo.unit}}
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </ion-card>
-                        </div>
 
 
                     </div>

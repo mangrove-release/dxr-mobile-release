@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { AppConstant } from '../config/app-constant';
 import { LanguageService } from '../services/visitor-services/language.service';

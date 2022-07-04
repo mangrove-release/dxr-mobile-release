@@ -1,5 +1,6 @@
 export class AppConstant {
 
+    public static HIDE_PACKAGE_DEF_INFO = true;
     public static BASE64_STRING_PREFIX = "data:image/";
     public static COMPANY_SEAL_FILE_NAME_SUFFIX = "-company-seal.";
     public static USER_SEAL_FILE_NAME_SUFFIX = "-user-seal.";
@@ -42,7 +43,7 @@ export class AppConstant {
 
     public static MENIFESTO_STATUS_LOADED = "1";
     public static MENIFESTO_STATUS_UNLOADED = "2";
-    public static APP_VERSION = '1.7.22.06.16';
+    public static APP_VERSION = '1.8.22.07.04';
 
     public static PICK_LOAD_STATUS = "1";
     public static PICK_UNLOAD_STATUS = "2";

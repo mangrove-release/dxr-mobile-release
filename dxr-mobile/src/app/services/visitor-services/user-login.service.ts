@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AppComponent } from 'src/app/app.component';
 import { AppConstant } from 'src/app/config/app-constant';
-import { ChangeUserIdentification, UserIdentification } from 'src/app/models/backend-update/user-login';
+import { ChangeUserIdentification, RedirectUserInfo, UserIdentification } from 'src/app/models/backend-update/user-login';
 import { LanguageService } from './language.service';
 import { UriService } from './uri.service';
 import { UtilService } from './util.service';
@@ -15,6 +15,11 @@ import { UtilService } from './util.service';
 export class UserLoginService {
 
     constructor(private http: HttpClient, private uriService: UriService, private utilService: UtilService) { }
+
+    getMobileAppRedirectInfo(redirectUserInfoId: string): Observable<RedirectUserInfo> {
+        var url = '/mob/redirect/get-mob-app-redirect-info';
+        return this.uriService.callBackend(url, AppConstant.HTTP_POST, redirectUserInfoId);
+    }
 
     setUserLoginCookie(userId: string, userAuth: string, companyId: string) {
         this.utilService.setUserIdCookie(userId);

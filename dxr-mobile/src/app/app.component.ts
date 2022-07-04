@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ActionSheetController, ModalController } from '@ionic/angular';
 import { AppConstant } from './config/app-constant';
 import { CompanyContext } from './models/backend-fetch/dxr-system';
@@ -40,6 +40,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
 
+        debugger
         this.utilService.printLangDef(this.uiLabels, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);

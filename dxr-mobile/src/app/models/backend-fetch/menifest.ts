@@ -141,6 +141,7 @@ export interface TransportInfo {
     vehicleType: string;
     transportMethod: string;
     TransportComplateDate: string;
+    transportComplateDateB2: string;
     driverName: string;
 }
 

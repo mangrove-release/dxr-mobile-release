@@ -104,6 +104,8 @@ export class DriverHandoverComponent implements OnInit {
     componentCode: string = AppConstant.COMP.UNLOAD_HANDOVER;
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
+    hidePackageDefInfo = AppConstant.HIDE_PACKAGE_DEF_INFO;
+
     ngOnInit() {
 
         this.utilService.printLangDef(this.uiLabels, this.componentCode);

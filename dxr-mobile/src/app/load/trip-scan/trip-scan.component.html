@@ -19,7 +19,8 @@
         <ion-header class="row header">
             <ion-title>{{uiLabels.tripInfo}}</ion-title>
             <ion-button (click)="showCompanyTripList()" style="margin-right: 15px;">{{uiLabels.tripListButton}}</ion-button>
-            <ion-button *ngIf="driverTripPlan && driverTripPlan.tripInfoId" (click)="showWastePickList()" style="margin-right: 15px;">{{uiLabels.wasteList}}</ion-button>
+            <!-- <ion-button *ngIf="driverTripPlan && driverTripPlan.tripInfoId" (click)="showWastePickList()" style="margin-right: 15px;">{{uiLabels.wasteList}}</ion-button> -->
+            <ion-button *ngIf="driverTripPlan && driverTripPlan.tripInfoId" s (click)="handOverButton()" style="margin-right: 25px;">{{uiLabels.handOverButton}}</ion-button>
         </ion-header>
 
         <div class="col" *ngIf="driverTripPlan && driverTripPlan.tripInfoId" style="margin-bottom: 65px;">

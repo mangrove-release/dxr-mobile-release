@@ -48,7 +48,8 @@ export class PackageScanComponent implements OnInit {
         lumpsumQunatity: "Lumpsum Quantity",
         confirmReceiveButton: "Confirm Receive",
         pickStatusLoaded: "Loaded",
-        confirmLoadToast: "Waste load complete"
+        confirmLoadToast: "Waste load complete",
+        pickAlreadyLoadToast: 'Pick are already loaded'
     }
 
     companyId: string = this.utilService.getCompanyIdCookie();
@@ -81,6 +82,8 @@ export class PackageScanComponent implements OnInit {
 
     componentCode: string = AppConstant.COMP.LOAD_PACKAGE_SCAN;
     isSystemAdmin: boolean = this.utilService.languageEditMode();
+
+    hidePackageDefInfo = AppConstant.HIDE_PACKAGE_DEF_INFO;
 
     ngOnInit() {
 
@@ -166,26 +169,33 @@ export class PackageScanComponent implements OnInit {
         var handoverPickIds: string[] = [];
         this.loadPackageView.wasteWisePickPackageList.forEach(element => {
             element.pickList.forEach(eachPick => {
-                handoverPickIds.push(eachPick.pick.pickId);
-            })
+                if (eachPick.pick.loadStatus != AppConstant.PICK_LOAD_STATUS && eachPick.pick.loadStatus != AppConstant.PICK_UNLOAD_STATUS) {
+                    handoverPickIds.push(eachPick.pick.pickId);
+                }
+            });
 
-        })
+        });
 
-        this.driverDashboardService.confirmHandover(handoverPickIds).subscribe(response => {
-            if (response) {
-                this.selectedTrip.pickList = response;
+        if (handoverPickIds && handoverPickIds.length > 0) {
 
-                this.loadPackageView = this.driverDashboardService.preparePackageInfo(this.selectedTrip, this.scannedPackgeInfo, this.transporterCompanyInfo, this.dumperCompanyInfo);
+            this.driverDashboardService.confirmHandover(handoverPickIds).subscribe(response => {
+                if (response) {
+                    this.selectedTrip.pickList = response;
 
-                this.handoverConfirmed = true;
+                    this.loadPackageView = this.driverDashboardService.preparePackageInfo(this.selectedTrip, this.scannedPackgeInfo, this.transporterCompanyInfo, this.dumperCompanyInfo);
 
-                this.driverDashboardService.presentToast(this.uiLabels.confirmLoadToast, 3000);
+                    // this.handoverConfirmed = true;
 
-                this.generateMenifesto();
+                    this.driverDashboardService.presentToast(this.uiLabels.confirmLoadToast, 3000);
 
-                this.saveDumpingEmissionInfo(handoverPickIds);
-            }
-        })
+                    this.generateMenifesto();
+
+                    this.saveDumpingEmissionInfo(handoverPickIds);
+                }
+            });
+        } else {
+            this.utilService.showSnackbar(this.uiLabels.pickAlreadyLoadToast, 3000);
+        }
 
     }
 
@@ -299,7 +309,8 @@ export class PackageScanComponent implements OnInit {
             vehicleNo: "",
             vehicleType: "",
             transportMethod: "",
-            TransportComplateDate: "",
+            TransportComplateDate: this.selectedTrip.pickUpDate,
+            transportComplateDateB2: "",
             driverName: "",
         }
 
@@ -312,12 +323,12 @@ export class PackageScanComponent implements OnInit {
             zipCode: processor.companyZipCode,
             address: processor.companyAddress,
             contactNo: processor.contactNo,
-            processingComplateDate: menifesto.date,
-            disposeComplateDate: menifesto.date,
+            processingComplateDate: "",
+            disposeComplateDate: "",
 
         }
 
-        manualManifesto.date = menifesto.date;
+        manualManifesto.date = this.selectedTrip.pickUpDate;
         manualManifesto.deliveryNo = "";
         manualManifesto.manifestoNo = menifesto.menifestoUniqueId;
         manualManifesto.refNo = "";
@@ -359,7 +370,7 @@ export class PackageScanComponent implements OnInit {
                         var menifesto: MenifestoInfo = {
                             menifestoInfoId: id,
                             menifestoUniqueId: menifestoUniqueId,
-                            date: this.selectedTrip.pickUpDate,
+                            date: "",
                             projectId: projectAndProjectId[0],
                             tripIds: [this.selectedTrip.tripInfoId],
                             tripIdDef: [],

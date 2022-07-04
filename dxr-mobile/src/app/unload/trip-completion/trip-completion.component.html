@@ -260,7 +260,7 @@
                                 <label>{{uiLabels.packageList}}</label>
                             </div>
                             <!-- let package of pick.packageList -->
-                            <div *ngFor="let package of pick.packageList">
+                            <div [hidden]="hidePackageDefInfo" *ngFor="let package of pick.packageList">
                                 <ion-card class="p-2" *ngIf="package.pickId==pick.pick.pickId">
                                     <div class="three-section-list-row wrap" *ngIf="package.isLumpsum=='0'">
 

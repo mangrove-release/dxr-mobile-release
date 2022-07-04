@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AppComponent } from './app.component';
 import { UserLoginComponent } from './visitor/user-login/user-login.component';
 
 const routes: Routes = [
@@ -48,11 +49,15 @@ const routes: Routes = [
     //     path: 'dumper',
     //     loadChildren: () => import('./dumper/dumper.module').then(m => m.DumperPageModule)
     // },
+
+    {
+        path: 'login/:redirectSessionId',
+        component: UserLoginComponent
+    },
     {
         path: 'login',
         component: UserLoginComponent
     },
-
     {
         path: '',
         redirectTo: '/home',
@@ -63,10 +68,10 @@ const routes: Routes = [
         redirectTo: '/home',
         pathMatch: 'full'
     },
-  {
-    path: 'super-admin',
-    loadChildren: () => import('./super-admin/super-admin.module').then( m => m.SuperAdminPageModule)
-  },
+    {
+        path: 'super-admin',
+        loadChildren: () => import('./super-admin/super-admin.module').then(m => m.SuperAdminPageModule)
+    },
 
 
 ];
