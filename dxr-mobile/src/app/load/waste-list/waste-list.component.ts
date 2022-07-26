@@ -62,7 +62,7 @@ export class WasteListComponent implements OnInit {
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
     ngOnInit() {
-        debugger
+
         // this.utilService.printLangDef(this.uiLabels, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
@@ -90,6 +90,10 @@ export class WasteListComponent implements OnInit {
         this.driverTabsDataService.setSelectedPickForPackageDef(selectedPick);
 
         this.router.navigate([AppConstant.LOAD_MENU_PARENT_SEGMENT, { outlets: { driverOutlet: [AppConstant.DUMPER_PACKAGE_DEF_MENU_URL] } }]);
+    }
+
+    async close() {
+        await this.modalController.dismiss();
     }
 
 }

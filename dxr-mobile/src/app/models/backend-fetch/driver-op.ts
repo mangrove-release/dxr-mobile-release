@@ -1,3 +1,4 @@
+import { KeyValue } from "@angular/common";
 import { ScaleSettingInfo, VehicleInfoFetch } from "./company-settings-fetch";
 import { DisposalInfoFetch } from "./initiate-project-fetch";
 
@@ -12,6 +13,7 @@ export interface DriverTripPlan {
     driverLicenseNo: string;
     pickList: PickInfo[];
     vehicleInfo: VehicleInfoFetch;
+    pickGroup: KeyValue<string, any>;
 }
 
 export interface PickInfo {
@@ -108,7 +110,8 @@ export interface DumpingEmissionInfo {
     wasteItemId: string;
     wasteTitle: string;
     unit: string;
-    pickId: string[];
+    pickId: string;
+    projectInfoId: string;
 }
 
 export interface ProcessorEmissionInfo {
@@ -119,7 +122,8 @@ export interface ProcessorEmissionInfo {
     wasteItemId: string;
     wasteTitle: string;
     unit: string;
-    pickId: string[];
+    pickId: string;
+    projectInfoId: string;
 }
 
 export interface CompanyTripFetch {
@@ -191,6 +195,10 @@ export interface WeightCertificateReportParameter {
     receipsonistSealLabel: string;
     companySealphoto: string;
     recipsonistSealPhoto: string;
+    wasteItemLabel: string;
+    adjaustmentLabel: string;
+    containerLabel: string;
+    netWeightLabel: string;
 }
 
 export interface WeightCertificateWaste {

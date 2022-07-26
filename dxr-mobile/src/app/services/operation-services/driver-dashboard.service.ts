@@ -6,8 +6,10 @@ import { AppConstant } from 'src/app/config/app-constant';
 import { AgreementInfo } from 'src/app/models/backend-fetch/business-agreement';
 import { ScaleSettingInfo } from 'src/app/models/backend-fetch/company-settings-fetch';
 import { CompanyInfo, CompanyTripFetch, DriverTripFetch, DriverTripPlan, DumpingEmissionInfo, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, ProcessorEmissionInfo, TripQrData, WasteWisePickPackageInfo, WeightCertificateInfo, WeightCertificateReportData, WeightCertificateReportParameter, WeightCertificateWaste } from 'src/app/models/backend-fetch/driver-op';
+import { MenifestoInfo } from 'src/app/models/backend-fetch/menifest';
 import { environment } from 'src/environments/environment';
 import { UriService } from '../visitor-services/uri.service';
+import { UtilService } from '../visitor-services/util.service';
 
 @Injectable({
     providedIn: 'root'
@@ -15,18 +17,82 @@ import { UriService } from '../visitor-services/uri.service';
 export class DriverDashboardService {
 
 
-    constructor(private uriService: UriService, public toastController: ToastController, private httpClient: HttpClient) { }
+    constructor(private uriService: UriService, public toastController: ToastController, private httpClient: HttpClient, private utilService: UtilService) { }
 
     driverTripPlan: DriverTripPlan[] = []
 
+    prepareProcessingEmissionData(loadPackageView: LoadPackageView, driverTripPlan: DriverTripPlan, companyId: string): ProcessorEmissionInfo[] {
+
+        var processingEmissionInfoList: ProcessorEmissionInfo[] = [];
+
+        if (loadPackageView && loadPackageView.wasteWisePickPackageList) {
+            loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
+
+                if (eachWaste && eachWaste.pickList) {
+                    eachWaste.pickList.forEach(eachPick => {
+                        var id: string = this.utilService.generateUniqueId();
+
+                        var processingEmissionInfo: ProcessorEmissionInfo = {
+                            processingEmissionId: id,
+                            companyId: companyId,
+                            quantity: eachPick.pick.quantity,
+                            dateTime: driverTripPlan.pickUpDate,
+                            wasteItemId: eachWaste.wasteId,
+                            wasteTitle: eachWaste.wasteTitle,
+                            unit: eachPick.pick.disposalInfo.unit,
+                            pickId: eachPick.pick.pickId,
+                            projectInfoId: eachPick.pick.projetId
+                        }
+
+                        processingEmissionInfoList.push(processingEmissionInfo);
+                    });
+                }
+            });
+        }
+
+        return processingEmissionInfoList;
+    }
+
+    downloadReport(reportData: any) {
+
+        var url = this.BASE_URL + '/menifesto/generate-report';
+        var url = 'www.dxrreleases.com//menifesto/generate-report';
+
+        this.httpClient.post(url, reportData, {
+            responseType: 'blob'
+        }).subscribe((res) => {
+            if (res) {
+                let blob = new Blob([res], { type: 'application/pdf' });
+                let pdfUrl = window.URL.createObjectURL(blob);
+
+                var PDF_link = document.createElement('a');
+                PDF_link.href = pdfUrl;
+
+                //   TO OPEN PDF ON BROWSER IN NEW TAB
+                window.open(pdfUrl, '_blank');
+                //   TO DOWNLOAD PDF TO YOUR COMPUTER
+                // PDF_link.download = "TestFile.pdf";
+                // PDF_link.click();
+            }
+        })
+    }
+
+    getManifestoData(pickId: string): Observable<MenifestoInfo> {
+        var url = '/mob/menifesto/get-menifesto-by-pick';
+        return this.uriService.callBackend(url, AppConstant.HTTP_POST, pickId);
+    }
+
+    getWeightCertificateInfo(pickIdList: string[]): Observable<WeightCertificateInfo> {
+        var url = '/mob/load/get-weight-cert';
+        return this.uriService.callBackend(url, AppConstant.HTTP_POST, pickIdList.join('|'));
+    }
+
     getCompanyTrip(driverTripFetch: CompanyTripFetch): Observable<DriverTripPlan[]> {
-        console.log(JSON.stringify(driverTripFetch));
         var url = '/mob/load/company-trip-plan';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, driverTripFetch);
     }
 
     getDriverTrip(driverTripFetch: DriverTripFetch): Observable<DriverTripPlan[]> {
-        console.log(JSON.stringify(driverTripFetch));
         var url = '/mob/load/trip-plan';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, driverTripFetch);
     }
@@ -59,86 +125,68 @@ export class DriverDashboardService {
         }, {});
     }
 
-
-
     getTripInfo(tripInfoId: string): Observable<DriverTripPlan> {
-        console.log(JSON.stringify(tripInfoId));
         var url = '/mob/load/scanned-trip-plan';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, tripInfoId);
     }
 
     getPartnerCompanyInfo(companyId: string): Observable<CompanyInfo> {
-        // console.log(JSON.stringify(companyId));
         var url = '/mob/load/partner-com-info';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, companyId);
     }
 
     savePackageDef(newPackage: PackageInfo): Observable<PackageInfo> {
-        console.log(JSON.stringify(newPackage));
         var url = '/mob/load/save-package-info';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, newPackage);
     }
 
     getPickPackageDefList(pickId: string): Observable<PackageInfo[]> {
-        console.log(JSON.stringify(pickId));
         var url = '/mob/load/get-package-info';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, pickId);
     }
 
     getTripPackageDefList(tripId: string): Observable<PackageInfo[]> {
-        console.log(JSON.stringify(tripId));
         var url = '/mob/load/get-trip-package-info';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, tripId);
     }
 
     getHandoverPackageDefList(handoverPickIds: string[]): Observable<PackageInfo[]> {
-        console.log(JSON.stringify(handoverPickIds));
         var url = '/mob/load/get-handover-packages';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, handoverPickIds);
     }
 
     confirmHandover(handoverPickIds: string[]): Observable<PickInfo[]> {
-        console.log(JSON.stringify(handoverPickIds));
         var url = '/mob/load/confirm-handover-picks';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, handoverPickIds);
     }
 
     getCurrentDate(): Observable<any> {
-        // console.log(JSON.stringify(driverTripFetch));
         var url = '/mob/load/current-date';
         return this.uriService.callBackend(url, AppConstant.HTTP_GET);
     }
 
     confirmReceivedWeight(pickList: PickInfo[]): Observable<string> {
-        console.log(JSON.stringify(pickList));
         var url = '/mob/load/confirm-received-weight';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, pickList);
     }
 
     confirmUnload(handoverPickIds: string[]): Observable<PickInfo[]> {
-        console.log(JSON.stringify(handoverPickIds));
         var url = '/mob/load/confirm-unload-picks';
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, handoverPickIds);
     }
 
     saveDumpingEmissionInfo(dumpingEmissionInfo: DumpingEmissionInfo[]): Observable<any> {
         var url = '/carbon/load-items';
-        // var options: any = this.uriService.getHttpOptions();
-        // return this.http.post<string>(url, dumpingEmissionInfo, options);
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, dumpingEmissionInfo);
     }
 
     saveProcessorEmissionInfo(processorEmissionInfo: ProcessorEmissionInfo[]): Observable<any> {
         var url = '/carbon/unload-items';
-        // var options: any = this.uriService.getHttpOptions();
-        // return this.http.post<string>(url, processorEmissionInfo, options);
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, processorEmissionInfo);
     }
 
     saveMenifestoUnloadStatus(handoverPickIds: string[]): Observable<string[]> {
         var url = '/mob/menifesto/menifesto-unload';
-        // var options: any = this.uriService.getHttpOptions();
-        // return this.http.post<string>(url, handoverPickIds, options);
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, handoverPickIds);
     }
 
@@ -206,7 +254,7 @@ export class DriverDashboardService {
         return loadPackage;
     }
 
-    generateWasteHandoverQrCode(pickWisePackageList: PickWisePackage[], tripInfoId: string, companyId: string) {
+    generateWasteHandoverQrCodeFromPickWisePackage(pickWisePackageList: PickWisePackage[], tripInfoId: string, companyId: string) {
         var handoverWastePickAndPackage: HandoverWastePickAndPackage = {
             companyId: companyId,
             tripInfoId: tripInfoId,
@@ -216,6 +264,21 @@ export class DriverDashboardService {
 
         pickWisePackageList.forEach(element => {
             handoverWastePickAndPackage.pickIdList.push(element.pick.pickId);
+        });
+
+        return handoverWastePickAndPackage;
+    }
+
+    generateWasteHandoverQrCodeFromPickList(pickList: any[], tripInfoId: string, companyId: string) {
+        var handoverWastePickAndPackage: HandoverWastePickAndPackage = {
+            companyId: companyId,
+            tripInfoId: tripInfoId,
+            pickIdList: [],
+
+        }
+
+        pickList.forEach(element => {
+            handoverWastePickAndPackage.pickIdList.push(element.pickId);
         });
 
         return handoverWastePickAndPackage;
@@ -250,8 +313,11 @@ export class DriverDashboardService {
     BASE_URL: string = environment.serverUrl;
 
     generateReport(reportData: any) {
+        debugger
+        console.log(JSON.stringify(reportData));
 
         var url = this.BASE_URL + '/web/menifesto/generate-report';
+        // var url = 'https://www.dxrreleases.com/web/menifesto/generate-report';
 
         this.httpClient.post(url, reportData, {
             responseType: 'blob'
@@ -279,7 +345,7 @@ export class DriverDashboardService {
     }
 
     prepareWeightCertificateData(weightCertificateInfo: WeightCertificateInfo, uiLabels: any): WeightCertificateReportData {
-        debugger
+
         var weightCertificateData: WeightCertificateReportData = {
             designFile: AppConstant.WEIGHT_CERTIFICATE_DESIGN_FILE,
             outputName: AppConstant.WEIGHT_CERTIFICATE_OUTPUT_NAME,
@@ -343,7 +409,11 @@ export class DriverDashboardService {
             companySealsLabel: uiLabels.companySealsLabel,
             receipsonistSealLabel: uiLabels.receipsonistSealLabel,
             companySealphoto: companySealPath,
-            recipsonistSealPhoto: userSealPath
+            recipsonistSealPhoto: userSealPath,
+            wasteItemLabel: uiLabels.wasteItemLabel,
+            adjaustmentLabel: uiLabels.adjaustmentLabel,
+            containerLabel: uiLabels.containerLabel,
+            netWeightLabel: uiLabels.netWeightLabel,
         }
 
         weightCertificateReportParameter.weightCertificateData = JSON.stringify(this.prepareWeightCertificateWasteList(weightCertificateInfo.wasteList));

@@ -51,4 +51,5 @@ export interface RedirectUserInfo {
     redirectMenuUrl: string;
     redirectMenuOutlet: string;
     userMenuAccess: string;
+    selectedDate: string;
 }

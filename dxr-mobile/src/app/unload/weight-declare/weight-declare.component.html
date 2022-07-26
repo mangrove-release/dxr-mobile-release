@@ -29,6 +29,7 @@
         <ion-header class="header row">
             <ion-title>{{uiLabels.tripPackageInfo}}</ion-title>
             <ion-button style="margin-right: 15px;" (click)="receivedWasteWeightConfirmation()">{{uiLabels.confirmPackageWeightButton}}</ion-button>
+            <ion-button style="margin-right: 15px;" (click)="generateWeightCertificate()">{{uiLabels.generateWeightDeclareCertificate}}</ion-button>
         </ion-header>
 
         <ion-card class="col p-2" *ngIf="handoverPackageView">

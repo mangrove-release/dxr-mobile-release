@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { QrScannerComponent } from 'src/app/common-directives/qr-scanner/qr-scanner.component';
 import { AppConstant } from 'src/app/config/app-constant';
-import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, TripQrData } from 'src/app/models/backend-fetch/driver-op';
+import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, TripQrData, WeightCertificateInfo, WeightCertificateReportData } from 'src/app/models/backend-fetch/driver-op';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
@@ -55,9 +55,7 @@ export class UnloadTripScanComponent implements OnInit {
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
     ngOnInit() {
-
         this.utilService.printLangDef(this.uiLabels, this.componentCode);
-
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
     }
 
@@ -77,7 +75,6 @@ export class UnloadTripScanComponent implements OnInit {
                 this.handoverWastePickAndPackage = data.data;
                 this.driverTabsDataService.setTransporterHandoverData(data.data);
                 this.getTransporterCompanyInfo(data.data);
-
             }
         });
     }
@@ -89,7 +86,7 @@ export class UnloadTripScanComponent implements OnInit {
                 this.driverTripPlan = response;
             }
 
-
+            this.getWeightCertificateInfo(handoverWastePickAndPackage.pickIdList);
         });
     }
 
@@ -116,6 +113,36 @@ export class UnloadTripScanComponent implements OnInit {
 
     verifyUnloadPackage() {
         this.router.navigate([AppConstant.UNLOAD_MENU_PARENT_SEGMENT, { outlets: { unloadOutlet: [AppConstant.VERIFY_PACKAGE_MENU_URL] } }]);
+    }
+
+    routeToWeightDeclare() {
+        this.router.navigate([AppConstant.UNLOAD_MENU_PARENT_SEGMENT, { outlets: { unloadOutlet: [AppConstant.WEIGHT_DECLARE_MENU_URL] } }]);
+    }
+
+    getWeightCertificateInfo(pickIdList: string[]) {
+
+        this.driverDashboardService.getWeightCertificateInfo(pickIdList).subscribe(response => {
+
+            if (response) {
+                this.driverTabsDataService.setWeightCertificateInfo(response);
+            }
+        });
+    }
+
+    generateWeightCertificate() {
+
+        var componentCode: string = AppConstant.COMP.UNLOAD_WEIGHT_DECLARE;
+        var weightCertificateLabel: any = this.languageService.getUiLabels(componentCode, AppConstant.UI_LABEL_TEXT);
+
+        var weightCertificateInfo: WeightCertificateInfo = this.driverTabsDataService.getWeightCertificateInfo();
+
+        if (weightCertificateInfo && weightCertificateInfo.weightCertificateInfoId) {
+            var weightCertificateData: WeightCertificateReportData = this.driverDashboardService.prepareWeightCertificateData(weightCertificateInfo, weightCertificateLabel);
+
+            this.driverDashboardService.generateReport(weightCertificateData);
+        } else {
+            this.utilService.showSnackbar(weightCertificateLabel.certificateDataNotFoundToast, 3000);
+        }
     }
 
 }

@@ -171,7 +171,7 @@ export class UtilService {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => {
-            console.log(reader.result);
+            // console.log(reader.result);
             if (reader.result) {
                 convertFile = (reader.result.toString());
 

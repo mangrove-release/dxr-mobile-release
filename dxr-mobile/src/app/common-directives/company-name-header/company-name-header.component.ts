@@ -39,7 +39,7 @@ export class CompanyNameHeaderComponent implements OnInit {
     }
 
     getOwnCompanyInfo() {
-        debugger
+
         this.driverDashboardService.getPartnerCompanyInfo(this.companyId).subscribe(response => {
             if (response) {
                 this.currentCompanyInfo = response;

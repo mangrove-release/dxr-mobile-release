@@ -54,23 +54,19 @@ export class TripScanComponent implements OnInit {
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
     ngOnInit() {
-        debugger
+
 
         var redirectTripInfo: TripQrData = this.driverTabsDataService.getScannedTripInfo();
 
         if (redirectTripInfo) {
-            console.log(redirectTripInfo.tripInfoId);
-
             this.driverDashboardService.getTripInfo(redirectTripInfo.tripInfoId).subscribe(response => {
                 if (response) {
-                    console.log('tripInfo');
                     this.driverTripPlan = response;
                     this.driverTabsDataService.setScannedTripPlan(response);
                 }
 
                 this.driverDashboardService.getPartnerCompanyInfo(redirectTripInfo.driverCompanyId).subscribe(response => {
                     if (response) {
-                        console.log('transporterInfo');
                         this.transporterCompanyInfo = response;
                         this.driverTabsDataService.setTransporterCompanyInfo(response);
                     }
@@ -178,7 +174,7 @@ export class TripScanComponent implements OnInit {
 
 
     prepareScannedTripInfo(data: TripQrData) {
-        debugger
+
         this.scannedTripInfo = data;
         var tripInfoId = data.tripInfoId;
         var pickLocation = data.pickLocation;
@@ -196,7 +192,6 @@ export class TripScanComponent implements OnInit {
             if (response) {
                 this.driverTripPlan = response;
                 this.driverTabsDataService.setScannedTripPlan(response);
-                // console.log(JSON.stringify(data));
             }
             this.viewContent = true;
 

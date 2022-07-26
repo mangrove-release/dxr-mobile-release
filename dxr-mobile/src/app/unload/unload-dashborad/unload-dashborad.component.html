@@ -32,8 +32,8 @@
         <ion-title>{{uiLabels.tripList}}</ion-title>
     </ion-header>
     <div style="margin-bottom: 65px;">
-        <ion-card class="column" *ngFor="let item of driverTripPlan">
-            <ion-card-header class="three-section-list-row" style="color: black;">
+        <mat-expansion-panel class="column" *ngFor="let item of driverTripPlan" style="margin: 5px;">
+            <mat-expansion-panel-header class="three-section-list-row" style="color: black;background-color: rgb(236, 236, 236);">
 
                 <div class="list-value-section">
                     <div class="list-section-label flex-15">
@@ -48,12 +48,24 @@
                     </div>
 
                     <div class="list-section-value">
-                        <ion-button (click)="selectedTrip(item)" [routerLink]="['/unload',{outlets: { unloadOutlet: ['driver-handover']}}]">{{uiLabels.pickListButton}}</ion-button>
+                        <ion-button>{{uiLabels.pickListButton}}</ion-button>
                     </div>
                 </div>
+            </mat-expansion-panel-header>
 
+            <div class="row" style="padding-left: 20px;padding-top: 10px;" *ngFor="let eachPickGroup of item.pickGroup| keyvalue">
+                <div class="col fx-2">
+                    <label>{{uiLabels.dropLocation}} : {{eachPickGroup.value[0].disposalInfo.dropZipCode}}, {{eachPickGroup.key}}</label>
+                </div>
 
-            </ion-card-header>
-        </ion-card>
+                <div class="col fx-1 right">
+                    <ion-button style="margin-right: 10px;" (click)="generateHandoverQrCode(item,eachPickGroup.value)">{{uiLabels.generateWasteUnloadQrCode}}</ion-button>
+                </div>
+
+                <div class="col fx-1 right">
+                    <ion-button style="margin-right: 10px;" (click)="showDropLocationUnloadDetails(item,eachPickGroup.value)">{{uiLabels.dropUnloadDetails}}</ion-button>
+                </div>
+            </div>
+        </mat-expansion-panel>
     </div>
 </ion-content>

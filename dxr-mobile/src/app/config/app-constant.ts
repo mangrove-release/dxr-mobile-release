@@ -1,5 +1,9 @@
 export class AppConstant {
 
+    public static MANIFESTO_REPORT_FILE_NAME = "final_manifesto_report_2022-07-25.rptdesign";
+    public static MANIFESTO_REPORT_TYPE = "final_manifesto_report.pdf";
+    public static REPORT_FILE_FORMAT_PDF = "pdf";
+
     public static HIDE_PACKAGE_DEF_INFO = true;
     public static BASE64_STRING_PREFIX = "data:image/";
     public static COMPANY_SEAL_FILE_NAME_SUFFIX = "-company-seal.";
@@ -33,7 +37,7 @@ export class AppConstant {
 
     public static MANIFESTO_NOTIFICAIONT_ID = "notificationType008";
 
-    public static WEIGHT_CERTIFICATE_DESIGN_FILE = "weight_certificate_report.rptdesign";
+    public static WEIGHT_CERTIFICATE_DESIGN_FILE = "weight_certificate_report _2022-07-25.rptdesign";
     public static WEIGHT_CERTIFICATE_OUTPUT_NAME = "weight_certificate_report";
     public static WEIGHT_CERTIFICATE_FORMAT_PDF = "pdf";
     public static WEIGHT_CERTIFICATE_FORMAT_HTML = "html";
@@ -43,7 +47,7 @@ export class AppConstant {
 
     public static MENIFESTO_STATUS_LOADED = "1";
     public static MENIFESTO_STATUS_UNLOADED = "2";
-    public static APP_VERSION = '1.8.22.07.04';
+    public static APP_VERSION = '1.8.22.07.26';
 
     public static PICK_LOAD_STATUS = "1";
     public static PICK_UNLOAD_STATUS = "2";
@@ -418,6 +422,7 @@ export class AppConstant {
 
         COMPANY_NAME_HEADER_COMP: "company_name_header_comp",
         COMPANY_TRIP_LIST_DASHBOARD: 'company_trip_list_dashboard',
+        MENIFESTO_LIST: 'menifestoList',
 
     };
     public static Tabs = [

@@ -39,18 +39,20 @@ export class UserLoginComponent implements OnInit {
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
     ngOnInit() {
-        debugger
+
 
         this.activatedroute.paramMap.subscribe(params => {
+
             var redirectUserInfoId = params.get('redirectSessionId') ? params.get('redirectSessionId') : null;
 
             if (redirectUserInfoId) {
                 this.userLoginService.getMobileAppRedirectInfo(redirectUserInfoId).subscribe(response => {
+
                     if (response) {
+                        this.driverTabsDataService.setRedirectUserInfo(response);
                         this.appComponent.prepareUserAccessAndMenu(JSON.parse(response.userMenuAccess));
                         this.userLoginService.setUserLoginCookie(response.userId, response.userAuth, response.companyId);
                         this.driverTabsDataService.setScannedTripInfo(response.tripQrData);
-                        console.log(response.userId, response.userAuth, response.companyId);
                         this.router.navigate([response.redirectMenuUrlParentSegment, { outlets: { [response.redirectMenuOutlet]: [response.redirectMenuUrl] } }]);
                     }
                 });
@@ -77,7 +79,7 @@ export class UserLoginComponent implements OnInit {
                 userIdentification.userAuth = encryptedPass;
 
                 this.userLoginService.login(userIdentification).subscribe(data => {
-                    debugger
+
                     if (data) {
                         if (data == AppConstant.ONE_TIME_ACCESS_FLAG_TRUE) {
                             this.redirectToFirstLogin();

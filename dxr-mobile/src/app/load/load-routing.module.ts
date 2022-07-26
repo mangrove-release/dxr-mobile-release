@@ -31,9 +31,14 @@ const routes: Routes = [
                 component: PackageScanComponent,
                 outlet: 'driverOutlet'
             },
+            // {
+            //     path: 'dumper-trip-scan',
+            //     component: TripScanComponent,
+            //     outlet: 'driverOutlet'
+            // },
             {
                 path: 'dumper-trip-scan',
-                component: TripScanComponent,
+                component: CompanyTripDashboardComponent,
                 outlet: 'driverOutlet'
             },
             {

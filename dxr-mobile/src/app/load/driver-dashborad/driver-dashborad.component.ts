@@ -81,7 +81,6 @@ export class DriverDashboradComponent implements OnInit {
             if (data) {
                 this.driverTripPlan = data;
                 this.driverTabsDataService.setDriverTripPlan(data);
-                console.log(JSON.stringify(data));
             }
             this.viewContent = true;
 

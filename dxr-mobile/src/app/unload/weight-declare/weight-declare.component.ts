@@ -5,9 +5,11 @@ import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { QrScannerComponent } from 'src/app/common-directives/qr-scanner/qr-scanner.component';
 import { AppConstant } from 'src/app/config/app-constant';
 import { ScaleSettingInfo } from 'src/app/models/backend-fetch/company-settings-fetch';
-import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, WasteWisePickPackageInfo, WeightCertificateInfo } from 'src/app/models/backend-fetch/driver-op';
+import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, ProcessorEmissionInfo, WasteWisePickPackageInfo, WeightCertificateInfo, WeightCertificateReportData } from 'src/app/models/backend-fetch/driver-op';
+import { NotificationSetInfo } from 'src/app/models/backend-fetch/menifest';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
+import { MenifestoService } from 'src/app/services/operation-services/menifesto.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
 import { UtilService } from 'src/app/services/visitor-services/util.service';
 
@@ -18,7 +20,7 @@ import { UtilService } from 'src/app/services/visitor-services/util.service';
 })
 export class WeightDeclareComponent implements OnInit {
 
-    constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private router: Router, public modalController: ModalController, private languageService: LanguageService, private toastController: ToastController) { }
+    constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private router: Router, public modalController: ModalController, private languageService: LanguageService, private toastController: ToastController, private menifestoService: MenifestoService) { }
 
     uiLabels: any = {
         pageHeader: "Verify Waste Package",
@@ -63,6 +65,7 @@ export class WeightDeclareComponent implements OnInit {
     scannedPackgeInfo: PackageInfo[] = [];
 
     selectedTrip: DriverTripPlan;
+    // driverTripPlan: DriverTripPlan;
 
     loadPackageView: LoadPackageView = {} as LoadPackageView;
 
@@ -102,35 +105,55 @@ export class WeightDeclareComponent implements OnInit {
 
         this.handoverWastePickAndPackage = this.driverTabsDataService.getTransporterHandoverData();
 
-        this.getCompanyScaleList();
-
+        this.getCompanyScaleList(() => {
+            this.prepareCertificateData();
+        })
 
     }
 
-    getCompanyScaleList() {
+    prepareCertificateData() {
+        var fetchedCertificateDate = this.driverTabsDataService.getWeightCertificateInfo();
+
+        if (fetchedCertificateDate && fetchedCertificateDate.weightCertificateInfoId) {
+
+            this.weightCertificateInfo = JSON.parse(JSON.stringify(fetchedCertificateDate));
+
+            this.scaleList.forEach(eachScale => {
+                if (eachScale.scaleId == this.weightCertificateInfo.scaleInfo.scaleId) {
+                    this.selectedScale = JSON.parse(JSON.stringify(eachScale));
+                }
+            });
+        }
+    }
+
+    getCompanyScaleList(callBack: any) {
 
         this.driverDashboardService.getCompanyScaleList(this.companyId).subscribe(res => {
             if (res && res.length > 0) {
                 this.scaleList = res;
                 this.weightCertificateInfo.scaleInfo = this.scaleList[0];
+
+                callBack();
             }
 
             if (this.handoverWastePickAndPackage) {
                 this.getTripInfo(this.handoverWastePickAndPackage);
             }
-        })
+        });
     }
 
     saveWeightCertificateInfo() {
         this.weightCertificateInfo = this.prepareWeightCertificateInfo(this.weightCertificateInfo);
-        debugger
+
         this.driverDashboardService.saveWeightCertificateInfo(this.weightCertificateInfo).subscribe(response => {
             if (response) {
                 this.driverTabsDataService.setWeightCertificateInfo(response);
             }
 
-            this.router.navigate([AppConstant.UNLOAD_MENU_PARENT_SEGMENT, { outlets: { unloadOutlet: [AppConstant.PROCESSOR_RECEIVE_MENU_URL] } }]);
-        })
+            this.confirmUnload();
+
+            // this.router.navigate([AppConstant.UNLOAD_MENU_PARENT_SEGMENT, { outlets: { unloadOutlet: [AppConstant.PROCESSOR_RECEIVE_MENU_URL] } }]);
+        });
     }
 
     prepareWeightCertificateInfo(weightCertificateInfo: WeightCertificateInfo) {
@@ -223,18 +246,68 @@ export class WeightDeclareComponent implements OnInit {
 
         this.driverDashboardService.confirmReceivedWeight(pickList).subscribe(respose => {
             if (respose && respose == AppConstant.TRUE_STATEMENT) {
-                this.driverDashboardService.presentToast(this.uiLabels.weightSaveToast, 3000);
+                // this.driverDashboardService.presentToast(this.uiLabels.weightSaveToast, 3000);
 
             }
 
             this.saveWeightCertificateInfo();
-
-
         });
-
-
     }
 
+    confirmUnload() {
 
+        this.driverDashboardService.confirmUnload(this.handoverWastePickAndPackage.pickIdList).subscribe(response => {
+            if (response) {
+                this.driverDashboardService.presentToast(this.uiLabels.pickUnloadConfirmToast, 3000);
+                // this.preparePickList(response);
 
+                this.saveProcessorEmissionInfo();
+
+                this.updateMenifestoStatus(this.handoverWastePickAndPackage.pickIdList);
+            }
+
+        });
+    }
+
+    saveProcessorEmissionInfo() {
+        var processingEmissionInfoList: ProcessorEmissionInfo[] = this.driverDashboardService.prepareProcessingEmissionData(this.loadPackageView, this.selectedTrip, this.processorCompanyInfo.companyId);
+
+        this.driverDashboardService.saveProcessorEmissionInfo(processingEmissionInfoList).subscribe(response => {
+
+        })
+    }
+
+    updateMenifestoStatus(handoverPickIds: string[]) {
+
+        this.driverDashboardService.saveMenifestoUnloadStatus(handoverPickIds).subscribe(response => {
+            if (response) {
+                response.forEach(element => {
+                    var notificationSetInfo: NotificationSetInfo = {
+                        contextId: AppConstant.MANIFESTO_NOTIFICAIONT_ID,
+                        companyId: this.transporterCompanyInfo.companyId,
+                        baseTableId: element,
+                        trigerUserInfoId: this.utilService.getUserIdCookie(),
+                        status: AppConstant.MANIFESTO_UNLOAD_STATUS
+                    }
+
+                    this.menifestoService.generateNotiForManifestoCreate(notificationSetInfo).subscribe(notification => {
+
+                    });
+                });
+
+            }
+        });
+    }
+
+    generateWeightCertificate() {
+        var weightCertificateInfo: WeightCertificateInfo = this.driverTabsDataService.getWeightCertificateInfo();
+
+        if (weightCertificateInfo && weightCertificateInfo.weightCertificateInfoId) {
+            var weightCertificateData: WeightCertificateReportData = this.driverDashboardService.prepareWeightCertificateData(weightCertificateInfo, this.uiLabels);
+
+            this.driverDashboardService.generateReport(weightCertificateData);
+        } else {
+            this.utilService.showSnackbar(this.uiLabels.certificateDataNotFoundToast, 3000);
+        }
+    }
 }

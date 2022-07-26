@@ -18,7 +18,7 @@ export class HomePage implements OnInit {
     appVersion = AppConstant.APP_VERSION;
 
     ngOnInit() {
-        debugger
+
         const isIos = this.utilService.isIos();
         const isInStandaloneMode = this.utilService.isInStandaloneMode();
         if (isIos && !isInStandaloneMode) {

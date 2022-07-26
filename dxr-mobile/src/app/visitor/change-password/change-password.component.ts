@@ -68,9 +68,6 @@ export class ChangePasswordComponent implements OnInit {
             this.fromUserProfile = false;
         }
 
-        console.log(this.userId);
-        console.log(this.fromUserProfile);
-
     }
 
     sendAccessCode() {

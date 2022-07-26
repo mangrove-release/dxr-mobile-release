@@ -57,21 +57,21 @@
 
                 <mat-expansion-panel *ngFor="let eachPickGroup of pickGroup | keyvalue" [expanded]="true" style="margin: 5px 10px;">
                     <mat-expansion-panel-header class="row" style="padding-left: 40px; background-color: rgb(231, 231, 231);">
-                        <div class="col fx-2" style="font-size: 18px;font-weight:550">
+                        <div class="col fx-2" style="font-size: 16px;font-weight:550">
                             <label>{{uiLabels.dropLocation}} : {{eachPickGroup.value[0].disposalInfo.dropZipCode}}, {{eachPickGroup.key}}</label>
                         </div>
 
-                        <div class="col fx-1 right">
+                        <!-- <div class="col fx-1 right">
                             <ion-button style="margin-right: 10px;" (click)="generateHandoverQrCode(eachPickGroup.value)">{{uiLabels.generateWasteUnloadQrCode}}</ion-button>
-                        </div>
+                        </div> -->
                     </mat-expansion-panel-header>
                     <div *ngFor="let eachGroupedPick of eachPickGroup.value">
                         <div *ngFor="let dispose of loadPackageView.wasteWisePickPackageList">
-                            <mat-expansion-panel *ngIf="eachGroupedPick.disposalInfo.wasteItemId == dispose.wasteId" [expanded]="true" style="margin: 5px 0px;">
-                                <mat-expansion-panel-header style="background-color: rgb(244, 244, 244);">
+                            <mat-expansion-panel *ngIf="eachGroupedPick.disposalInfo.wasteItemId == dispose.wasteId" style="margin: 5px 0px;">
+                                <mat-expansion-panel-header style="background-color: rgb(244, 244, 244);padding: 0px 10px;">
                                     <div class="three-section-list-row" style="font-weight: 500;">
                                         <div class="list-value-section">
-                                            <div class="list-section-label" style="width:210px;">
+                                            <div class="list-section-label" style="width:150px;">
                                                 {{uiLabels.wasteItemTitle}}
                                             </div>
                                             <div class="list-section-separator">
@@ -84,9 +84,9 @@
                                         </div>
                                     </div>
                                 </mat-expansion-panel-header>
-                                <div *ngFor="let pick of dispose.pickList, index as i">
-                                    <div *ngIf="eachGroupedPick.pickId == pick.pick.pickId">
-                                        <div class="three-section-list-row" style="border-bottom: 1px solid gainsboro;padding: 5px 0px 5px 0px;">
+                                <div *ngFor="let pick of dispose.pickList, index as i" style="padding: 0px;">
+                                    <div *ngIf="eachGroupedPick.pickId == pick.pick.pickId" style="padding: 0px;">
+                                        <div class="three-section-list-row wrap" style="border-bottom: 1px solid gainsboro;padding: 5px 0px 5px 0px;">
 
                                             <div class="list-value-section">
                                                 <div class="list-section-label" style="width:90px;">
@@ -130,6 +130,14 @@
                                             <div class="list-value-section" *ngIf="pick.pick.loadStatus=='1'">
                                                 <div class="list-section-label" style="width:90px;">
                                                     <ion-chip>{{uiLabels.pickStatusLoaded}}</ion-chip>
+                                                </div>
+
+                                                <div class="list-section-separator">
+
+                                                </div>
+
+                                                <div class="list-section-value" style="flex:100%">
+                                                    <ion-button style="margin-right: 10px;" (click)="printManifesto(pick.pick.pickId)">{{uiLabels.printManifestoButton}}</ion-button>
                                                 </div>
                                             </div>
 

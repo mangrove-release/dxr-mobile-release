@@ -123,7 +123,7 @@ export class HandoverComponent implements OnInit {
 
 
     async generateHandoverQrCode() {
-        var handoverPickList: HandoverWastePickAndPackage = this.driverDashboardService.generateWasteHandoverQrCode(this.pickWisePackageList, this.selectedTrip.tripInfoId, this.companyId);
+        var handoverPickList: HandoverWastePickAndPackage = this.driverDashboardService.generateWasteHandoverQrCodeFromPickWisePackage(this.pickWisePackageList, this.selectedTrip.tripInfoId, this.companyId);
 
         const modal = await this.modalController.create({
             component: HandoverCodeComponent,

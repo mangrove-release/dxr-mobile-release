@@ -152,7 +152,7 @@ export class ProcessorReceiveComponent implements OnInit {
     }
 
     generateWeightCertificate() {
-        debugger
+        
         var weightCertificateInfo: WeightCertificateInfo = this.driverTabsDataService.getWeightCertificateInfo();
 
         var weightCertificateData: WeightCertificateReportData = this.driverDashboardService.prepareWeightCertificateData(weightCertificateInfo, this.uiLabels);

@@ -31,6 +31,7 @@ export class MenifestoService {
     }
 
     generateNotiForManifestoCreate(notificationSetInfo: NotificationSetInfo): Observable<any> {
+
         var url = '/menifesto/manifesto-notification';
 
         return this.uriService.callBackend(url, AppConstant.HTTP_POST, notificationSetInfo);

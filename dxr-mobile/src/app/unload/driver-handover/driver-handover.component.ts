@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AppConstant } from 'src/app/config/app-constant';
 import { HandoverCodeComponent } from 'src/app/load/handover-code/handover-code.component';
+import { AgreementPartnerInfo } from 'src/app/models/backend-fetch/business-agreement';
 import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, WasteWisePickPackageInfo } from 'src/app/models/backend-fetch/driver-op';
+import { ManifestoProcessWasteInfo, MenifestoInfo, MenifestoTripDef, MenifestoWaste, MenifestReportCallData, MenifestReportData } from 'src/app/models/backend-fetch/menifest';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
@@ -106,6 +108,8 @@ export class DriverHandoverComponent implements OnInit {
 
     hidePackageDefInfo = AppConstant.HIDE_PACKAGE_DEF_INFO;
 
+    manifestoReportLabel: any = {}
+
     ngOnInit() {
 
         this.utilService.printLangDef(this.uiLabels, this.componentCode);
@@ -118,6 +122,8 @@ export class DriverHandoverComponent implements OnInit {
 
         this.getTransporterCompanyInfo(this.companyId);
 
+        var manifestoReportLabelComponentCode = AppConstant.COMP.MENIFESTO_LIST;
+        this.manifestoReportLabel = this.languageService.getUiLabels(manifestoReportLabelComponentCode, AppConstant.UI_LABEL_TEXT);
     }
 
     getTransporterCompanyInfo(transporterCompanyId: string) {
@@ -157,57 +163,6 @@ export class DriverHandoverComponent implements OnInit {
         });
     }
 
-    // preparePackageInfo(handoverWastePickAndPackage?: HandoverWastePickAndPackage) {
-
-    //     var loadPackage: LoadPackageView = {
-    //         dumperInfo: {} as CompanyInfo,
-    //         transporterInfo: this.transporterCompanyInfo,
-    //         wasteWisePickPackageList: []
-    //     };
-
-    //     this.pickGroup = this.driverDashboardService.groupBy(this.selectedTrip.pickList, 'dropLocation');
-
-    //     this.selectedTrip.pickList.forEach(eachPick => {
-    //         var pickWisePackage: PickWisePackage = {
-    //             packageList: [],
-    //             pick: eachPick,
-    //             calculatedQunatity: eachPick.quantity
-    //         };
-    //         var wasteWisePickPackageInfo: WasteWisePickPackageInfo = {
-    //             wasteId: eachPick.disposalInfo.wasteItemId,
-    //             wasteTitle: eachPick.disposalInfo.wasteItemName,
-    //             pickList: [],
-    //             totalQunatity: 0
-    //         }
-    //         this.scannedPackgeInfo.forEach(eachPackage => {
-
-    //             if (eachPackage.pickId == eachPick.pickId) {
-    //                 pickWisePackage.packageList.push(eachPackage);
-
-    //             }
-
-    //         });
-
-    //         if (pickWisePackage.packageList.length > 0) {
-    //             var index = loadPackage.wasteWisePickPackageList.findIndex(item => item.wasteId == eachPick.disposalInfo.wasteItemId);
-
-    //             if (index >= 0) {
-
-    //                 loadPackage.wasteWisePickPackageList[index].pickList.push(pickWisePackage);
-
-    //             } else {
-
-    //                 wasteWisePickPackageInfo.pickList.push(pickWisePackage);
-
-    //                 loadPackage.wasteWisePickPackageList.push(wasteWisePickPackageInfo);
-    //             }
-    //         }
-
-    //     });
-
-    //     return loadPackage;
-    // }
-
     prepareHandoverPickList(loadPackageView: LoadPackageView) {
         var handoverPickList: PickWisePackage[] = [];
         loadPackageView.wasteWisePickPackageList.forEach(element => {
@@ -244,5 +199,260 @@ export class DriverHandoverComponent implements OnInit {
 
         return await modal.present();
 
+    }
+
+    printManifesto(pickId: string) {
+
+        var manifesto: MenifestoInfo;
+        this.driverDashboardService.getManifestoData(pickId).subscribe(response => {
+            if (response && response.menifestoInfoId) {
+                manifesto = response;
+                this.generateReport(response);
+            } else {
+                this.utilService.showSnackbar('Manifesto is not generated yet', 3000);
+            }
+        })
+    }
+
+    generateReport(menifesto: MenifestoInfo) {
+        debugger
+        var menifestReportCallData: MenifestReportCallData = this.prepareReportGenData(menifesto);
+
+        // var generatedDataKeys: string[] = Object.keys(menifestReportCallData);
+        // var mockDataKeys: string[] = Object.keys(this.reportData);
+
+        // generatedDataKeys.forEach((eachGenKey, index) => {
+
+        //     if (eachGenKey != mockDataKeys[index]) {
+        //         console.log('mockKey: ' + mockDataKeys[index] + ', genKey: ' + eachGenKey);
+        //     }
+
+        // });
+
+
+        this.driverDashboardService.generateReport(menifestReportCallData);
+    }
+
+
+    prepareMenifestoWasteData(tripDefs: MenifestoTripDef[], pickList: PickInfo[]): MenifestoWaste[] {
+        var menifestoWasteList: MenifestoWaste[] = [];
+        var totalQuantity = 0;
+        pickList.forEach(each => {
+            totalQuantity += each.quantity;
+        });
+        tripDefs.forEach(tripDef => {
+            tripDef.projectList.forEach(eachProject => {
+                eachProject.wasteIdList.forEach(eachWaste => {
+                    var menifestoWaste: MenifestoWaste = {
+                        wasteItem: eachWaste.wasteTitle,
+                        unit: eachWaste.unitDef,
+                        shape: eachWaste.wasteShape,
+                        packing: eachWaste.wastePackage,
+                        quantity: totalQuantity
+                    }
+
+                    menifestoWasteList.push(menifestoWaste);
+                });
+            });
+        });
+        return menifestoWasteList;
+    }
+
+    prepareMenifestoWasteDataFromManualManifestoData(manifestoProcessWasteInfo: ManifestoProcessWasteInfo[]): MenifestoWaste[] {
+        var menifestoWasteList: MenifestoWaste[] = [];
+
+        manifestoProcessWasteInfo.forEach(eachWaste => {
+            var menifestoWaste: MenifestoWaste = {
+                wasteItem: eachWaste.wasteName,
+                unit: eachWaste.unit,
+                shape: eachWaste.shape,
+                packing: eachWaste.wastePackage,
+                quantity: eachWaste.quantity
+            }
+
+            menifestoWasteList.push(menifestoWaste);
+        });
+
+        return menifestoWasteList;
+    }
+
+    prepareMenifestoWasteDisposalLocation(pickDef: PickInfo[]): string {
+        var finalDisposalLocation: string = pickDef[0].disposalInfo.dropZipCode + ',' + pickDef[0].disposalInfo.dropLocation;
+        return finalDisposalLocation;
+    }
+
+    prepareReportGenData(menifesto: MenifestoInfo): MenifestReportCallData {
+
+        var menifestReportCallData: MenifestReportCallData = {} as MenifestReportCallData;
+
+        menifestReportCallData.designFile = AppConstant.MANIFESTO_REPORT_FILE_NAME;
+        menifestReportCallData.outputName = AppConstant.MANIFESTO_REPORT_TYPE;
+        menifestReportCallData.format = AppConstant.REPORT_FILE_FORMAT_PDF;
+        menifestReportCallData.parameters = {} as MenifestReportData;
+
+        var date: string = menifesto.dateView.substring(0, menifesto.dateView.indexOf(" "));
+
+        menifestReportCallData.parameters = {
+            title: this.manifestoReportLabel.title,
+            refLabel: this.manifestoReportLabel.refLabel,
+            refNo: '1234',
+            dateLabel: this.manifestoReportLabel.dateLabel,
+            date: date,
+            manifestoLabel: this.manifestoReportLabel.manifestoLabel,
+            manifestoNo: menifesto.menifestoUniqueId,
+            issuersName: menifesto.aggrementInfo.dumperPartnerInfo.companyName,
+            issuersNameLabel: this.manifestoReportLabel.issuersNameLabel,
+            numberLabel: this.manifestoReportLabel.numberLabel,
+            numberValue: '001',
+            dateValue: date,
+            dumperCompanyInfoLabel: this.manifestoReportLabel.dumperCompanyInfoLabel,
+            dumperCompanyNameLabel: this.manifestoReportLabel.dumperCompanyNameLabel,
+            companyName: '',
+            address: '',
+            addressLabel: this.manifestoReportLabel.addressLabel,
+            personLabel: this.manifestoReportLabel.personLabel,
+            personInCharge: '',
+            contactNoLabel: this.manifestoReportLabel.contactNoLabel,
+            dumperCompanyContactNo: '',
+            pickLocationContactNo: '',
+            wastepickLocation: '',
+            pickLocationInCharge: '',
+            sightInfoLabel: this.manifestoReportLabel.sightInfoLabel,
+            confirmationDateLabel: this.manifestoReportLabel.confirmationDateLabel,
+            sealAndSignLabel: this.manifestoReportLabel.sealAndSignLabel,
+            dumperHandOverDate: menifesto.manualManifesto.dateView.substring(0, menifesto.manualManifesto.dateView.indexOf(" ")),
+            loadDateB1: menifesto.manualManifesto.transportInfo.transportComplateDateView.substring(0, menifesto.manualManifesto.transportInfo.transportComplateDateView.indexOf(" ")),
+            transportComplateDate: menifesto.manualManifesto.transportInfo.transportComplateDateB2View.substring(0, menifesto.manualManifesto.transportInfo.transportComplateDateB2View.indexOf(" ")),
+            receiveComplateDate: menifesto.manualManifesto.processorInfo.processingComplateDateView.substring(0, menifesto.manualManifesto.processorInfo.processingComplateDateView.indexOf(" ")),
+            processComplatedateC2: menifesto.manualManifesto.processorInfo.processingComplateDateC2View.substring(0, menifesto.manualManifesto.processorInfo.processingComplateDateC2View.indexOf(" ")),
+            processComplateDate: menifesto.manualManifesto.processorInfo.disposeComplateDateView.substring(0, menifesto.manualManifesto.processorInfo.disposeComplateDateView.indexOf(" ")),
+            finalDisposalDate: menifesto.manualManifesto.processorInfo.finalDisposeComplateDateView.substring(0, menifesto.manualManifesto.processorInfo.finalDisposeComplateDateView.indexOf(" ")),
+            tableHeaderLabel: this.manifestoReportLabel.tableHeaderLabel,
+            unitlabel: this.manifestoReportLabel.unitlabel,
+            manifestoData: '',
+            userNameLabel: this.manifestoReportLabel.userNameLabel,
+            intermediateProcessingWaste: this.manifestoReportLabel.intermediateProcessingWaste,
+            finalDisposalLocation: '',
+            finalDisposalLocationlabel: this.manifestoReportLabel.finalDisposalLocationlabel,
+            locationName: '',
+            locationNameLabel: this.manifestoReportLabel.locationNameLabel,
+            transporter1Label: this.manifestoReportLabel.transporter1Label,
+            transporter2Label: this.manifestoReportLabel.transporter2Label,
+            transporterCompanyNameLabel: this.manifestoReportLabel.transporterCompanyNameLabel,
+            disposalContactorLabel: this.manifestoReportLabel.disposalContactorLabel,
+            transhipmentLabel: this.manifestoReportLabel.transhipmentLabel,
+            consignment1Label: this.manifestoReportLabel.consignment1Label,
+            consignment2Label: this.manifestoReportLabel.consignment2Label,
+            consignmentDisposalLabel: this.manifestoReportLabel.consignmentDisposalLabel,
+            finalDisposalDateLabel: this.manifestoReportLabel.finalDisposalDateLabel,
+            additionalInfoLabel: this.manifestoReportLabel.additionalInfoLabel,
+            additionalInfo: menifesto.manualManifesto.additionalInfo,
+            userName: '',
+            processingWaste: 'None',
+            transporterAddress: '',
+            transporterCompanyName: '',
+            transportCompanyContactNo: '',
+            transportInCharge: '',
+            processorCompanyAddress: '',
+            processorCompanyContactNo: '',
+            menifestoStatus: menifesto.menifestoStatus,
+            serialNumberLabel: this.manifestoReportLabel.serialNumberLabel,
+            wasteItemLabel: this.manifestoReportLabel.wasteItemLabel,
+            tableUnitLabel: this.manifestoReportLabel.tableUnitLabel,
+            shapeLabel: this.manifestoReportLabel.shapeLabel,
+            packingLabel: this.manifestoReportLabel.packingLabel,
+            quanitityLabel: this.manifestoReportLabel.quanitityLabel,
+        }
+
+        var dumper: AgreementPartnerInfo = (menifesto.aggrementInfo.dumperPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_DUMPER) ? menifesto.aggrementInfo.dumperPartnerInfo : ((menifesto.aggrementInfo.transporterPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_DUMPER) ? menifesto.aggrementInfo.transporterPartnerInfo : menifesto.aggrementInfo.processorPartnerInfo);
+
+        var transporter: AgreementPartnerInfo = (menifesto.aggrementInfo.dumperPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_TRANSPORTER) ? menifesto.aggrementInfo.dumperPartnerInfo : ((menifesto.aggrementInfo.transporterPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_TRANSPORTER) ? menifesto.aggrementInfo.transporterPartnerInfo : menifesto.aggrementInfo.processorPartnerInfo);
+
+        var processor: AgreementPartnerInfo = (menifesto.aggrementInfo.dumperPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_PROCESSOR) ? menifesto.aggrementInfo.dumperPartnerInfo : ((menifesto.aggrementInfo.transporterPartnerInfo.assignedRoles == AppConstant.CATEGORY_NAME_PROCESSOR) ? menifesto.aggrementInfo.transporterPartnerInfo : menifesto.aggrementInfo.processorPartnerInfo);
+
+        menifestReportCallData.parameters.issuersName = dumper.personInChargeName;
+        menifestReportCallData.parameters.companyName = dumper.companyName;
+        menifestReportCallData.parameters.address = dumper.companyZipCode + ',' + dumper.companyAddress;
+        menifestReportCallData.parameters.personInCharge = dumper.personInChargeName;
+        menifestReportCallData.parameters.dumperCompanyContactNo = dumper.contactNo;
+        menifestReportCallData.parameters.pickLocationContactNo = dumper.contactNo;
+        menifestReportCallData.parameters.wastepickLocation = dumper.companyZipCode + ',' + dumper.companyAddress;
+        menifestReportCallData.parameters.pickLocationInCharge = dumper.personInChargeName;
+        menifestReportCallData.parameters.userName = dumper.personInChargeName;
+        // menifestReportCallData.parameters.sightAddress = dumper.companyZipCode + ',' + dumper.companyAddress;
+
+        if (!menifesto.manualManifesto.dateView && menifesto.manifestoType == AppConstant.MANIFESTO_TYPE_GENERATED) {
+            menifestReportCallData.parameters.dumperHandOverDate = date
+        } else if (!menifesto.manualManifesto.dateView) {
+            menifestReportCallData.parameters.dumperHandOverDate = 'Not Given'
+        }
+
+        if (!menifesto.manualManifesto.transportInfo.transportComplateDateView && menifesto.manifestoType == AppConstant.MANIFESTO_TYPE_GENERATED) {
+            menifestReportCallData.parameters.loadDateB1 = date
+
+        } else if (!menifesto.manualManifesto.transportInfo.transportComplateDateView) {
+            menifestReportCallData.parameters.loadDateB1 = 'Not Complated'
+        }
+
+        // if (!menifesto.manualManifesto.transportInfo.transportComplateDateB2View && menifesto.manifestoType == AppConstant.MANIFESTO_TYPE_GENERATED) {
+        //     menifestReportCallData.parameters.transportComplateDate = date
+
+        // } else
+        if (!menifesto.manualManifesto.transportInfo.transportComplateDateB2View) {
+            menifestReportCallData.parameters.transportComplateDate = 'Not Complated'
+        }
+
+        // if (!menifesto.manualManifesto.processorInfo.processingComplateDateView && menifesto.manifestoType == AppConstant.MANIFESTO_TYPE_GENERATED) {
+        //     menifestReportCallData.parameters.receiveComplateDate = date
+
+        // } else
+        if (!menifesto.manualManifesto.processorInfo.processingComplateDateView) {
+            menifestReportCallData.parameters.receiveComplateDate = 'Not Complated'
+        }
+
+        // if (!menifesto.manualManifesto.processorInfo.processingComplateDateC2View && menifesto.manifestoType == AppConstant.MANIFESTO_TYPE_GENERATED) {
+        //     menifestReportCallData.parameters.processComplatedateC2 = date
+
+        // } else
+        if (!menifesto.manualManifesto.processorInfo.processingComplateDateC2View) {
+            menifestReportCallData.parameters.processComplatedateC2 = 'Not Complated'
+        }
+
+        if (!menifesto.manualManifesto.processorInfo.disposeComplateDateView) {
+            menifestReportCallData.parameters.processComplateDate = 'Not Complated'
+        }
+
+        if (!menifesto.manualManifesto.processorInfo.finalDisposeComplateDateView) {
+            menifestReportCallData.parameters.finalDisposalDate = 'Not Complated'
+        }
+
+        if (!menifesto.manualManifesto.additionalInfo) {
+            menifestReportCallData.parameters.additionalInfo = 'None'
+        }
+
+        if (menifesto.manifestoType == AppConstant.MANIFESTO_TYPE_GENERATED) {
+            menifestReportCallData.parameters.manifestoData = JSON.stringify(this.prepareMenifestoWasteData(menifesto.tripIdDef, menifesto.pickIdDef));
+            menifestReportCallData.parameters.finalDisposalLocation = this.prepareMenifestoWasteDisposalLocation(menifesto.pickIdDef);
+            menifestReportCallData.parameters.locationName = this.prepareMenifestoWasteDisposalLocation(menifesto.pickIdDef);
+        } else {
+            menifestReportCallData.parameters.manifestoData = JSON.stringify(this.prepareMenifestoWasteDataFromManualManifestoData(menifesto.manualManifesto.manifestoProcessWasteInfo));
+            menifestReportCallData.parameters.finalDisposalLocation = menifesto.manualManifesto.dumperInfo.workZip + ', ' + menifesto.manualManifesto.dumperInfo.workAddress;
+            menifestReportCallData.parameters.locationName = (menifesto.manualManifesto.dumperInfo.workPlace) ? menifesto.manualManifesto.dumperInfo.workPlace : "Not found";
+        }
+
+
+
+        menifestReportCallData.parameters.transportInCharge = transporter.personInChargeName;
+        menifestReportCallData.parameters.transporterCompanyName = transporter.companyName;
+        menifestReportCallData.parameters.transporterAddress = transporter.companyZipCode + ',' + transporter.companyAddress;
+        menifestReportCallData.parameters.transportCompanyContactNo = transporter.contactNo;
+
+
+        menifestReportCallData.parameters.processorCompanyAddress = processor.companyZipCode + ',' + transporter.companyAddress;
+        menifestReportCallData.parameters.processorCompanyContactNo = processor.contactNo;
+
+        menifestReportCallData.wrapError = true;
+
+        return menifestReportCallData;
     }
 }

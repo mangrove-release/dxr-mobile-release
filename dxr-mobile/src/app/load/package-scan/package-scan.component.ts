@@ -165,7 +165,6 @@ export class PackageScanComponent implements OnInit {
     }
 
     confirmReceive() {
-        debugger
         var handoverPickIds: string[] = [];
         this.loadPackageView.wasteWisePickPackageList.forEach(element => {
             element.pickList.forEach(eachPick => {
@@ -190,7 +189,7 @@ export class PackageScanComponent implements OnInit {
 
                     this.generateMenifesto();
 
-                    this.saveDumpingEmissionInfo(handoverPickIds);
+                    this.saveDumpingEmissionInfo();
                 }
             });
         } else {
@@ -199,24 +198,36 @@ export class PackageScanComponent implements OnInit {
 
     }
 
-    saveDumpingEmissionInfo(handoverPickIds: string[]) {
+    saveDumpingEmissionInfo() {
         var dumpingEmissionInfoList: DumpingEmissionInfo[] = [];
-        this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
-            var id: string = this.utilService.generateUniqueId();
+        if (this.loadPackageView && this.loadPackageView.wasteWisePickPackageList) {
 
-            var dumpingEmissionInfo: DumpingEmissionInfo = {
-                dumpingEmissionId: id,
-                companyId: this.dumperCompanyInfo.companyId,
-                quantity: eachWaste.totalQunatity,
-                dateTime: this.selectedTrip.pickUpDate,
-                wasteItemId: eachWaste.wasteId,
-                wasteTitle: eachWaste.wasteTitle,
-                unit: eachWaste.pickList[0].pick.disposalInfo.unit,
-                pickId: handoverPickIds
-            }
+            this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
 
-            dumpingEmissionInfoList.push(dumpingEmissionInfo);
-        });
+                if (eachWaste && eachWaste.pickList) {
+                    eachWaste.pickList.forEach(eachPick => {
+
+                        var id: string = this.utilService.generateUniqueId();
+
+                        var dumpingEmissionInfo: DumpingEmissionInfo = {
+                            dumpingEmissionId: id,
+                            companyId: this.dumperCompanyInfo.companyId,
+                            quantity: eachPick.pick.quantity,
+                            dateTime: this.selectedTrip.pickUpDate,
+                            wasteItemId: eachWaste.wasteId,
+                            wasteTitle: eachWaste.wasteTitle,
+                            unit: eachPick.pick.disposalInfo.unit,
+                            pickId: eachPick.pick.pickId,
+                            projectInfoId: eachPick.pick.projetId
+                        }
+
+                        dumpingEmissionInfoList.push(dumpingEmissionInfo);
+                    });
+
+                }
+
+            });
+        }
 
         this.driverDashboardService.saveDumpingEmissionInfo(dumpingEmissionInfoList).subscribe(response => {
 
@@ -309,8 +320,10 @@ export class PackageScanComponent implements OnInit {
             vehicleNo: "",
             vehicleType: "",
             transportMethod: "",
-            TransportComplateDate: this.selectedTrip.pickUpDate,
-            transportComplateDateB2: "",
+            transportComplateDate: this.selectedTrip.pickUpDate,
+            transportComplateDateView: "",
+            transportComplateDateB2: this.selectedTrip.pickUpDate,
+            transportComplateDateB2View: "",
             driverName: "",
         }
 
@@ -324,7 +337,13 @@ export class PackageScanComponent implements OnInit {
             address: processor.companyAddress,
             contactNo: processor.contactNo,
             processingComplateDate: "",
+            processingComplateDateView: "",
+            processingComplateDateC2: "",
+            processingComplateDateC2View: "",
             disposeComplateDate: "",
+            disposeComplateDateView: "",
+            finalDisposeComplateDate: "",
+            finalDisposeComplateDateView: ""
 
         }
 
@@ -348,7 +367,7 @@ export class PackageScanComponent implements OnInit {
 
 
     generateMenifesto() {
-        debugger
+
         this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
             var pickList: PickInfo[] = this.driverDashboardService.getPickListFromWastewisePick(eachWaste.pickList);
             var projectWisePick: any = this.driverDashboardService.groupByProjectId(pickList);
@@ -371,6 +390,7 @@ export class PackageScanComponent implements OnInit {
                             menifestoInfoId: id,
                             menifestoUniqueId: menifestoUniqueId,
                             date: "",
+                            dateView: "",
                             projectId: projectAndProjectId[0],
                             tripIds: [this.selectedTrip.tripInfoId],
                             tripIdDef: [],
@@ -383,7 +403,8 @@ export class PackageScanComponent implements OnInit {
                             aggrementInfo: agreementInfo,
                             menifestoStatus: AppConstant.MENIFESTO_STATUS_LOADED,
                             manualManifesto: {} as ManualManifesto,
-                            manifestoType: AppConstant.MANIFESTO_TYPE_GENERATED
+                            manifestoType: AppConstant.MANIFESTO_TYPE_GENERATED,
+                            manualEdit: false
                         }
 
                         // menifesto.tripIds.push(this.selectedTrip.tripInfoId);
@@ -410,7 +431,7 @@ export class PackageScanComponent implements OnInit {
                                 menifesto = this.prepareManualManifesto(menifesto);
 
                                 this.menifestoService.saveMenifesto(menifesto).subscribe(menifesto => {
-                                    debugger
+
                                     if (menifesto) {
                                         var notificationSetInfo: NotificationSetInfo = {
                                             contextId: AppConstant.MANIFESTO_NOTIFICAIONT_ID,

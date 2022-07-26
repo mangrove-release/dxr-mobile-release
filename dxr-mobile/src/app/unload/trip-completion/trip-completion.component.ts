@@ -156,20 +156,16 @@ export class TripCompletionComponent implements OnInit {
                 this.driverDashboardService.presentToast(this.uiLabels.pickUnloadConfirmToast, 3000);
                 this.preparePickList(response);
 
-                this.saveProcessorEmissionInfo(this.handoverWastePickAndPackage.pickIdList);
+                this.saveProcessorEmissionInfo();
 
                 this.updateMenifestoStatus(this.handoverWastePickAndPackage.pickIdList);
-
-
             }
 
         });
     }
 
-
-
     updateMenifestoStatus(handoverPickIds: string[]) {
-        debugger
+
         this.driverDashboardService.saveMenifestoUnloadStatus(handoverPickIds).subscribe(response => {
             if (response) {
                 response.forEach(element => {
@@ -190,30 +186,13 @@ export class TripCompletionComponent implements OnInit {
         });
     }
 
-    saveProcessorEmissionInfo(handoverPickIds: string[]) {
-        var processingEmissionInfoList: ProcessorEmissionInfo[] = [];
-        this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
-            var id: string = this.utilService.generateUniqueId();
-
-            var processingEmissionInfo: ProcessorEmissionInfo = {
-                processingEmissionId: id,
-                companyId: this.processorCompanyInfo.companyId,
-                quantity: eachWaste.totalQunatity,
-                dateTime: this.driverTripPlan.pickUpDate,
-                wasteItemId: eachWaste.wasteId,
-                wasteTitle: eachWaste.wasteTitle,
-                unit: eachWaste.pickList[0].pick.disposalInfo.unit,
-                pickId: handoverPickIds
-            }
-
-            processingEmissionInfoList.push(processingEmissionInfo);
-        });
+    saveProcessorEmissionInfo() {
+        var processingEmissionInfoList: ProcessorEmissionInfo[] = this.driverDashboardService.prepareProcessingEmissionData(this.loadPackageView, this.driverTripPlan, this.processorCompanyInfo.companyId);
 
         this.driverDashboardService.saveProcessorEmissionInfo(processingEmissionInfoList).subscribe(response => {
 
         })
     }
-
     preparePickList(unloadedPicks: PickInfo[]) {
         var unloadPicksString: string = JSON.stringify(unloadedPicks);
         this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {

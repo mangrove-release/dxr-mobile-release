@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HandoverCodeComponent } from 'src/app/load/handover-code/handover-code.component';
 import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, PackageInfo, PickInfo, TripQrData, WeightCertificateInfo } from 'src/app/models/backend-fetch/driver-op';
+import { RedirectUserInfo } from 'src/app/models/backend-update/user-login';
 
 @Injectable({
     providedIn: 'root'
@@ -26,7 +27,17 @@ export class DriverTabsDataService {
 
     weightCertificateInfo: WeightCertificateInfo;
 
+    redirectUserInfo: RedirectUserInfo;
+
     constructor() { }
+
+    setRedirectUserInfo(redirectUserInfo: RedirectUserInfo) {
+        this.redirectUserInfo = redirectUserInfo;
+    }
+
+    getRedirectUserInfo() {
+        return this.redirectUserInfo;
+    }
 
     setDriverTripPlan(tripPlan: DriverTripPlan[]) {
         this.driverTripPlan = tripPlan;

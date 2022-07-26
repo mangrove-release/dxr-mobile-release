@@ -13,7 +13,6 @@ export class QrScannerComponent implements OnInit {
 
     ngOnInit() {
 
-        console.log('scanner opened')
     }
 
     async onCodeResult(resultString: string) {

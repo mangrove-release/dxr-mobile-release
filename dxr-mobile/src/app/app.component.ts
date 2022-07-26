@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
 
-        debugger
+
         this.utilService.printLangDef(this.uiLabels, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
@@ -56,9 +56,6 @@ export class AppComponent implements OnInit {
         var cacheUrl = backUrl;
         this.uriService.callBackendWithCache(backUrl, AppConstant.HTTP_GET, cacheUrl, {}, (data: any) => {
             if (data) {
-                // console.log(data);
-                // console.log(JSON.stringify(JSON.parse(data.languageJson)));
-
                 this.languageService.setLanguageDefData(data.languageJson);
                 this.utilService.printLangDef(this.uiLabels, this.componentCode);
 
