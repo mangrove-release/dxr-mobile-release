@@ -49,11 +49,19 @@ export class UserLoginComponent implements OnInit {
                 this.userLoginService.getMobileAppRedirectInfo(redirectUserInfoId).subscribe(response => {
 
                     if (response) {
+
+                        this.utilService.clearCookie();
+                        this.languageService.resetUserAccessInfo();
+                        this.languageService.resetUserMenuItems();
+
+                        setTimeout(() => { }, 10);
+
                         this.driverTabsDataService.setRedirectUserInfo(response);
                         this.appComponent.prepareUserAccessAndMenu(JSON.parse(response.userMenuAccess));
                         this.userLoginService.setUserLoginCookie(response.userId, response.userAuth, response.companyId);
                         this.driverTabsDataService.setScannedTripInfo(response.tripQrData);
-                        this.router.navigate([response.redirectMenuUrlParentSegment, { outlets: { [response.redirectMenuOutlet]: [response.redirectMenuUrl] } }]);
+
+                        setTimeout(() => this.router.navigate([response.redirectMenuUrlParentSegment, { outlets: { [response.redirectMenuOutlet]: [response.redirectMenuUrl] } }]), 10);
                     }
                 });
             }
@@ -61,7 +69,7 @@ export class UserLoginComponent implements OnInit {
 
         });
 
-        // this.utilService.printLangDef(this.uiLabels, this.componentCode);
+        // // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
 

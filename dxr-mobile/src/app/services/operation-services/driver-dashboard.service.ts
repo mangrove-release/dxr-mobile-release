@@ -379,7 +379,7 @@ export class DriverDashboardService {
             gorssWeightlabel: uiLabels.gorssWeightlabel,
             wasteTruckWeight: weightCertificateInfo.wasteGrossWeight.toString(),
             wasteTrackLabel: uiLabels.wasteTrackLabel,
-            onlyTruckWeight: weightCertificateInfo.wasteNetWeight.toString(),
+            onlyTruckWeight: weightCertificateInfo.vehicleWeight.toString(),
             truckWeightLabel: uiLabels.truckWeightLabel,
             weightCertificateData: '',
             totalLabel: uiLabels.totalLabel,
@@ -430,9 +430,9 @@ export class DriverDashboardService {
         wasteList.forEach(element => {
             var certificateWaste: WeightCertificateWaste = {
                 productName: element.wasteTitle,
-                adjustment: element.totalDeclaredQunatity.toString(),
+                adjustment: (element.totalDeclaredQunatity - element.totalQunatity).toFixed(2),
                 container: element.totalQunatity.toString(),
-                netWeight: element.totalQunatity.toString()
+                netWeight: element.totalDeclaredQunatity.toString()
             }
 
             certificateWasteList.push(certificateWaste);

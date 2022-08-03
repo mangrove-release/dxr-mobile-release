@@ -99,7 +99,7 @@ export class WeightDeclareComponent implements OnInit {
 
     ngOnInit() {
 
-        this.utilService.printLangDef(this.uiLabels, this.componentCode);
+        // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
 
@@ -257,6 +257,7 @@ export class WeightDeclareComponent implements OnInit {
     confirmUnload() {
 
         this.driverDashboardService.confirmUnload(this.handoverWastePickAndPackage.pickIdList).subscribe(response => {
+            debugger
             if (response) {
                 this.driverDashboardService.presentToast(this.uiLabels.pickUnloadConfirmToast, 3000);
                 // this.preparePickList(response);

@@ -21,6 +21,7 @@ export interface MenifestoInfo {
     manualManifesto: ManualManifesto;
     manifestoType: string;
     manualEdit: boolean;
+    invoiceGenrationStatus: string;
 
 }
 export interface ManualManifesto {

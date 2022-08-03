@@ -1,3 +1,4 @@
+import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActionSheetController, ModalController } from '@ionic/angular';
@@ -41,28 +42,33 @@ export class AppComponent implements OnInit {
     ngOnInit() {
 
 
-        this.utilService.printLangDef(this.uiLabels, this.componentCode);
+        // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
 
-        this.initialLogin();
+        this.getLanguage();
 
         if (!this.selectedLangIndex || this.selectedLangIndex == '') {
             this.utilService.setSelectedLanguageIndex(AppConstant.LANG_INDEX_JPN);
             this.selectedLanguage = AppConstant.LANG_INDEX_JPN;
         }
 
+
+    }
+
+    getLanguage() {
         var backUrl = '/language-competency/language';
         var cacheUrl = backUrl;
         this.uriService.callBackendWithCache(backUrl, AppConstant.HTTP_GET, cacheUrl, {}, (data: any) => {
             if (data) {
                 this.languageService.setLanguageDefData(data.languageJson);
-                this.utilService.printLangDef(this.uiLabels, this.componentCode);
+                // this.utilService.printLangDef(this.uiLabels, this.componentCode);
 
                 this.uiLabels = this.languageService.getUiLabels(AppConstant.COMP.APP_ROOT, AppConstant.UI_LABEL_TEXT);
                 this.prepareProfileItem();
             }
-            this.viewContent = true;
+
+            this.initialLogin();
 
         });
     }
@@ -117,7 +123,7 @@ export class AppComponent implements OnInit {
         this.utilService.clearCookie();
         this.languageService.resetUserAccessInfo();
         this.languageService.resetUserMenuItems();
-        this.setIsLoged(false)
+        this.setIsLoged(false);
         this.reloadMenuList();
 
     }
@@ -133,6 +139,8 @@ export class AppComponent implements OnInit {
         // this.selectedMenu = this.menuList[0].menuTitle;
         this.router.navigate(['/']);
         this.selectedMenuId = this.menuList[0].menuId;
+
+        this.viewContent = true;
     }
 
     prepareProfileItem() {

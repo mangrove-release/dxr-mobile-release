@@ -81,7 +81,7 @@ export class ProcessorReceiveComponent implements OnInit {
 
     ngOnInit() {
 
-        this.utilService.printLangDef(this.uiLabels, this.componentCode);
+        // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
         this.handoverWastePickAndPackage = this.driverTabsDataService.getTransporterHandoverData();
@@ -152,7 +152,7 @@ export class ProcessorReceiveComponent implements OnInit {
     }
 
     generateWeightCertificate() {
-        
+
         var weightCertificateInfo: WeightCertificateInfo = this.driverTabsDataService.getWeightCertificateInfo();
 
         var weightCertificateData: WeightCertificateReportData = this.driverDashboardService.prepareWeightCertificateData(weightCertificateInfo, this.uiLabels);

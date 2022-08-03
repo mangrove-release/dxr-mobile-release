@@ -1,4 +1,10 @@
-<ion-app>
+<ion-app *ngIf="!viewContent">
+    <div class="row" style="display: flex;justify-content:center;align-items: center;flex:1;">
+        <img src="../assets/preloader.gif" style="width:70px">
+    </div>
+</ion-app>
+
+<ion-app *ngIf="viewContent">
     <ion-header class="app-header">
         <div class="row right">
             <!-- <ion-title>

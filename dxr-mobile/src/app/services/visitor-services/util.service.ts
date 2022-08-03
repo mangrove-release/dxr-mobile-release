@@ -43,7 +43,7 @@ export class UtilService {
             langDef = langDef.concat(langValueObject);
         });
         langDef = langDef.concat('],\n\"messages\":[],\n\"notifications\":[]\n}\n');
-        // console.log(langDef);
+        console.log(langDef);
     }
 
     async showSnackbar(message: string, duration: number) {

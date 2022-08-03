@@ -41,7 +41,7 @@ export class PickListComponent implements OnInit {
 
     ngOnInit() {
 
-        this.utilService.printLangDef(this.uiLabels, this.componentCode);
+        // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
         this.selectedTrip = this.driverTabsDataService.getSelectedTrip();

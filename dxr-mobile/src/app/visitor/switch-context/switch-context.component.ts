@@ -40,7 +40,7 @@ export class SwitchContextComponent implements OnInit {
         this.isSystemAdmin = this.utilService.languageEditMode();
         this.componentCode = AppConstant.COMP.SWITCH_COMPANY;
 
-        this.utilService.printLangDef(this.uiLabels, this.componentCode);
+        // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(AppConstant.COMP.SWITCH_COMPANY, AppConstant.UI_LABEL_TEXT);
         if (this.navParams.data) {

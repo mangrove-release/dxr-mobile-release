@@ -87,7 +87,7 @@ export class PackageScanComponent implements OnInit {
 
     ngOnInit() {
 
-        this.utilService.printLangDef(this.uiLabels, this.componentCode);
+        // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
 
@@ -404,7 +404,8 @@ export class PackageScanComponent implements OnInit {
                             menifestoStatus: AppConstant.MENIFESTO_STATUS_LOADED,
                             manualManifesto: {} as ManualManifesto,
                             manifestoType: AppConstant.MANIFESTO_TYPE_GENERATED,
-                            manualEdit: false
+                            manualEdit: false,
+                            invoiceGenrationStatus: AppConstant.FALSE_STATEMENT
                         }
 
                         // menifesto.tripIds.push(this.selectedTrip.tripInfoId);

@@ -37,7 +37,7 @@ export class DriverLoadOpTabsComponent implements OnInit {
 
     ngOnInit() {
 
-        this.utilService.printLangDef(this.uiLabels, this.componentCode);
+        // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
         this.companyId = this.utilService.getCompanyIdCookie();
