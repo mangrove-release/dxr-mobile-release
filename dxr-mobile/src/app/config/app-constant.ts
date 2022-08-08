@@ -1,5 +1,7 @@
 export class AppConstant {
 
+    public static COOKIE_EXPIRE_DATE = "Thu, 01 Jan 1970 00:00:00 GMT";
+
     public static MANIFESTO_REPORT_FILE_NAME = "final_manifesto_report_2022-07-25.rptdesign";
     public static MANIFESTO_REPORT_TYPE = "final_manifesto_report.pdf";
     public static REPORT_FILE_FORMAT_PDF = "pdf";
@@ -47,7 +49,7 @@ export class AppConstant {
 
     public static MENIFESTO_STATUS_LOADED = "1";
     public static MENIFESTO_STATUS_UNLOADED = "2";
-    public static APP_VERSION = '1.9.22.08.03';
+    public static APP_VERSION = '1.8.22.08.08';
 
     public static PICK_LOAD_STATUS = "1";
     public static PICK_UNLOAD_STATUS = "2";

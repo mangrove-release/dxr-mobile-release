@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonRouterOutlet, ModalController } from '@ionic/angular';
 import { AppConstant } from 'src/app/config/app-constant';
 import { CompanyInfo, CompanyTripFetch, DriverTripFetch, DriverTripPlan, HandoverWastePickAndPackage, PackageInfo, TripQrData } from 'src/app/models/backend-fetch/driver-op';
@@ -18,7 +18,7 @@ import { WasteListComponent } from '../waste-list/waste-list.component';
 })
 export class CompanyTripDashboardComponent implements OnInit {
 
-    constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private router: Router, private languageService: LanguageService, public modalController: ModalController, private routerOutlet: IonRouterOutlet) { }
+    constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private router: Router, private languageService: LanguageService, public modalController: ModalController, private routerOutlet: IonRouterOutlet, private activatedroute: ActivatedRoute) { }
 
     driverTripPlan: DriverTripPlan[] = [];
     tripDate: any = {
@@ -48,8 +48,17 @@ export class CompanyTripDashboardComponent implements OnInit {
     componentCode: string = AppConstant.COMP.COMPANY_TRIP_LIST_DASHBOARD;
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
+    redirectSessionId: string;
     ngOnInit() {
+        console.log(this.router.url);
 
+        this.activatedroute.paramMap.subscribe(params => {
+
+            this.redirectSessionId = params.get('redirectSessionId') ? params.get('redirectSessionId') : null;
+            console.log(this.redirectSessionId);
+
+
+        });
         // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
 
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
@@ -57,12 +66,13 @@ export class CompanyTripDashboardComponent implements OnInit {
         this.companyId = this.utilService.getCompanyIdCookie();
         this.loggedUserId = this.languageService.getUserInfoId(this.companyId);
 
-        this.getOwnCompanyInfo();
+
 
         var redirectUserInfo = this.driverTabsDataService.getRedirectUserInfo();
         if (redirectUserInfo) {
             this.tripDate.date = redirectUserInfo.selectedDate;
             this.getDriverTripPlan(this.loggedUserId, this.tripDate.date);
+            this.companyId = redirectUserInfo.companyId;
         } else {
             this.driverDashboardService.getCurrentDate().subscribe(response => {
                 if (response) {
@@ -80,7 +90,9 @@ export class CompanyTripDashboardComponent implements OnInit {
             if (response) {
                 this.currentCompanyInfo = response;
             }
-            this.viewContent = true;
+
+            this.prepareTripPlanView();
+
         })
     }
 
@@ -95,8 +107,10 @@ export class CompanyTripDashboardComponent implements OnInit {
             if (data) {
                 this.driverTripPlan = data;
                 this.driverTabsDataService.setDriverTripPlan(data);
-                this.prepareTripPlanView();
+
             }
+
+            this.getOwnCompanyInfo();
 
 
         })
@@ -110,7 +124,7 @@ export class CompanyTripDashboardComponent implements OnInit {
             eachTrip.pickGroup = pickGroup;
 
         });
-
+        debugger
         this.viewContent = true;
     }
 

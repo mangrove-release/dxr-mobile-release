@@ -1,10 +1,11 @@
 import { ThrowStmt } from '@angular/compiler';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActionSheetController, ModalController } from '@ionic/angular';
 import { AppConstant } from './config/app-constant';
 import { CompanyContext } from './models/backend-fetch/dxr-system';
 import { UserIdentification } from './models/backend-update/user-login';
+import { DriverTabsDataService } from './services/operation-services/driver-tabs-data.service';
 import { LanguageService } from './services/visitor-services/language.service';
 import { UriService } from './services/visitor-services/uri.service';
 import { UserLoginService } from './services/visitor-services/user-login.service';
@@ -17,8 +18,8 @@ import { SwitchContextComponent } from './visitor/switch-context/switch-context.
     templateUrl: 'app.component.html',
     styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit {
-    constructor(public modalController: ModalController, private languageService: LanguageService, public router: Router, private utilService: UtilService, private uriService: UriService, private userLoginService: UserLoginService, public actionSheetController: ActionSheetController) { }
+export class AppComponent implements OnInit, AfterViewInit {
+    constructor(public modalController: ModalController, private languageService: LanguageService, public router: Router, private utilService: UtilService, private uriService: UriService, private userLoginService: UserLoginService, public actionSheetController: ActionSheetController, private activatedroute: ActivatedRoute, private driverTabsDataService: DriverTabsDataService) { }
 
     uiLabels: any = {};
     menuList: any = [];
@@ -38,25 +39,28 @@ export class AppComponent implements OnInit {
 
     componentCode: string = AppConstant.COMP.ADD_FAQ_CATEGORY_ADMIN;
     isSystemAdmin: boolean = this.utilService.languageEditMode();
-
+    redirectSessionId: string;
     ngOnInit() {
-
-
-        // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
-
-        this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
-
-        this.getLanguage();
+        const urlSegments = (window.location.href).split("/");
+        this.redirectSessionId = urlSegments[urlSegments.length - 1].split("-").length == 5 ? urlSegments[urlSegments.length - 1] : null;
 
         if (!this.selectedLangIndex || this.selectedLangIndex == '') {
             this.utilService.setSelectedLanguageIndex(AppConstant.LANG_INDEX_JPN);
             this.selectedLanguage = AppConstant.LANG_INDEX_JPN;
         }
 
+        // this.redirectSessionId = this.activatedroute.snapshot.queryParams.redirectSessionId;
+    }
+
+    ngAfterViewInit(): void {
+
+        this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
+        this.getLanguage();
+
 
     }
 
-    getLanguage() {
+    getLanguage(callBack?: any) {
         var backUrl = '/language-competency/language';
         var cacheUrl = backUrl;
         this.uriService.callBackendWithCache(backUrl, AppConstant.HTTP_GET, cacheUrl, {}, (data: any) => {
@@ -68,12 +72,60 @@ export class AppComponent implements OnInit {
                 this.prepareProfileItem();
             }
 
-            this.initialLogin();
+            this.login();
+            // this.initialLogin(callBack);
 
         });
     }
 
-    initialLogin() {
+    login() {
+
+        if (this.redirectSessionId && this.redirectSessionId.length > 16) {
+
+            this.userLoginService.getMobileAppRedirectInfo(this.redirectSessionId).subscribe(response => {
+
+                if (response) {
+                    this.utilService.clearCookie();
+                    setTimeout(() => {
+                        this.languageService.resetUserAccessInfo();
+                        this.languageService.resetUserMenuItems();
+
+                        // setTimeout(() => { }, 10);
+
+                        this.driverTabsDataService.setRedirectUserInfo(response);
+                        this.userLoginService.setUserLoginCookie(response.userId, response.userAuth, response.companyId);
+
+                        if (response.langIndex) {
+                            this.utilService.setSelectedLanguageIndex(response.langIndex);
+                            this.selectedLanguage = response.langIndex;
+                        }
+                        setTimeout(() => {
+                            this.driverTabsDataService.setScannedTripInfo(response.tripQrData);
+                            this.prepareUserAccessAndMenu(JSON.parse(response.userMenuAccess), () => {
+                                debugger
+                                this.viewContent = true;
+                                setTimeout(() => {
+                                    if (!this.router.url.includes(response.redirectMenuUrlParentSegment)) {
+                                        this.router.navigate([response.redirectMenuUrlParentSegment, { outlets: { [response.redirectMenuOutlet]: [response.redirectMenuUrl] } }])
+                                    }
+                                }, 200);
+
+                            });
+                        }, 200);
+
+
+                    }, 200);
+
+
+
+                }
+            });
+        } else {
+            this.initialLogin();
+        }
+    }
+
+    initialLogin(callBack?: any) {
 
         var authId = this.utilService.getUserIdCookie();
         var authPass = this.utilService.getUserAuthPassCookie();
@@ -88,7 +140,7 @@ export class AppComponent implements OnInit {
 
             this.userLoginService.login(userIdentification).subscribe(data => {
 
-                this.prepareUserAccessAndMenu(data);
+                this.prepareUserAccessAndMenu(data, callBack);
             });
 
         } else {
@@ -97,7 +149,7 @@ export class AppComponent implements OnInit {
 
     }
 
-    prepareUserAccessAndMenu(data?: any) {
+    prepareUserAccessAndMenu(data?: any, callBack?: any) {
 
         if (data && data.length > 0) {
             this.isLogedIn = true;
@@ -115,16 +167,16 @@ export class AppComponent implements OnInit {
 
         }
 
-        this.reloadMenuList();
+        this.reloadMenuList(callBack);
     }
 
-    logOut() {
+    logOut(callBack?: any) {
 
         this.utilService.clearCookie();
         this.languageService.resetUserAccessInfo();
         this.languageService.resetUserMenuItems();
         this.setIsLoged(false);
-        this.reloadMenuList();
+        this.reloadMenuList(callBack);
 
     }
 
@@ -132,15 +184,23 @@ export class AppComponent implements OnInit {
         this.isLogedIn = status;
     }
 
-    reloadMenuList() {
+    reloadMenuList(callBack?: any) {
+
         this.menuList = this.languageService.getUserMenuItems();
         // var commonMenuItems: any[] = this.languageService.getCommonMenuItems();
         this.menuList = (this.languageService.prepareMobileAppMenu(this.menuList));
         // this.selectedMenu = this.menuList[0].menuTitle;
-        this.router.navigate(['/']);
-        this.selectedMenuId = this.menuList[0].menuId;
 
-        this.viewContent = true;
+        if (callBack) {
+            callBack();
+        } else {
+            this.router.navigate(['/home']);
+            this.selectedMenuId = this.menuList[0].menuId;
+            this.viewContent = true;
+        }
+
+
+
     }
 
     prepareProfileItem() {

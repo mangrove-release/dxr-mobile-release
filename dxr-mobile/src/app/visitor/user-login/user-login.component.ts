@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { CookieService } from 'ngx-cookie-service';
 import { AppComponent } from 'src/app/app.component';
@@ -39,11 +39,17 @@ export class UserLoginComponent implements OnInit {
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
     ngOnInit() {
-
+        debugger
+        console.log(this.router.url);
+        // console.log(this.activatedroute.snapshot.paramMap.get("redirectSessionId"));
 
         this.activatedroute.paramMap.subscribe(params => {
 
+            // console.log(params);
+
             var redirectUserInfoId = params.get('redirectSessionId') ? params.get('redirectSessionId') : null;
+
+            console.log(redirectUserInfoId);
 
             if (redirectUserInfoId) {
                 this.userLoginService.getMobileAppRedirectInfo(redirectUserInfoId).subscribe(response => {
@@ -54,7 +60,7 @@ export class UserLoginComponent implements OnInit {
                         this.languageService.resetUserAccessInfo();
                         this.languageService.resetUserMenuItems();
 
-                        setTimeout(() => { }, 10);
+                        // setTimeout(() => { }, 10);
 
                         this.driverTabsDataService.setRedirectUserInfo(response);
                         this.appComponent.prepareUserAccessAndMenu(JSON.parse(response.userMenuAccess));

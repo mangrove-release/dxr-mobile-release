@@ -51,7 +51,7 @@
                                     {{trip.driverName}}
                                 </div>
                                 <div class="list-section-label">
-                                    <ion-button>{{uiLabels.pickListButton}}</ion-button>
+                                    <ion-button class="list-button-light">{{uiLabels.pickListButton}}</ion-button>
                                 </div>
                             </div>
                             <!-- <div class="list-value-section">
@@ -201,11 +201,11 @@
                             </div>
 
                             <div class="list-section-label" style="width:90px;" *ngIf="pick.loadStatus!='1'">
-                                <ion-button (click)="loadPick(item,i)">{{uiLabels.loadButton}}</ion-button>
+                                <ion-button  (click)="loadPick(item,i)">{{uiLabels.loadButton}}</ion-button>
                             </div>
 
                             <div class="list-section-label" style="width:90px;">
-                                <ion-button (click)="showPickDetail(item,i)">{{uiLabels.viewPickDetail}}</ion-button>
+                                <ion-button  (click)="showPickDetail(item,i)">{{uiLabels.viewPickDetail}}</ion-button>
                             </div>
                         </div>
 

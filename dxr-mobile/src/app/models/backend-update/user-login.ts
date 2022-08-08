@@ -52,4 +52,5 @@ export interface RedirectUserInfo {
     redirectMenuOutlet: string;
     userMenuAccess: string;
     selectedDate: string;
+    langIndex: string;
 }

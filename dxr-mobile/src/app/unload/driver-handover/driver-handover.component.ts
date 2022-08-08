@@ -455,4 +455,9 @@ export class DriverHandoverComponent implements OnInit {
 
         return menifestReportCallData;
     }
+
+    async closeModal() {
+
+        await this.modalController.dismiss();
+    }
 }

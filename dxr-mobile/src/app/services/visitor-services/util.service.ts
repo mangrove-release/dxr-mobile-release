@@ -159,9 +159,10 @@ export class UtilService {
     }
 
     clearCookie() {
-        this.cookieService.delete(AppConstant.AUTH_ID_KEY, '/');
-        this.cookieService.delete(AppConstant.SELECTED_COMPANY_ID_KEY, '/');
-        this.cookieService.delete(AppConstant.AUTH_PASS_KEY, '/');
+        var cookieDeleteDate = Date.parse(AppConstant.COOKIE_EXPIRE_DATE);
+        this.cookieService.set(AppConstant.AUTH_ID_KEY, "", cookieDeleteDate);
+        this.cookieService.set(AppConstant.AUTH_PASS_KEY, "", cookieDeleteDate);
+        this.cookieService.set(AppConstant.SELECTED_COMPANY_ID_KEY, "", cookieDeleteDate);
 
     }
 

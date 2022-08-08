@@ -34,6 +34,7 @@ import { CommonDirectivesModule } from '../common-directives/common-directives.m
     ],
     entryComponents: [
         VisitorPage
-    ]
+    ],
+    providers: []
 })
 export class VisitorPageModule { }

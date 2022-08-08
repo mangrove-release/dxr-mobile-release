@@ -5,6 +5,7 @@ import { UserLoginComponent } from './visitor/user-login/user-login.component';
 
 const routes: Routes = [
 
+
     {
         path: 'home',
         loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
@@ -50,14 +51,18 @@ const routes: Routes = [
     //     loadChildren: () => import('./dumper/dumper.module').then(m => m.DumperPageModule)
     // },
 
-    {
-        path: 'login/:redirectSessionId',
-        component: UserLoginComponent
-    },
+    // {
+    //     path: 'login/:redirectSessionId',
+    //     component: UserLoginComponent
+    // },
     {
         path: 'login',
         component: UserLoginComponent
     },
+    // {
+    //     path: ':redirectSessionId',
+    //     component: AppComponent
+    // },
     {
         path: '',
         redirectTo: '/home',

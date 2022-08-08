@@ -428,11 +428,17 @@ export class DriverDashboardService {
         var certificateWasteList: WeightCertificateWaste[] = [];
 
         wasteList.forEach(element => {
+
+            var totalDeclaredQunatity: number = 0;
+            element.pickList.forEach(eachPick => {
+                totalDeclaredQunatity += eachPick.pick.declaredQunatity;
+            })
+
             var certificateWaste: WeightCertificateWaste = {
                 productName: element.wasteTitle,
-                adjustment: (element.totalDeclaredQunatity - element.totalQunatity).toFixed(2),
+                adjustment: (totalDeclaredQunatity - element.totalQunatity).toFixed(2),
                 container: element.totalQunatity.toString(),
-                netWeight: element.totalDeclaredQunatity.toString()
+                netWeight: totalDeclaredQunatity.toString()
             }
 
             certificateWasteList.push(certificateWaste);

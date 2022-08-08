@@ -143,9 +143,11 @@ export class WeightDeclareComponent implements OnInit {
     }
 
     saveWeightCertificateInfo() {
+        debugger
         this.weightCertificateInfo = this.prepareWeightCertificateInfo(this.weightCertificateInfo);
 
         this.driverDashboardService.saveWeightCertificateInfo(this.weightCertificateInfo).subscribe(response => {
+
             if (response) {
                 this.driverTabsDataService.setWeightCertificateInfo(response);
             }
@@ -241,7 +243,7 @@ export class WeightDeclareComponent implements OnInit {
     }
 
     receivedWasteWeightConfirmation() {
-
+        debugger
         var pickList: PickInfo[] = this.prepareReceivedWeightForSave();
 
         this.driverDashboardService.confirmReceivedWeight(pickList).subscribe(respose => {
@@ -257,13 +259,11 @@ export class WeightDeclareComponent implements OnInit {
     confirmUnload() {
 
         this.driverDashboardService.confirmUnload(this.handoverWastePickAndPackage.pickIdList).subscribe(response => {
-            debugger
+
             if (response) {
                 this.driverDashboardService.presentToast(this.uiLabels.pickUnloadConfirmToast, 3000);
                 // this.preparePickList(response);
-
                 this.saveProcessorEmissionInfo();
-
                 this.updateMenifestoStatus(this.handoverWastePickAndPackage.pickIdList);
             }
 
@@ -301,6 +301,7 @@ export class WeightDeclareComponent implements OnInit {
     }
 
     generateWeightCertificate() {
+        debugger
         var weightCertificateInfo: WeightCertificateInfo = this.driverTabsDataService.getWeightCertificateInfo();
 
         if (weightCertificateInfo && weightCertificateInfo.weightCertificateInfoId) {

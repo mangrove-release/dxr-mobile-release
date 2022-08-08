@@ -1,7 +1,7 @@
 <ion-content *ngIf="viewContent">
     <div style="margin-bottom: 65px;">
         <app-company-name-header></app-company-name-header>
-        <ion-header class="header">
+        <ion-header class="row header">
 
             <ion-title>
                 <span style="margin-right:10px;">
@@ -9,6 +9,8 @@
                     </app-lang-def-button>{{uiLabels.pageHeader}}
                 </span>
             </ion-title>
+            <ion-button style="margin-right: 10px;" (click)="closeModal()">{{uiLabels.closeButton}}</ion-button>
+
         </ion-header>
 
         <ion-card class="col p-2">
@@ -127,9 +129,10 @@
                                                 </div>
                                             </div>
 
-                                            <div class="list-value-section" *ngIf="pick.pick.loadStatus=='1'">
+                                            <div class="list-value-section" *ngIf="pick.pick.loadStatus>='1'">
                                                 <div class="list-section-label" style="width:90px;">
-                                                    <ion-chip>{{uiLabels.pickStatusLoaded}}</ion-chip>
+                                                    <ion-chip *ngIf="pick.pick.loadStatus=='1'">{{uiLabels.pickStatusLoaded}}</ion-chip>
+                                                    <ion-chip *ngIf="pick.pick.loadStatus=='2'">{{uiLabels.pickStatusUnloaded}}</ion-chip>
                                                 </div>
 
                                                 <div class="list-section-separator">

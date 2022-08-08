@@ -27,6 +27,7 @@ export class RouteAccessService implements CanActivate {
 
     isRouteAccessActive(url: String): boolean {
         url = '/' + url;
+        console.log(url);
         var isActive = false;
         var menuList: any[] = this.languageService.getUserMenuItems();
 
