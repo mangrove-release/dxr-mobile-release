@@ -6,6 +6,7 @@ import { AppConstant } from 'src/app/config/app-constant';
 import { DxrLanguageDef } from 'src/app/models/backend-fetch/dxr-language-def';
 import { CacheUrlData } from 'src/app/models/backend-fetch/dxr-system';
 import { environment } from 'src/environments/environment';
+import { LanguageService } from './language.service';
 import { UtilService } from './util.service';
 
 @Injectable({
@@ -22,7 +23,7 @@ export class UriService {
 
     cacheData: CacheUrlData[] = [];
 
-    constructor(private cookieService: CookieService, private http: HttpClient, private utilService: UtilService) { }
+    constructor(private cookieService: CookieService, private http: HttpClient, private utilService: UtilService, private languageService: LanguageService) { }
 
 
     adjustDxrAdminMenuClick() {
@@ -70,6 +71,15 @@ export class UriService {
         };
     }
 
+    getHttpOptionsForCheckDateValidity() {
+        const langIndex = AppConstant.LANG_INDEX_ENG;
+        return {
+            headers: {
+                langIndex: langIndex,
+            },
+        };
+    }
+
     public getHttpOptionsForCacheUrl(url: string) {
         const langIndex = this.cookieService.get(AppConstant.LANG_INDEX_KEY);
         const cookieData: any = this.getCachUrlData(url);
@@ -78,10 +88,14 @@ export class UriService {
         if (cookieData && cookieData.backendDate) {
             cacheDate = cookieData.backendDate
         }
+
+        var localstorageLangData = this.languageService.getLanguageCacheDate();
+
         return {
             headers: {
                 langIndex: langIndex,
-                cookieDate: cacheDate
+                cookieDate: cacheDate,
+                langDate: localstorageLangData
             },
         };
     }
@@ -90,6 +104,8 @@ export class UriService {
 
         return (url.startsWith('/mob')) ? this.BASE_URL.concat(url) : this.BASE_URL.concat('/web').concat(url);
     }
+
+
 
 
     // getLanguageDef(uriService: any) {
@@ -104,7 +120,9 @@ export class UriService {
         var response: any;
         // var baseUrl: string = this.getUrl();
         var fullUrl: string = this.getUrl(url);
-        var options: any = this.getHttpOptions();
+
+
+        var options: any = (url == AppConstant.CHECK_DATE_VALIDITY_URI) ? this.getHttpOptionsForCheckDateValidity() : this.getHttpOptions();
 
         var urlDirection = this.checkCacheUrl(url);
 

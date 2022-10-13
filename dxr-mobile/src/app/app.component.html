@@ -10,16 +10,17 @@
             <!-- <ion-title>
                 DX-R
             </ion-title> -->
-            <ion-button *ngIf="!isLogedIn" style="height: 35px;" routerLink="login">Login</ion-button>
-            <ion-button *ngIf="isLogedIn" style="height: 35px;" (click)="logOut()">Logout</ion-button>
-            <!-- <ion-select *ngIf="!isLogedIn" [(ngModel)]="selectedProfileItem" placeholder={{selectedProfileItem}} interface="popover" (ionChange)="profileItemClick()">
+            <ion-button *ngIf="isLogedIn" (click)="openScanner()">{{uiLabels.openScannerButton}}</ion-button>
+            <ion-button *ngIf="!isLogedIn" style="height: 35px;" routerLink="login">{{uiLabels.login}}</ion-button>
+            <ion-button *ngIf="isLogedIn" style="height: 35px;" (click)="logOut()">{{uiLabels.logout}}</ion-button>
+            <!-- <ion-select *ngIf="isLogedIn" [(ngModel)]="selectedProfileItem" placeholder={{selectedProfileItem}} interface="popover" (ionChange)="profileItemClick()">
                 <ion-select-option *ngFor="let item of profileArray; index as i" [value]="item.title" id={{item.title}}>
                     {{item.title}}
                 </ion-select-option>
 
             </ion-select> -->
 
-            <ion-button *ngIf="isLogedIn" (click)="presentActionSheet()">{{uiLabels.switchCompany}}</ion-button>
+            <ion-button *ngIf="isLogedIn && !hideSwitchCompanyButton" (click)="presentActionSheet()">{{uiLabels.switchCompany}}</ion-button>
 
             <!-- <ion-select *ngIf="isLogedIn" [(ngModel)]="selectedProfileItem" style="width: 200px;height: 30px;border: none;background-color: inherit;margin-left: 25px;" interface="popover" (ionChange)="profileItemClick()">
                 <ion-select-option *ngFor="let item of profileArray; index as i" [value]="item.title" id={{item.title}} style="background-color: white;height: 35px;">

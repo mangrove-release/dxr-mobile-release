@@ -159,7 +159,7 @@ export class LanguageSetupService {
 
 
     getLanguageDef(callBack?: any) {
-        var url = '/language-competency/language';
+        var url = '/language-competency/language-def';
         var cacheUrl = url;
         this.uriService.callBackendWithCache(url, AppConstant.HTTP_GET, cacheUrl, {}, callBack);
     }

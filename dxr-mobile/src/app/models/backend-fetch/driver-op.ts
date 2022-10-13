@@ -14,6 +14,9 @@ export interface DriverTripPlan {
     pickList: PickInfo[];
     vehicleInfo: VehicleInfoFetch;
     pickGroup: KeyValue<string, any>;
+    projectId: string | null;
+    projectTitle: string | null;
+    tripAndProjectId: string | null;
 }
 
 export interface PickInfo {

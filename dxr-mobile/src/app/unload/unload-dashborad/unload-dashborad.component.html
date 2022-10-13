@@ -28,9 +28,10 @@
 
         </div>
     </div>
-    <ion-header class="header">
+    <ion-header *ngIf="!hideDriverUnloadDashboardTripList" class="header">
         <ion-title>{{uiLabels.tripList}}</ion-title>
     </ion-header>
+
     <div style="margin-bottom: 65px;">
         <mat-expansion-panel class="column" *ngFor="let item of driverTripPlan" style="margin: 5px;">
             <mat-expansion-panel-header class="three-section-list-row" style="color: black;background-color: rgb(236, 236, 236);">
@@ -46,11 +47,8 @@
                     <div class="list-section-value">
                         {{item.startTime.substring(0,2)}}:{{item.startTime.substring(2)}} - {{item.endTime.substring(0,2)}}:{{item.endTime.substring(2)}}
                     </div>
-
-                    <div class="list-section-value">
-                        <ion-button>{{uiLabels.pickListButton}}</ion-button>
-                    </div>
                 </div>
+
             </mat-expansion-panel-header>
 
             <div class="row" style="padding-left: 20px;padding-top: 10px;" *ngFor="let eachPickGroup of item.pickGroup| keyvalue">

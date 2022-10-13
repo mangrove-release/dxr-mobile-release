@@ -29,7 +29,7 @@ export interface ProjectInfoFetch {
     transporterPartner: AgreementPartnerCompanyFetch;
     wasteItemList: wasteItemInfo[]
     status: StatusInfo;
-    agreementInfo: AgreementInfoFetch;
+    agreementInfo: AgreementInfoFetch[];
     wastePickInfo: WasteCollectionInfoFetch[];
     wasteProcessInfo: wasteProcessInfoFetch[];
     wasteDisposalInfo: DisposalInfoFetch[];

@@ -1,6 +1,10 @@
 <div class="col m-6" style="height: 80vh;">
+    <span style="margin-right:10px;">
+        <app-lang-def-button [componentCode]="componentCode">
+        </app-lang-def-button>{{uiLabels.pageHeader}}
+    </span>
     <zxing-scanner (scanSuccess)="onCodeResult($event)"></zxing-scanner>
     <div class="row right">
-        <ion-button (click)="closeModal()">Close</ion-button>
+        <ion-button (click)="closeModal()">{{uiLabels.close}}</ion-button>
     </div>
 </div>

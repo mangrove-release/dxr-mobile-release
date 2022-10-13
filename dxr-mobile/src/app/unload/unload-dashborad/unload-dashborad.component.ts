@@ -20,6 +20,8 @@ export class UnloadDashboradComponent implements OnInit {
 
     constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private router: Router, private languageService: LanguageService, public modalController: ModalController) { }
 
+    hideDriverUnloadDashboardTripList = AppConstant.HIDE_DRIVER_UNLOAD_DASHBOARD_tripList;
+
     driverTripPlan: DriverTripPlan[] = [];
     tripDate: any = {
         date: ''
@@ -52,7 +54,8 @@ export class UnloadDashboradComponent implements OnInit {
 
         this.driverDashboardService.getCurrentDate().subscribe(response => {
             if (response) {
-                this.tripDate.date = response.date;
+                this.tripDate.date = response.engDate;
+                this.tripDate.languageWiseDate = response.date;
             }
 
             this.getDriverTripPlan(this.driverUserId, this.tripDate.date);
@@ -67,7 +70,7 @@ export class UnloadDashboradComponent implements OnInit {
             driverId: driverUserId
         }
 
-        this.driverDashboardService.getDriverTrip(driverTripFetch).subscribe(data => {
+        this.driverDashboardService.getDriverTrip(driverTripFetch, (data: DriverTripPlan[]) => {
             if (data) {
                 this.driverTripPlan = data;
                 this.driverTabsDataService.setDriverTripPlan(data);

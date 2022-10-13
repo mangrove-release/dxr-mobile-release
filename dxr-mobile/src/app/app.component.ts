@@ -2,14 +2,17 @@ import { ThrowStmt } from '@angular/compiler';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActionSheetController, ModalController } from '@ionic/angular';
+import { QrScannerComponent } from './common-directives/qr-scanner/qr-scanner.component';
 import { AppConstant } from './config/app-constant';
-import { CompanyContext } from './models/backend-fetch/dxr-system';
+import { PackageScanComponent } from './load/package-scan/package-scan.component';
+import { CompanyContext, LanguageDef } from './models/backend-fetch/dxr-system';
 import { UserIdentification } from './models/backend-update/user-login';
 import { DriverTabsDataService } from './services/operation-services/driver-tabs-data.service';
 import { LanguageService } from './services/visitor-services/language.service';
 import { UriService } from './services/visitor-services/uri.service';
 import { UserLoginService } from './services/visitor-services/user-login.service';
 import { UtilService } from './services/visitor-services/util.service';
+import { UnloadTripScanComponent } from './unload/unload-trip-scan/unload-trip-scan.component';
 import { ChangePasswordComponent } from './visitor/change-password/change-password.component';
 import { SwitchContextComponent } from './visitor/switch-context/switch-context.component';
 
@@ -20,6 +23,8 @@ import { SwitchContextComponent } from './visitor/switch-context/switch-context.
 })
 export class AppComponent implements OnInit, AfterViewInit {
     constructor(public modalController: ModalController, private languageService: LanguageService, public router: Router, private utilService: UtilService, private uriService: UriService, private userLoginService: UserLoginService, public actionSheetController: ActionSheetController, private activatedroute: ActivatedRoute, private driverTabsDataService: DriverTabsDataService) { }
+
+    hideSwitchCompanyButton = AppConstant.HIDE_SWITCH_COMPANY_BUTTON;
 
     uiLabels: any = {};
     menuList: any = [];
@@ -37,7 +42,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     selectedLanguageModel: string = this.selectedLanguage;
     viewContent = false;
 
-    componentCode: string = AppConstant.COMP.ADD_FAQ_CATEGORY_ADMIN;
+    componentCode: string = AppConstant.COMP.APP_ROOT;
     isSystemAdmin: boolean = this.utilService.languageEditMode();
     redirectSessionId: string;
     ngOnInit() {
@@ -63,9 +68,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     getLanguage(callBack?: any) {
         var backUrl = '/language-competency/language';
         var cacheUrl = backUrl;
-        this.uriService.callBackendWithCache(backUrl, AppConstant.HTTP_GET, cacheUrl, {}, (data: any) => {
+        this.uriService.callBackendWithCache(backUrl, AppConstant.HTTP_GET, cacheUrl, {}, (data: LanguageDef) => {
+
             if (data) {
-                this.languageService.setLanguageDefData(data.languageJson);
+                this.languageService.setLanguageDefData(data);
                 // this.utilService.printLangDef(this.uiLabels, this.componentCode);
 
                 this.uiLabels = this.languageService.getUiLabels(AppConstant.COMP.APP_ROOT, AppConstant.UI_LABEL_TEXT);
@@ -102,22 +108,16 @@ export class AppComponent implements OnInit, AfterViewInit {
                         setTimeout(() => {
                             this.driverTabsDataService.setScannedTripInfo(response.tripQrData);
                             this.prepareUserAccessAndMenu(JSON.parse(response.userMenuAccess), () => {
-                                debugger
+
                                 this.viewContent = true;
                                 setTimeout(() => {
                                     if (!this.router.url.includes(response.redirectMenuUrlParentSegment)) {
                                         this.router.navigate([response.redirectMenuUrlParentSegment, { outlets: { [response.redirectMenuOutlet]: [response.redirectMenuUrl] } }])
                                     }
                                 }, 200);
-
                             });
                         }, 200);
-
-
                     }, 200);
-
-
-
                 }
             });
         } else {
@@ -131,7 +131,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         var authPass = this.utilService.getUserAuthPassCookie();
 
         if (authId && authPass) {
-
             var userIdentification: UserIdentification = {
                 userId: authId,
                 userAuth: authPass,
@@ -185,22 +184,19 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     reloadMenuList(callBack?: any) {
-
-        this.menuList = this.languageService.getUserMenuItems();
+        debugger
+        this.menuList = this.languageService.getUserMenuItems(this.isLogedIn);
         // var commonMenuItems: any[] = this.languageService.getCommonMenuItems();
         this.menuList = (this.languageService.prepareMobileAppMenu(this.menuList));
         // this.selectedMenu = this.menuList[0].menuTitle;
 
         if (callBack) {
             callBack();
-        } else {
-            this.router.navigate(['/home']);
+        } else if (this.menuList && this.menuList.length > 0) {
+            this.router.navigate([this.menuList[0].menuUrl]);
             this.selectedMenuId = this.menuList[0].menuId;
-            this.viewContent = true;
         }
-
-
-
+        this.viewContent = true;
     }
 
     prepareProfileItem() {
@@ -218,10 +214,11 @@ export class AppComponent implements OnInit, AfterViewInit {
             },
         ]
 
-        this.selectedProfileItem = this.profileArray[0].title;
+        // this.selectedProfileItem = this.profileArray[0].title;
     }
 
     profileItemClick() {
+        debugger
         var itemIndex = this.profileArray.findIndex((item: any) => (item.title == this.selectedProfileItem));
 
         if (itemIndex >= 0) {
@@ -254,7 +251,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         var currentCompanyId = utilService.getCompanyIdCookie();
         var currentContextInfo: CompanyContext = languageService.getCurrentCompany(currentCompanyId);
         var contextList: CompanyContext[] = languageService.getEnrolledCompanyList();
-
+        debugger
         const modal = await modalController.create({
             component: SwitchContextComponent,
             componentProps: {
@@ -292,5 +289,31 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     setSelectedMenu(menuItem: any) {
         this.selectedMenuId = menuItem.menuId;
+    }
+
+    async openScanner() {
+        const modal = await this.modalController.create({
+            component: QrScannerComponent,
+            componentProps: {
+                // companyContext: currentContextInfo,
+                // companyContextList: contextList
+            }
+        });
+
+        await modal.present();
+
+        modal.onDidDismiss().then(data => {
+            if (data) {
+                const menuUrl: string = (window.location.href);
+                if (menuUrl.includes(AppConstant.DRIVER_PACKAGE_SCAN_MENU_URL)) {
+                    // this.packageScanComponent.getTripInfo(data.data);
+                    this.driverTabsDataService.setScannedQrData(data.data);
+                } else if (menuUrl.includes(AppConstant.PROCESSOR_UNLOAD_TRIP_SCAN_MENU_URL)) {
+                    this.driverTabsDataService.setScannedQrData(data.data);
+                    // this.unloadTripScanComponent.getTransporterCompanyInfo(data.data);
+                }
+
+            }
+        });
     }
 }

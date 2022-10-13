@@ -29,7 +29,7 @@
 
         </div>
     </div>
-    <ion-header class="header">
+    <ion-header class="header" *ngIf="!hideCompanyTripDashboardTripListHeader">
         <ion-title>{{uiLabels.tripList}}</ion-title>
     </ion-header>
     <div style="margin-bottom: 65px;">
@@ -37,33 +37,26 @@
             <mat-expansion-panel *ngFor="let trip of driverTripPlan" style="color: black;margin: 10px 5px;">
                 <mat-expansion-panel-header style="height: 100%;background-color: rgb(236, 236, 236);">
                     <div class="column fx-1">
-                        <div class="three-section-list-row wrap">
+                        <div class="three-section-list-row wrap p-2">
 
                             <div class="list-value-section">
-                                <div class="list-section-label" style="width:100px;">
-                                    {{uiLabels.driverName}}
+                                <div class="list-section-label" style="width:120px;">
+                                    {{uiLabels.projectTitle}}
                                 </div>
                                 <div class="list-section-separator">
                                     :
                                 </div>
 
                                 <div class="list-section-value">
-                                    {{trip.driverName}}
+                                    {{trip.projectTitle}}
                                 </div>
                                 <div class="list-section-label">
-                                    <ion-button class="list-button-light">{{uiLabels.pickListButton}}</ion-button>
+                                    <!-- <ion-button>{{uiLabels.pickListButton}}</ion-button> -->
                                 </div>
                             </div>
-                            <!-- <div class="list-value-section">
-
-                                
-                            </div> -->
-
-                        </div>
-                        <div class="three-section-list-row wrap">
 
                             <div class="list-value-section">
-                                <div class="list-section-label" style="width:100px;">
+                                <div class="list-section-label" style="width:120px;">
                                     {{uiLabels.tripTime}}
                                 </div>
                                 <div class="list-section-separator">
@@ -74,20 +67,29 @@
                                     {{trip.startTime.substring(0,2)}}:{{trip.startTime.substring(2)}} - {{trip.endTime.substring(0,2)}}:{{trip.endTime.substring(2)}}
                                 </div>
                             </div>
-                            <!-- <div class="list-value-section">
 
+                            <div class="list-value-section">
+                                <div class="list-section-label" style="width:120px;">
+                                    {{uiLabels.driverName}}
+                                </div>
+                                <div class="list-section-separator">
+                                    :
+                                </div>
 
                                 <div class="list-section-value">
-
+                                    {{trip.driverName}}
                                 </div>
-                            </div> -->
+                                <div class="list-section-label">
+                                    <!-- <ion-button>{{uiLabels.pickListButton}}</ion-button> -->
+                                </div>
+                            </div>
 
                         </div>
                     </div>
                 </mat-expansion-panel-header>
 
-                <ion-card *ngFor="let item of trip.pickGroup | keyvalue">
-                    <div>
+                <div *ngFor="let item of trip.pickGroup | keyvalue">
+                    <div style="border-bottom: 1px solid rgb(230, 230, 230);">
                         <div>
                             <div class="three-section-list-row wrap" style="color: black;">
 
@@ -102,19 +104,29 @@
                                     <div class="list-section-value">
                                         {{item.value[0].disposalInfo.pickZipCode}}, {{item.key}}
                                     </div>
-
-                                    <div class="list-section-label" style="width:120px;">
-                                        <ion-button (click)="generateHandoverQrCode(trip,item.value)">{{uiLabels.qrCodeButton}}</ion-button>
-                                    </div>
                                 </div>
+
+                                <div class="list-value-section">
+                                    <div class="list-section-label" style="width:120px;">
+                                        <!-- {{uiLabels.projectTitle}} -->
+                                    </div>
+                                    <div class="list-section-separator">
+                                        <!-- : -->
+                                    </div>
+
+                                    <div class="list-section-value">
+                                        <!-- {{item.value[0].projectTitle}} -->
+                                    </div>
+
+                                </div>
+
+
 
                             </div>
                         </div>
 
-                        <!-- <ion-item-divider></ion-item-divider> -->
-
                         <div *ngFor="let pick of item.value">
-                            <div class="three-section-list-row p-2" style="color: black;">
+                            <div class="three-section-list-row p-2 wrap" style="color: black;">
 
                                 <div class="list-value-section">
                                     <div class="list-section-label" style="width:120px;">
@@ -140,11 +152,39 @@
                                     <div class="list-section-value">
                                         {{pick.quantity}}
                                     </div>
+
+                                    <div class="list-section-label" style="width:120px;">
+                                        <ion-chip *ngIf="pick.loadStatus>='1'">{{uiLabels.loaded}}</ion-chip>
+                                    </div>
                                 </div>
 
-                                <div class="list-value-section">
+                                <!-- <div class="list-value-section">
                                     <div class="list-section-label" style="width:120px;">
-                                        <ion-chip *ngIf="pick.loadStatus=='1'">{{uiLabels.loaded}}</ion-chip>
+                                        <label></label>
+                                    </div>
+                                    <div class="list-section-separator">
+                                
+                                    </div>
+                                
+                                    <div class="list-section-value">
+                                        <ion-button style="width: 155px;" (click)="generateHandoverQrCode(trip,item.value)">{{uiLabels.qrCodeButton}}</ion-button>
+                                    </div>
+                                </div> -->
+
+                                <div class="list-value-section">
+                                    <div class="list-section-label">
+                                        <ion-button style="width: 155px;" (click)="generateHandoverQrCode(trip,item.value)">{{uiLabels.qrCodeButton}}</ion-button>
+                                        <!-- <div class="list-section-label" style="width:120px;">
+                                            <ion-chip *ngIf="pick.loadStatus>='1'">{{uiLabels.loaded}}</ion-chip>
+                                        </div> -->
+
+                                    </div>
+                                    <div class="list-section-separator">
+
+                                    </div>
+
+                                    <div class="list-section-value">
+                                        <ion-button *ngIf="pick.loadStatus>='1'" style="width: 155px;" (click)="printManifesto(pick.pickId)">{{uiLabels.printManifestoButton}}</ion-button>
                                     </div>
                                 </div>
 
@@ -152,7 +192,7 @@
                         </div>
                     </div>
 
-                </ion-card>
+                </div>
 
                 <!-- <div *ngFor="let pick of item.pickList, index as i" class="column fx-1">
                     <div class="three-section-list-row" style="border-bottom: 1px solid gainsboro;padding: 10px 0px 10px 0px;">
@@ -201,11 +241,11 @@
                             </div>
 
                             <div class="list-section-label" style="width:90px;" *ngIf="pick.loadStatus!='1'">
-                                <ion-button  (click)="loadPick(item,i)">{{uiLabels.loadButton}}</ion-button>
+                                <ion-button (click)="loadPick(item,i)">{{uiLabels.loadButton}}</ion-button>
                             </div>
 
                             <div class="list-section-label" style="width:90px;">
-                                <ion-button  (click)="showPickDetail(item,i)">{{uiLabels.viewPickDetail}}</ion-button>
+                                <ion-button (click)="showPickDetail(item,i)">{{uiLabels.viewPickDetail}}</ion-button>
                             </div>
                         </div>
 

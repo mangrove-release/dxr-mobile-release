@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IonRouterOutlet, ModalController } from '@ionic/angular';
 import { AppConstant } from 'src/app/config/app-constant';
 import { CompanyInfo, CompanyTripFetch, DriverTripFetch, DriverTripPlan, HandoverWastePickAndPackage, PackageInfo, TripQrData } from 'src/app/models/backend-fetch/driver-op';
+import { MenifestoInfo, MenifestReportCallData } from 'src/app/models/backend-fetch/menifest';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
 import { LanguageService } from 'src/app/services/visitor-services/language.service';
@@ -19,6 +20,8 @@ import { WasteListComponent } from '../waste-list/waste-list.component';
 export class CompanyTripDashboardComponent implements OnInit {
 
     constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private router: Router, private languageService: LanguageService, public modalController: ModalController, private routerOutlet: IonRouterOutlet, private activatedroute: ActivatedRoute) { }
+
+    hideCompanyTripDashboardTripListHeader = AppConstant.HIDE_COMPANY_TRIP_DASHBOARD_TRIP_LIST_HEADER;
 
     driverTripPlan: DriverTripPlan[] = [];
     tripDate: any = {
@@ -43,30 +46,22 @@ export class CompanyTripDashboardComponent implements OnInit {
         pickStatusLoaded: "Loaded",
         loadButton: "Load"
     }
+
+    manifestoReportLabel: any = {};
+
     viewContent: boolean = false;
 
     componentCode: string = AppConstant.COMP.COMPANY_TRIP_LIST_DASHBOARD;
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
     redirectSessionId: string;
+
     ngOnInit() {
-        console.log(this.router.url);
-
-        this.activatedroute.paramMap.subscribe(params => {
-
-            this.redirectSessionId = params.get('redirectSessionId') ? params.get('redirectSessionId') : null;
-            console.log(this.redirectSessionId);
-
-
-        });
         // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
-
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
 
         this.companyId = this.utilService.getCompanyIdCookie();
         this.loggedUserId = this.languageService.getUserInfoId(this.companyId);
-
-
 
         var redirectUserInfo = this.driverTabsDataService.getRedirectUserInfo();
         if (redirectUserInfo) {
@@ -76,13 +71,16 @@ export class CompanyTripDashboardComponent implements OnInit {
         } else {
             this.driverDashboardService.getCurrentDate().subscribe(response => {
                 if (response) {
-                    this.tripDate.date = response.date;
-
+                    this.tripDate.date = response.engDate;
+                    this.tripDate.languageWiseDate = response.date;
                 }
 
                 this.getDriverTripPlan(this.loggedUserId, this.tripDate.date);
             });
         }
+
+        var manifestoReportLabelComponentCode = AppConstant.COMP.MENIFESTO_LIST;
+        this.manifestoReportLabel = this.languageService.getUiLabels(manifestoReportLabelComponentCode, AppConstant.UI_LABEL_TEXT);
     }
 
     getOwnCompanyInfo() {
@@ -90,8 +88,8 @@ export class CompanyTripDashboardComponent implements OnInit {
             if (response) {
                 this.currentCompanyInfo = response;
             }
-
-            this.prepareTripPlanView();
+            debugger
+            this.prepareTripPlanView(this.driverTripPlan);
 
         })
     }
@@ -103,7 +101,7 @@ export class CompanyTripDashboardComponent implements OnInit {
             companyId: this.companyId
         }
 
-        this.driverDashboardService.getCompanyTrip(driverTripFetch).subscribe(data => {
+        this.driverDashboardService.getCompanyTrip(driverTripFetch, (data: DriverTripPlan[]) => {
             if (data) {
                 this.driverTripPlan = data;
                 this.driverTabsDataService.setDriverTripPlan(data);
@@ -111,20 +109,67 @@ export class CompanyTripDashboardComponent implements OnInit {
             }
 
             this.getOwnCompanyInfo();
+        });
 
-
-        })
     }
 
-    prepareTripPlanView() {
+    prepareDriveAndProjectwiseTripList(driverTripPlan: DriverTripPlan[]) {
+        var driveAndProjectwiseTripList: DriverTripPlan[] = [];
+        driverTripPlan.forEach(eachTrip => {
+            var projectIdList: any[] = []
 
-        this.driverTripPlan.forEach(eachTrip => {
+            if (eachTrip && eachTrip.pickList) {
+                eachTrip.pickList.forEach(eachPick => {
+                    var tripAndProjectId: string = eachTrip.tripInfoId + eachPick.projetId;
+                    var isFound = driveAndProjectwiseTripList.find(item => item.tripAndProjectId == tripAndProjectId);
+
+                    if (!isFound) {
+                        var tripProjectItem = JSON.parse(JSON.stringify(eachTrip));
+                        tripProjectItem.pickList = [];
+                        tripProjectItem.projectTitle = eachPick.projectTitle;
+                        tripProjectItem.projectId = eachPick.projetId;
+                        tripProjectItem.tripAndProjectId = tripAndProjectId;
+
+                        driveAndProjectwiseTripList.push(tripProjectItem);
+                    }
+
+                })
+            }
+        });
+
+        driverTripPlan.forEach(eachTrip => {
+
+            if (eachTrip && eachTrip.pickList) {
+                eachTrip.pickList.forEach(eachPick => {
+                    var tripAndProjectId: string = eachTrip.tripInfoId + eachPick.projetId;
+
+                    var indexOfParent = driveAndProjectwiseTripList.findIndex(item => item.tripAndProjectId == tripAndProjectId);
+
+                    if (indexOfParent >= 0) {
+                        var parentItem = driveAndProjectwiseTripList[indexOfParent];
+                        parentItem.pickList.push(eachPick);
+                    }
+                })
+            }
+
+        })
+
+        return driveAndProjectwiseTripList;
+    }
+
+    prepareTripPlanView(driverTripPlan: DriverTripPlan[]) {
+
+        driverTripPlan.forEach(eachTrip => {
             var pickGroup: any = this.driverDashboardService.groupBy(eachTrip.pickList, 'pickLocation');
 
             eachTrip.pickGroup = pickGroup;
 
         });
-        debugger
+
+        this.driverTripPlan = this.prepareDriveAndProjectwiseTripList(driverTripPlan);
+
+        // return driverTripPlan;
+
         this.viewContent = true;
     }
 
@@ -251,6 +296,25 @@ export class CompanyTripDashboardComponent implements OnInit {
                 callBack();
             }
         });
+    }
+
+    printManifesto(pickId: string) {
+        var manifesto: MenifestoInfo;
+        this.driverDashboardService.getManifestoData(pickId).subscribe(response => {
+            if (response && response.menifestoInfoId) {
+                manifesto = response;
+                this.generateReport(response);
+            } else {
+                this.utilService.showSnackbar('Manifesto is not generated yet', 3000);
+            }
+        })
+    }
+
+    generateReport(menifesto: MenifestoInfo) {
+
+        var menifestReportCallData: MenifestReportCallData = this.driverDashboardService.prepareReportGenData(menifesto, this.manifestoReportLabel);
+
+        this.driverDashboardService.generateReport(menifestReportCallData);
     }
 
 }

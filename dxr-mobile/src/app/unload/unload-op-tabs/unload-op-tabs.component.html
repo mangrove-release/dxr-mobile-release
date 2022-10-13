@@ -1,7 +1,7 @@
 <ion-app>
 
-    <ion-tabs style="margin-top: 60px;">
-        <ion-tab-bar slot="top">
+    <ion-tabs [ngStyle]="{'margin-top': (menuList.length > 1 || !hideSingleSecondaryMenu) ? '60px' : '0px'}">
+        <ion-tab-bar slot="top" *ngIf="menuList.length > 1 || !hideSingleSecondaryMenu">
             <div *ngFor="let item of menuList">
                 <ion-tab-button [routerLink]="[item.parentSegment,{outlets: { unloadOutlet: [item.menuUrl]}}]">
                     <label style="font-size: 15px;" [ngStyle]="{'color': (router.url.includes(item.menuUrl)) ? 'blue' : ''}">{{item.menuTitle}}</label>

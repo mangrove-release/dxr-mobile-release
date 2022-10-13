@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { HandoverCodeComponent } from 'src/app/load/handover-code/handover-code.component';
 import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, PackageInfo, PickInfo, TripQrData, WeightCertificateInfo } from 'src/app/models/backend-fetch/driver-op';
 import { RedirectUserInfo } from 'src/app/models/backend-update/user-login';
@@ -29,7 +29,19 @@ export class DriverTabsDataService {
 
     redirectUserInfo: RedirectUserInfo;
 
-    constructor() { }
+    private scannedQrData: BehaviorSubject<HandoverWastePickAndPackage>;
+
+    constructor() {
+        this.scannedQrData = new BehaviorSubject<HandoverWastePickAndPackage>(null);
+    }
+
+    setScannedQrData(newValue: HandoverWastePickAndPackage): void {
+        this.scannedQrData.next(newValue);
+    }
+
+    getScannedQrData(): Observable<HandoverWastePickAndPackage> {
+        return this.scannedQrData.asObservable();
+    }
 
     setRedirectUserInfo(redirectUserInfo: RedirectUserInfo) {
         this.redirectUserInfo = redirectUserInfo;
@@ -115,6 +127,12 @@ export class DriverTabsDataService {
         this.transporterHandoverData = transporterHandoverData;
     }
 
+    getObservableQrScannedData(): Observable<HandoverWastePickAndPackage> {
+        return of(this.transporterHandoverData);
+    }
+
+
+
     getTransporterHandoverData() {
         return this.transporterHandoverData;
     }
@@ -141,7 +159,7 @@ export class DriverTabsDataService {
     setWeightCertificateInfo(weightCertificateInfo: any): void {
         this.weightCertificateInfo = weightCertificateInfo;
         this.weightCertificateInfo.processorCompanyInfo = JSON.parse(weightCertificateInfo.processorCompanyInfo);
-        this.weightCertificateInfo.transporterCompanyInfo = JSON.parse(weightCertificateInfo.transporterCompanyInfo);
+        this.weightCertificateInfo.transporterCompanyInfo = (weightCertificateInfo.transporterCompanyInfo instanceof String) ? JSON.parse(weightCertificateInfo.transporterCompanyInfo) : weightCertificateInfo.transporterCompanyInfo;
         this.weightCertificateInfo.driverInfo = JSON.parse(weightCertificateInfo.driverInfo);
         this.weightCertificateInfo.scaleInfo = JSON.parse(weightCertificateInfo.scaleInfo);
         this.weightCertificateInfo.wasteList = JSON.parse(weightCertificateInfo.wasteList);

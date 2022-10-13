@@ -6,7 +6,7 @@ import { QrScannerComponent } from 'src/app/common-directives/qr-scanner/qr-scan
 import { AppConstant } from 'src/app/config/app-constant';
 import { ScaleSettingInfo } from 'src/app/models/backend-fetch/company-settings-fetch';
 import { CompanyInfo, DriverTripPlan, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, ProcessorEmissionInfo, WasteWisePickPackageInfo, WeightCertificateInfo, WeightCertificateReportData } from 'src/app/models/backend-fetch/driver-op';
-import { NotificationSetInfo } from 'src/app/models/backend-fetch/menifest';
+import { MenifestoInfo, MenifestReportCallData, NotificationSetInfo } from 'src/app/models/backend-fetch/menifest';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
 import { MenifestoService } from 'src/app/services/operation-services/menifesto.service';
@@ -143,7 +143,7 @@ export class WeightDeclareComponent implements OnInit {
     }
 
     saveWeightCertificateInfo() {
-        debugger
+
         this.weightCertificateInfo = this.prepareWeightCertificateInfo(this.weightCertificateInfo);
 
         this.driverDashboardService.saveWeightCertificateInfo(this.weightCertificateInfo).subscribe(response => {
@@ -243,7 +243,7 @@ export class WeightDeclareComponent implements OnInit {
     }
 
     receivedWasteWeightConfirmation() {
-        debugger
+
         var pickList: PickInfo[] = this.prepareReceivedWeightForSave();
 
         this.driverDashboardService.confirmReceivedWeight(pickList).subscribe(respose => {
@@ -301,7 +301,7 @@ export class WeightDeclareComponent implements OnInit {
     }
 
     generateWeightCertificate() {
-        debugger
+
         var weightCertificateInfo: WeightCertificateInfo = this.driverTabsDataService.getWeightCertificateInfo();
 
         if (weightCertificateInfo && weightCertificateInfo.weightCertificateInfoId) {
@@ -311,5 +311,26 @@ export class WeightDeclareComponent implements OnInit {
         } else {
             this.utilService.showSnackbar(this.uiLabels.certificateDataNotFoundToast, 3000);
         }
+    }
+    manifestoReportLabel: any = {};
+    printManifesto(pickId: string) {
+        var manifesto: MenifestoInfo;
+        this.driverDashboardService.getManifestoData(pickId).subscribe(response => {
+            if (response && response.menifestoInfoId) {
+                manifesto = response;
+                this.generateReport(response);
+            } else {
+                this.utilService.showSnackbar('Manifesto is not generated yet', 3000);
+            }
+        })
+    }
+
+    generateReport(menifesto: MenifestoInfo) {
+        var manifestoReportLabelComponentCode = AppConstant.COMP.MENIFESTO_LIST;
+        this.manifestoReportLabel = this.languageService.getUiLabels(manifestoReportLabelComponentCode, AppConstant.UI_LABEL_TEXT);
+
+        var menifestReportCallData: MenifestReportCallData = this.driverDashboardService.prepareReportGenData(menifesto, this.manifestoReportLabel);
+
+        this.driverDashboardService.generateReport(menifestReportCallData);
     }
 }

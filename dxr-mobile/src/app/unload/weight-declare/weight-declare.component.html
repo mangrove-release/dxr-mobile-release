@@ -1,7 +1,7 @@
 <ion-content *ngIf="viewContent">
     <div style="margin-bottom: 65px;">
         <app-company-name-header></app-company-name-header>
-        <ion-header class="header">
+        <ion-header class="header" *ngIf="false">
             <ion-title><span style="margin-right:10px;">
                     <app-lang-def-button [componentCode]="componentCode">
                     </app-lang-def-button>{{uiLabels.pageHeader}}
@@ -12,14 +12,18 @@
             <div class="three-section-list-row">
                 <div class="list-value-section">
                     <div class="list-section-label" style="flex:100%">
-                        {{uiLabels.processorCompanyName}}
+                        <!-- {{uiLabels.processorCompanyName}} -->
+                        <span style="margin-right:10px;">
+                            <app-lang-def-button [componentCode]="componentCode">
+                            </app-lang-def-button>
+                        </span>
                     </div>
                     <div class="list-section-separator">
-                        :
+                        <!-- : -->
                     </div>
 
                     <div class="list-section-value" style="flex:100%">
-                        {{processorCompanyInfo.companyName}}
+                        <ion-title>{{processorCompanyInfo.companyName}}</ion-title>
                     </div>
                 </div>
             </div>
@@ -34,7 +38,7 @@
 
         <ion-card class="col p-2" *ngIf="handoverPackageView">
 
-            <div class="three-section-list-row">
+            <!-- <div class="three-section-list-row">
                 <div class="list-value-section">
                     <div class="list-section-label" style="flex:100%">
                         {{uiLabels.transporterCompanyName}}
@@ -47,7 +51,7 @@
                         {{transporterCompanyInfo.companyName}}
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="three-section-list-row">
                 <div class="list-value-section">
@@ -167,6 +171,12 @@
 
                                 <div class="list-section-value" style="flex:100%">
                                     {{i+1}}
+                                </div>
+
+                                <div class="list-section-value" style="flex:100%">
+
+                                    <ion-button style="margin-right: 15px;" (click)="printManifesto(pick.pick.pickId)">{{uiLabels.printManifestoButton}}</ion-button>
+
                                 </div>
                             </div>
 

@@ -51,7 +51,8 @@ export class DriverDashboradComponent implements OnInit {
 
         this.driverDashboardService.getCurrentDate().subscribe(response => {
             if (response) {
-                this.tripDate.date = response.date;
+                this.tripDate.date = response.engDate;
+                this.tripDate.languageWiseDate = response.date;
 
             }
 
@@ -77,7 +78,7 @@ export class DriverDashboradComponent implements OnInit {
             driverId: driverUserId
         }
 
-        this.driverDashboardService.getDriverTrip(driverTripFetch).subscribe(data => {
+        this.driverDashboardService.getDriverTrip(driverTripFetch, (data: DriverTripPlan[]) => {
             if (data) {
                 this.driverTripPlan = data;
                 this.driverTabsDataService.setDriverTripPlan(data);

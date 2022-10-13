@@ -1,5 +1,30 @@
 export class AppConstant {
 
+    public static LANGUAGE_DEF_LOCALSTORAGE_KEY = "languageDef";
+
+    public static HIDE_PROCESSOR_UNLOAD_TRIP_SCAN_openScannerButton = true;
+    public static HIDE_PROCESSOR_UNLOAD_TRIP_SCAN_pageHeader = true;
+
+    public static DRIVER_PACKAGE_SCAN_MENU_URL = '';
+    public static PROCESSOR_UNLOAD_TRIP_SCAN_MENU_URL = '';
+
+    public static HIDE_DRIVER_UNLOAD_DASHBOARD_tripList = true;
+
+    public static HIDE_DRIVER_PACKAGE_SCAN_tripPackageInfo = true;
+    public static HIDE_DRIVER_PACKAGE_SCAN_openScannerButton = true;
+
+    public static HIDE_COMPANY_TRIP_DASHBOARD_TRIP_LIST_HEADER = true;
+
+    public static GET_CURRENT_DATE_URI = '/mob/load/current-date';
+    public static CHECK_DATE_VALIDITY_URI = '/util/check-date';
+    public static INPUT_DATE_AS_ENGLISH = true;
+
+    public static COOKIE_EXPIRE_MONTH = 1;
+
+    public static HIDE_SWITCH_COMPANY_BUTTON = true;
+    public static HIDE_CURRENT_COMPANY_NAME_HEADER = true;
+    public static HIDE_SINGLE_SECONDARY_MENU = true;
+
     public static COOKIE_EXPIRE_DATE = "Thu, 01 Jan 1970 00:00:00 GMT";
 
     public static MANIFESTO_REPORT_FILE_NAME = "final_manifesto_report_2022-07-25.rptdesign";
@@ -49,7 +74,7 @@ export class AppConstant {
 
     public static MENIFESTO_STATUS_LOADED = "1";
     public static MENIFESTO_STATUS_UNLOADED = "2";
-    public static APP_VERSION = '1.8.22.08.08';
+    public static APP_VERSION = '1.8.22.10.05';
 
     public static PICK_LOAD_STATUS = "1";
     public static PICK_UNLOAD_STATUS = "2";
@@ -425,6 +450,7 @@ export class AppConstant {
         COMPANY_NAME_HEADER_COMP: "company_name_header_comp",
         COMPANY_TRIP_LIST_DASHBOARD: 'company_trip_list_dashboard',
         MENIFESTO_LIST: 'menifestoList',
+        SCAN_QR_CODE: 'scan-qr-code'
 
     };
     public static Tabs = [

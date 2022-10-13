@@ -16,6 +16,8 @@ export class CompanyNameHeaderComponent implements OnInit {
 
     constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, public router: Router, private languageService: LanguageService) { }
 
+    hideCurrentCompanyNameHeader = AppConstant.HIDE_CURRENT_COMPANY_NAME_HEADER;
+
     uiLabels: any = {
         companyName: "Current Company"
     }
@@ -35,7 +37,11 @@ export class CompanyNameHeaderComponent implements OnInit {
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
         this.companyId = this.utilService.getCompanyIdCookie();
 
-        this.getOwnCompanyInfo();
+        // bellow line commented to hide company name header. to show thin on pages uncomment the line
+        if (!this.hideCurrentCompanyNameHeader) {
+            this.getOwnCompanyInfo();
+
+        }
     }
 
     getOwnCompanyInfo() {
@@ -44,6 +50,8 @@ export class CompanyNameHeaderComponent implements OnInit {
             if (response) {
                 this.currentCompanyInfo = response;
             }
+
+
             this.viewContent = true;
         })
     }

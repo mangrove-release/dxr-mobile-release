@@ -1,5 +1,13 @@
 import { AccessDef } from "./role-def-fetch";
 
+export interface LanguageDef {
+    backendDate: string;
+    languageJson: string;
+    langInfoCache: string;
+    frontendDate: string;
+    languageCompetencyId: string;
+}
+
 export interface CompanyCategoryFetch {
     companyCategoryId: String,
     companyCategoryName: String,

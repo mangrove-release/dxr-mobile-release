@@ -16,6 +16,8 @@ export class UnloadOpTabsComponent implements OnInit {
 
     constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, public router: Router, private languageService: LanguageService) { }
 
+    hideSingleSecondaryMenu = AppConstant.HIDE_SINGLE_SECONDARY_MENU;
+
     uiLabels: any = {
         companyName: "Current Company"
     }

@@ -18,6 +18,9 @@ export class UnloadTripScanComponent implements OnInit {
 
     constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, private languageService: LanguageService, private router: Router, public modalController: ModalController) { }
 
+    hideProcessorUnloadTripScanOpenScannerButton = AppConstant.HIDE_PROCESSOR_UNLOAD_TRIP_SCAN_openScannerButton;
+    hideProcessorUnloadTripScanPageHeader = AppConstant.HIDE_PROCESSOR_UNLOAD_TRIP_SCAN_pageHeader;
+
     uiLabels: any = {
         pageHeader: "Waste Unload Operation",
         openScannerButton: "Open Scanner",
@@ -57,6 +60,14 @@ export class UnloadTripScanComponent implements OnInit {
     ngOnInit() {
         // this.utilService.printLangDef(this.uiLabels,, this.componentCode);
         this.uiLabels = this.languageService.getUiLabels(this.componentCode, AppConstant.UI_LABEL_TEXT);
+
+        this.driverTabsDataService.getScannedQrData().subscribe(data => {
+            if (data) {
+                this.handoverWastePickAndPackage = data;
+                this.driverTabsDataService.setTransporterHandoverData(data);
+                this.getTransporterCompanyInfo(data);
+            }
+        })
     }
 
     async openScanner() {

@@ -45,7 +45,7 @@
             </div>
         </ion-card>
 
-        <div class="row center" style="padding: 20px 0px 20px 0px;">
+        <div *ngIf="!hideDriverPackageScanOpenScannerButton" class="row center" style="padding: 20px 0px 20px 0px;">
             <ion-button (click)="openScanner()">{{uiLabels.openScannerButton}}</ion-button>
         </div>
 
@@ -55,7 +55,7 @@
 
         {{qrResultString}}
 
-        <ion-header class="header row">
+        <ion-header *ngIf="!hideDriverPackageScanTripPackageInfo" class="header row">
             <ion-title>{{uiLabels.tripPackageInfo}}</ion-title>
             <ion-button style="margin-right: 25px;" [disabled]="handoverConfirmed" (click)="confirmReceive()">{{uiLabels.confirmReceiveButton}}</ion-button>
         </ion-header>
@@ -63,15 +63,19 @@
         <ion-card class="col p-2" *ngIf="handoverPackageView">
             <div class="three-section-list-row wrap">
                 <div class="list-value-section">
-                    <div class="list-section-label" style="flex:100%">
+                    <div class="list-section-label" style="flex:120px">
                         {{uiLabels.dumperCompanyName}}
                     </div>
                     <div class="list-section-separator">
                         :
                     </div>
 
-                    <div class="list-section-value" style="flex:100%">
+                    <div class="list-section-value">
                         {{dumperCompanyInfo.companyName}}
+                    </div>
+
+                    <div *ngIf="hideDriverPackageScanTripPackageInfo" class="list-section-value" style="display: flex;justify-content:flex-end;">
+                        <ion-button style="margin-right: 25px;" [disabled]="handoverConfirmed" (click)="confirmReceive()">{{uiLabels.confirmReceiveButton}}</ion-button>
                     </div>
                 </div>
             </div>

@@ -39,7 +39,7 @@ export class UserLoginComponent implements OnInit {
     isSystemAdmin: boolean = this.utilService.languageEditMode();
 
     ngOnInit() {
-        debugger
+
         console.log(this.router.url);
         // console.log(this.activatedroute.snapshot.paramMap.get("redirectSessionId"));
 
@@ -53,7 +53,7 @@ export class UserLoginComponent implements OnInit {
 
             if (redirectUserInfoId) {
                 this.userLoginService.getMobileAppRedirectInfo(redirectUserInfoId).subscribe(response => {
-
+                    debugger
                     if (response) {
 
                         this.utilService.clearCookie();

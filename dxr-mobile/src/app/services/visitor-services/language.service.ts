@@ -4,7 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { AppConstant } from 'src/app/config/app-constant';
 import { UriService } from './uri.service';
 import { Observable, of } from 'rxjs';
-import { CompanyContext, UserCompanyAccess, UserMenuDef } from 'src/app/models/backend-fetch/dxr-system';
+import { CompanyContext, LanguageDef, UserCompanyAccess, UserMenuDef } from 'src/app/models/backend-fetch/dxr-system';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +12,7 @@ import { CompanyContext, UserCompanyAccess, UserMenuDef } from 'src/app/models/b
 
 export class LanguageService {
 
-    constructor(private cookieService: CookieService, private uriService: UriService) {
+    constructor(private cookieService: CookieService) {
 
     }
     UI_LABELS: any = [];
@@ -53,12 +53,44 @@ export class LanguageService {
         return this.cookieService.get(AppConstant.LANG_INDEX_KEY);
     }
 
-    setLanguageDefData(languageDef: any) {
+    getLocalstorageLanguage() {
+        var localLangDef: any = localStorage.getItem(AppConstant.LANGUAGE_DEF_LOCALSTORAGE_KEY);
 
+        var languageArray = JSON.parse(localLangDef);
+
+        return languageArray;
+    }
+
+    setLocalstorageLanguage(languageDef: LanguageDef) {
+        localStorage.setItem(AppConstant.LANGUAGE_DEF_LOCALSTORAGE_KEY, JSON.stringify(languageDef));
+        return languageDef;
+
+    }
+
+    getLanguageCacheDate() {
+        var langageData: LanguageDef = this.getLocalstorageLanguage();
+
+        if (!langageData) {
+            langageData = {
+                backendDate: '00000000000000',
+                languageJson: '',
+                langInfoCache: '',
+                frontendDate: '',
+                languageCompetencyId: ''
+            }
+
+            this.setLocalstorageLanguage(langageData);
+        }
+
+        return langageData.backendDate;
+    }
+
+    setLanguageDefData(languageDef: LanguageDef) {
         try {
             if (languageDef) {
-                var languageData = JSON.parse(languageDef);
-                this.UI_LABELS = languageData;
+                var languageData = (languageDef.langInfoCache == "0") ? this.setLocalstorageLanguage(languageDef).languageJson : this.getLocalstorageLanguage().languageJson;
+
+                this.UI_LABELS = JSON.parse(languageData);
             } else {
                 throw new Error;
             }
@@ -268,7 +300,7 @@ export class LanguageService {
         this.USER_MENU_ITEMS = [];
     }
 
-    getUserMenuItems() {
+    getUserMenuItems(isLogedIn?: boolean) {
 
         var menuList: any[] = [];
         var langIndex = this.getSelectedLanguageIndex();
@@ -276,7 +308,7 @@ export class LanguageService {
         var menuTitle = (langIndex == AppConstant.LANG_INDEX_ENG) ? (AppConstant.ENGLISH_MENU_TITLE) : (AppConstant.JAPANESE_MENU_TITLE);
 
         var commonMenus: [] = this.getCommonMenuItems();
-        if (commonMenus && commonMenus.length > 0) {
+        if (commonMenus && commonMenus.length > 0 && !isLogedIn) {
             commonMenus.forEach(eachMenu => {
                 menuList.push(eachMenu);
             })

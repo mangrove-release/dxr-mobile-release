@@ -59,20 +59,29 @@ export class UtilService {
         return new Date().toISOString().slice(-24).replace(/\D/g, '').slice(0, 8)
     }
 
+    getCookieExpireDate() {
+        var date = new Date();
+        return date.setMonth(date.getMonth() + AppConstant.COOKIE_EXPIRE_MONTH);
+    }
+
     setSelectedLanguageIndex(langIndex: string) {
-        this.cookieService.set(AppConstant.LANG_INDEX_KEY, langIndex);
+        var date = this.getCookieExpireDate();
+        this.cookieService.set(AppConstant.LANG_INDEX_KEY, langIndex, date);
     }
 
     setUserIdCookie(userId: string) {
-        return this.cookieService.set(AppConstant.AUTH_ID_KEY, userId);
+        var date = this.getCookieExpireDate();
+        return this.cookieService.set(AppConstant.AUTH_ID_KEY, userId, date);
     }
 
     setUserAuthPassCookie(userAuth: string) {
-        return this.cookieService.set(AppConstant.AUTH_PASS_KEY, userAuth);
+        var date = this.getCookieExpireDate();
+        return this.cookieService.set(AppConstant.AUTH_PASS_KEY, userAuth, date);
     }
 
     setCompanyIdCookie(companyId: string) {
-        return this.cookieService.set(AppConstant.SELECTED_COMPANY_ID_KEY, companyId);
+        var date = this.getCookieExpireDate();
+        return this.cookieService.set(AppConstant.SELECTED_COMPANY_ID_KEY, companyId, date);
     }
 
     getCompanyCategoryName(categoryNameOrId: string) {

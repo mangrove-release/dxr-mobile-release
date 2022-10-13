@@ -1,19 +1,22 @@
 <ion-content>
     <ion-content style="margin-bottom: 65px;">
         <app-company-name-header></app-company-name-header>
-        <ion-header class="header">
+        <ion-header *ngIf="!hideProcessorUnloadTripScanPageHeader" class="header">
             <ion-title><span style="margin-right:10px;">
                     <app-lang-def-button [componentCode]="componentCode">
                     </app-lang-def-button>{{uiLabels.pageHeader}}
                 </span></ion-title>
         </ion-header>
 
-        <div class="row center" style="padding: 20px 0px 20px 0px;">
+        <div *ngIf="!hideProcessorUnloadTripScanOpenScannerButton" class="row center" style="padding: 20px 0px 20px 0px;">
             <ion-button (click)="openScanner()">{{uiLabels.openScannerButton}}</ion-button>
         </div>
 
         <ion-header class="row header">
-            <ion-title>{{uiLabels.tripInfo}}</ion-title>
+            <ion-title><span style="margin-right:10px;">
+                    <app-lang-def-button [componentCode]="componentCode">
+                    </app-lang-def-button>{{uiLabels.tripInfo}}
+                </span></ion-title>
             <ion-button *ngIf="driverTripPlan && driverTripPlan.tripInfoId" (click)="routeToWeightDeclare()" style="margin-right: 15px;">{{uiLabels.verifyPackageButton}}</ion-button>
             <ion-button *ngIf="driverTripPlan && driverTripPlan.tripInfoId" style="margin-right: 15px;" (click)="generateWeightCertificate()">{{uiLabels.generateWeightDeclareCertificate}}</ion-button>
         </ion-header>
@@ -117,7 +120,7 @@
                 </div>
             </div>
 
-            <div class="three-section-list-row wrap">
+            <!-- <div class="three-section-list-row wrap">
 
                 <div class="list-value-section">
                     <div class="list-section-label" style="width:150px;">
@@ -147,7 +150,7 @@
                         {{transporterCompanyInfo.personInChargeContact}}
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div *ngIf="!driverTripPlan || !driverTripPlan.tripInfoId">
             No Trip Found

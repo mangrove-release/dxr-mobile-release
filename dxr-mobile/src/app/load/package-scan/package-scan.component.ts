@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
+import { Observable } from 'rxjs';
 import { QrScannerComponent } from 'src/app/common-directives/qr-scanner/qr-scanner.component';
 import { AppConstant } from 'src/app/config/app-constant';
 import { AgreementInfo, AgreementPartnerInfo } from 'src/app/models/backend-fetch/business-agreement';
 import { WasteItemDef } from 'src/app/models/backend-fetch/company-settings-fetch';
 import { CompanyInfo, DriverTripPlan, DumpingEmissionInfo, HandoverWastePickAndPackage, LoadPackageView, PackageInfo, PickInfo, PickWisePackage, WasteWisePickPackageInfo } from 'src/app/models/backend-fetch/driver-op';
+import { AgreementInfoFetch, ProjectInfoFetch } from 'src/app/models/backend-fetch/initiate-project-fetch';
 import { DumperInfo, ManifestoDisposeWasteInfo, ManifestoProcessWasteInfo, ManifestoWasteItemDef, ManualManifesto, MenifestoInfo, MenifestoProjectWasteDef, MenifestoTripDef, NotificationSetInfo, ProcessorInfo, TranshipmentInfo, TransportInfo } from 'src/app/models/backend-fetch/menifest';
 import { DriverDashboardService } from 'src/app/services/operation-services/driver-dashboard.service';
 import { DriverTabsDataService } from 'src/app/services/operation-services/driver-tabs-data.service';
@@ -21,6 +23,9 @@ import { UtilService } from 'src/app/services/visitor-services/util.service';
 export class PackageScanComponent implements OnInit {
 
     constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, public modalController: ModalController, private languageService: LanguageService, private menifestoService: MenifestoService) { }
+
+    hideDriverPackageScanTripPackageInfo = AppConstant.HIDE_DRIVER_PACKAGE_SCAN_tripPackageInfo;
+    hideDriverPackageScanOpenScannerButton = AppConstant.HIDE_DRIVER_PACKAGE_SCAN_openScannerButton;
 
     uiLabels: any = {
         pageHeader: "Package Scan",
@@ -93,7 +98,15 @@ export class PackageScanComponent implements OnInit {
 
         this.getTransporterCompanyInfo(this.companyId);
 
+        this.driverTabsDataService.getScannedQrData().subscribe(data => {
+            if (data) {
+                this.getTripInfo(data);
+            }
+        })
+
     }
+
+
 
     onCodeResult(resultString: string) {
         this.qrResultString = resultString;
@@ -365,9 +378,61 @@ export class PackageScanComponent implements OnInit {
         return menifesto;
     }
 
+    getAgreementPartnerList(agreement: AgreementInfo): AgreementPartnerInfo[] {
+        var agreementPartners: AgreementPartnerInfo[] = [];
+
+        if (agreement.dumperPartnerInfo && agreement.dumperPartnerInfo.companyId) {
+            agreementPartners.push(agreement.dumperPartnerInfo);
+        }
+
+        if (agreement.transporterPartnerInfo && agreement.transporterPartnerInfo.companyId) {
+            agreementPartners.push(agreement.transporterPartnerInfo);
+        }
+
+        if (agreement.processorPartnerInfo && agreement.processorPartnerInfo.companyId) {
+            agreementPartners.push(agreement.processorPartnerInfo);
+        }
+
+        return agreementPartners;
+    }
+
+    populateAgreementPartnersToManifestoAgreement(manifestoAgreement: AgreementInfo, savedProject: ProjectInfoFetch, callBack: any) {
+        debugger
+        if (!manifestoAgreement.dumperPartnerInfo || !manifestoAgreement.transporterPartnerInfo || !manifestoAgreement.processorPartnerInfo || !manifestoAgreement.dumperPartnerInfo.companyId || !manifestoAgreement.transporterPartnerInfo.companyId || !manifestoAgreement.processorPartnerInfo.companyId) {
+            var projectAgreementList: AgreementInfoFetch[] = savedProject.agreementInfo;
+            var unfetchedAgreement = projectAgreementList.find(item => item.agreementId != manifestoAgreement.agreementId);
+
+            if (unfetchedAgreement) {
+                this.menifestoService.getAgreementById(unfetchedAgreement.agreementId).subscribe(otherAgreementOfProject => {
+                    if (otherAgreementOfProject) {
+                        var manifestoAgreementPartners: AgreementPartnerInfo[] = this.getAgreementPartnerList(manifestoAgreement);
+                        var otherAgreementPartners: AgreementPartnerInfo[] = this.getAgreementPartnerList(otherAgreementOfProject);
+                        var missingPartner: AgreementPartnerInfo;
+
+                        otherAgreementPartners.forEach(eachOtherPartner => {
+                            if (!manifestoAgreementPartners.find(item => item.companyId == eachOtherPartner.companyId) && !missingPartner) {
+                                missingPartner = eachOtherPartner;
+                                manifestoAgreementPartners.push(eachOtherPartner);
+                            }
+                        })
+
+                        manifestoAgreement.dumperPartnerInfo = manifestoAgreementPartners.find(item => item.assignedRoles == AppConstant.CATEGORY_NAME_DUMPER);
+                        manifestoAgreement.transporterPartnerInfo = manifestoAgreementPartners.find(item => item.assignedRoles == AppConstant.CATEGORY_NAME_TRANSPORTER);
+                        manifestoAgreement.processorPartnerInfo = manifestoAgreementPartners.find(item => item.assignedRoles == AppConstant.CATEGORY_NAME_PROCESSOR);
+
+                        callBack(manifestoAgreement)
+                    }
+                })
+            }
+        } else {
+            callBack(manifestoAgreement);
+        }
+
+    }
+
 
     generateMenifesto() {
-
+        debugger
         this.loadPackageView.wasteWisePickPackageList.forEach(eachWaste => {
             var pickList: PickInfo[] = this.driverDashboardService.getPickListFromWastewisePick(eachWaste.pickList);
             var projectWisePick: any = this.driverDashboardService.groupByProjectId(pickList);
@@ -377,79 +442,85 @@ export class PackageScanComponent implements OnInit {
                 var projectAndProjectId: string[] = eachProject.split('|');
                 var projectId: string = projectAndProjectId[0];
                 var projectTitle: string = projectAndProjectId[1];
-                var agreementInfo: AgreementInfo = {} as AgreementInfo;
+                var collectionId: string = (pickList) ? pickList[0].disposalInfo.collectionId : "";
 
-                this.menifestoService.getAgreement(projectId).subscribe(response => {
-                    if (response) {
-                        agreementInfo = response;
-                        var projectPickList: PickInfo[] = projectWisePick[eachProject];
-                        var id = this.utilService.generateUniqueId();
-                        var menifestoUniqueId: string = this.utilService.generateUniqueId() + this.utilService.generateUniqueId();
+                this.menifestoService.getProject(projectId).subscribe(savedProject => {
+                    if (savedProject) {
 
-                        var menifesto: MenifestoInfo = {
-                            menifestoInfoId: id,
-                            menifestoUniqueId: menifestoUniqueId,
-                            date: "",
-                            dateView: "",
-                            projectId: projectAndProjectId[0],
-                            tripIds: [this.selectedTrip.tripInfoId],
-                            tripIdDef: [],
-                            pickIdDef: projectPickList,
-                            wasteId: eachWaste.wasteId,
-                            projectName: projectAndProjectId[1],
-                            creator: agreementInfo.dumperPartnerInfo.companyId + '|' + agreementInfo.dumperPartnerInfo.assignedRoles,
-                            firstParty: agreementInfo.transporterPartnerInfo.companyId + '|' + agreementInfo.transporterPartnerInfo.assignedRoles,
-                            secondparty: agreementInfo.processorPartnerInfo.companyId + '|' + agreementInfo.processorPartnerInfo.assignedRoles,
-                            aggrementInfo: agreementInfo,
-                            menifestoStatus: AppConstant.MENIFESTO_STATUS_LOADED,
-                            manualManifesto: {} as ManualManifesto,
-                            manifestoType: AppConstant.MANIFESTO_TYPE_GENERATED,
-                            manualEdit: false,
-                            invoiceGenrationStatus: AppConstant.FALSE_STATEMENT
-                        }
+                        this.menifestoService.getAgreement(projectId, collectionId).subscribe(savedAgreement => {
+                            this.populateAgreementPartnersToManifestoAgreement(savedAgreement, savedProject, (agreementInfo: AgreementInfo) => {
+                                var projectPickList: PickInfo[] = projectWisePick[eachProject];
+                                var id = this.utilService.generateUniqueId();
+                                var menifestoUniqueId: string = this.utilService.generateUniqueId() + this.utilService.generateUniqueId();
 
-                        // menifesto.tripIds.push(this.selectedTrip.tripInfoId);
-                        var menifestoTripDef: MenifestoTripDef = {
-                            tripId: this.selectedTrip.tripInfoId,
-                            date: this.selectedTrip.pickUpDate,
-                            projectList: []
-                        }
-
-                        this.menifestoService.getWasteItemDef(eachWaste.wasteId, (wasteItemDef: ManifestoWasteItemDef) => {
-                            if (wasteItemDef) {
-                                wasteItemDef.totalQunatity = eachWaste.totalQunatity;
-                                wasteItemDef.totalDeclaredQunatity = eachWaste.totalDeclaredQunatity;
-                                wasteItemDef.collectionId = eachWaste.pickList[0].pick.disposalInfo.collectionId;
-                                var menifestoProjectWasteDef: MenifestoProjectWasteDef = {
-                                    projectId: projectId,
-                                    wasteIdList: [wasteItemDef]
+                                var menifesto: MenifestoInfo = {
+                                    menifestoInfoId: id,
+                                    menifestoUniqueId: menifestoUniqueId,
+                                    date: "",
+                                    dateView: "",
+                                    projectId: projectAndProjectId[0],
+                                    tripIds: [this.selectedTrip.tripInfoId],
+                                    tripIdDef: [],
+                                    pickIdDef: projectPickList,
+                                    wasteId: eachWaste.wasteId,
+                                    projectName: projectAndProjectId[1],
+                                    creator: agreementInfo.dumperPartnerInfo.companyId + '|' + agreementInfo.dumperPartnerInfo.assignedRoles,
+                                    firstParty: agreementInfo.transporterPartnerInfo.companyId + '|' + agreementInfo.transporterPartnerInfo.assignedRoles,
+                                    secondparty: agreementInfo.processorPartnerInfo.companyId + '|' + agreementInfo.processorPartnerInfo.assignedRoles,
+                                    aggrementInfo: agreementInfo,
+                                    menifestoStatus: AppConstant.MENIFESTO_STATUS_LOADED,
+                                    manualManifesto: {} as ManualManifesto,
+                                    manifestoType: AppConstant.MANIFESTO_TYPE_GENERATED,
+                                    manualEdit: false,
+                                    invoiceGenrationStatus: AppConstant.FALSE_STATEMENT
                                 }
 
-                                menifestoTripDef.projectList.push(menifestoProjectWasteDef);
+                                var menifestoTripDef: MenifestoTripDef = {
+                                    tripId: this.selectedTrip.tripInfoId,
+                                    date: this.selectedTrip.pickUpDate,
+                                    projectList: []
+                                }
 
-                                menifesto.tripIdDef.push(menifestoTripDef);
-
-                                menifesto = this.prepareManualManifesto(menifesto);
-
-                                this.menifestoService.saveMenifesto(menifesto).subscribe(menifesto => {
-
-                                    if (menifesto) {
-                                        var notificationSetInfo: NotificationSetInfo = {
-                                            contextId: AppConstant.MANIFESTO_NOTIFICAIONT_ID,
-                                            companyId: this.transporterCompanyInfo.companyId,
-                                            baseTableId: menifesto.aggrementInfo.agreementId,
-                                            trigerUserInfoId: this.utilService.getUserIdCookie(),
-                                            status: AppConstant.MANIFESTO_LOAD_STATUS
+                                this.menifestoService.getWasteItemDef(eachWaste.wasteId, (wasteItemDef: ManifestoWasteItemDef) => {
+                                    if (wasteItemDef) {
+                                        wasteItemDef.totalQunatity = eachWaste.totalQunatity;
+                                        wasteItemDef.totalDeclaredQunatity = eachWaste.totalDeclaredQunatity;
+                                        wasteItemDef.collectionId = eachWaste.pickList[0].pick.disposalInfo.collectionId;
+                                        var menifestoProjectWasteDef: MenifestoProjectWasteDef = {
+                                            projectId: projectId,
+                                            wasteIdList: [wasteItemDef]
                                         }
 
-                                        this.menifestoService.generateNotiForManifestoCreate(notificationSetInfo).subscribe(response => {
+                                        menifestoTripDef.projectList.push(menifestoProjectWasteDef);
+
+                                        menifesto.tripIdDef.push(menifestoTripDef);
+
+                                        menifesto = this.prepareManualManifesto(menifesto);
+
+                                        this.menifestoService.saveMenifesto(menifesto).subscribe(menifesto => {
+
+                                            if (menifesto) {
+                                                var notificationSetInfo: NotificationSetInfo = {
+                                                    contextId: AppConstant.MANIFESTO_NOTIFICAIONT_ID,
+                                                    companyId: this.transporterCompanyInfo.companyId,
+                                                    baseTableId: menifesto.aggrementInfo.agreementId,
+                                                    trigerUserInfoId: this.utilService.getUserIdCookie(),
+                                                    status: AppConstant.MANIFESTO_LOAD_STATUS
+                                                }
+
+                                                this.menifestoService.generateNotiForManifestoCreate(notificationSetInfo).subscribe(response => {
+
+                                                });
+                                            }
 
                                         });
                                     }
+                                })
+                            })
 
-                                });
-                            }
+
                         })
+
 
 
                     }

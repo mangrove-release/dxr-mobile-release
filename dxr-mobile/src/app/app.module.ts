@@ -16,11 +16,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { LoadPageModule } from './load/load.module';
+import { UnloadPageModule } from './unload/unload.module';
 
 @NgModule({
     declarations: [AppComponent],
     entryComponents: [AppComponent],
     imports: [
+        // LoadPageModule,
+        // UnloadPageModule,
+
         IonicModule,
         FormsModule,
         CommonModule,

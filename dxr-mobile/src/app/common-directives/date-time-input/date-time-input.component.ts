@@ -40,7 +40,7 @@ export class DateTimeInputComponent implements OnInit {
     ngOnInit(): void {
 
         this.uiLabels = this.languageService.getUiLabels(AppConstant.COMP.DATE_TIME_DIRECTIVE, AppConstant.UI_LABEL_TEXT);
-        this.langIndex = this.languageService.getSelectedLanguageIndex();
+        this.langIndex = (AppConstant.INPUT_DATE_AS_ENGLISH) ? AppConstant.LANG_INDEX_ENG : this.languageService.getSelectedLanguageIndex();
         if (this.langIndex == AppConstant.LANG_INDEX_JPN) {
             this.mask = '00/00/00';
         }
@@ -53,8 +53,6 @@ export class DateTimeInputComponent implements OnInit {
     );
 
     checkDateValidity() {
-
-
         var date = this.modelObject[this.modelDateAttributeName];
         this.uriService.callBackend(this.url, AppConstant.HTTP_POST, date).subscribe(valid => {
 

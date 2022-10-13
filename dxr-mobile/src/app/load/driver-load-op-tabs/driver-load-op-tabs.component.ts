@@ -16,6 +16,8 @@ export class DriverLoadOpTabsComponent implements OnInit {
 
     constructor(private driverDashboardService: DriverDashboardService, private driverTabsDataService: DriverTabsDataService, private utilService: UtilService, public router: Router, private languageService: LanguageService) { }
 
+    hideSingleSecondaryMenu = AppConstant.HIDE_SINGLE_SECONDARY_MENU;
+
     driverTripPlan: DriverTripPlan[] = [];
     selectedIndex = 0;
     viewContent: boolean = false;
@@ -67,7 +69,7 @@ export class DriverLoadOpTabsComponent implements OnInit {
             driverId: driverUserId
         }
 
-        this.driverDashboardService.getDriverTrip(driverTripFetch).subscribe(data => {
+        this.driverDashboardService.getDriverTrip(driverTripFetch, (data: DriverTripPlan[]) => {
             if (data) {
                 this.driverTripPlan = data;
                 this.driverTabsDataService.setDriverTripPlan(data);
