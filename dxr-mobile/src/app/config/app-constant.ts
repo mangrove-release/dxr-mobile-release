@@ -74,7 +74,7 @@ export class AppConstant {
 
     public static MENIFESTO_STATUS_LOADED = "1";
     public static MENIFESTO_STATUS_UNLOADED = "2";
-    public static APP_VERSION = '1.8.22.10.05';
+    public static APP_VERSION = '1.8.22.10.13';
 
     public static PICK_LOAD_STATUS = "1";
     public static PICK_UNLOAD_STATUS = "2";
